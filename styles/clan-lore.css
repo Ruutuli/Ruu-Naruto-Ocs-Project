@@ -741,41 +741,361 @@
 
 /* Responsive Design */
 @media (max-width: 768px) {
+  .detail-scroll,
+  .clan-detail-scroll,
+  .lore-detail-scroll,
+  .story-detail-scroll,
+  .oc-sheet-container {
+    padding-top: 2rem !important;
+  }
+  
+  .detail-backdrop,
+  .clan-detail-backdrop,
+  .lore-detail-backdrop,
+  .story-detail-backdrop,
+  .oc-sheet-scroll-top {
+    width: 100% !important;
+    height: 40px !important;
+    top: 8px !important;
+  }
+  
+  .detail-header,
+  .clan-detail-header,
+  .lore-detail-header,
+  .story-detail-header,
+  .oc-sheet-banner {
+    height: 80px !important;
+    margin-top: -60px !important;
+    width: 95% !important;
+  }
+  
+  .detail-header-inner,
+  .clan-detail-header-inner,
+  .lore-detail-header-inner,
+  .story-detail-header-inner {
+    margin-left: 1rem !important;
+    margin-right: 1rem !important;
+    width: 95% !important;
+  }
+  
+  .detail-header-border,
+  .clan-detail-header-border,
+  .lore-detail-header-border,
+  .story-detail-header-border {
+    width: 85% !important;
+    border-left: 30px solid var(--color-accent-2) !important;
+    border-right: 30px solid var(--color-accent-2) !important;
+  }
+  
+  .oc-sheet-banner {
+    border-left: 30px solid var(--color-accent-2) !important;
+    border-right: 30px solid var(--color-accent-2) !important;
+  }
+  
+  .detail-content,
   .clan-detail-content,
   .lore-detail-content,
   .story-detail-content {
-    padding: 1.5rem;
-    width: 95%;
+    padding: 1.5rem 1rem !important;
+    width: 95% !important;
+    border-width: 0.75rem !important;
   }
   
-  .clan-detail-header,
-  .lore-detail-header,
-  .story-detail-header {
-    width: 95%;
+  .detail-title,
+  .clan-detail-title,
+  .lore-detail-title,
+  .story-detail-title {
+    font-size: 1.5rem !important;
+    margin-bottom: 0.75rem !important;
+    padding-bottom: 0.75rem !important;
+  }
+  
+  .clan-info-section,
+  .lore-content-section,
+  .story-summary-section {
+    padding: 1rem !important;
+    margin-bottom: 1rem !important;
+  }
+  
+  .clan-info-section h3,
+  .lore-related-section h3,
+  .story-characters-section h3 {
+    font-size: 1.1rem !important;
+    margin-bottom: 0.75rem !important;
+  }
+  
+  .clan-info-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+    padding: 0.5rem 0 !important;
+  }
+  
+  .clan-info-label {
+    width: 100%;
+    font-size: 0.85rem !important;
+  }
+  
+  .clan-info-value {
+    width: 100%;
+    font-size: 0.9rem !important;
   }
   
   .clan-members-grid,
   .lore-related-grid,
   .story-characters-grid {
     grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+  
+  .clan-member-card,
+  .lore-related-card,
+  .story-character-card {
+    padding: 0.75rem !important;
+  }
+  
+  .clan-abilities-list li {
+    padding: 0.5rem 0.75rem !important;
+    font-size: 0.9rem !important;
+  }
+  
+  .lore-category-header {
+    font-size: 1.25rem !important;
+    padding: 0.75rem 1rem !important;
+  }
+  
+  .lore-entry-card {
+    padding: 1rem !important;
+  }
+  
+  .lore-entry-title {
+    font-size: 1.1rem !important;
+  }
+  
+  .lore-entry-preview {
+    font-size: 0.9rem !important;
+  }
+  
+  .lore-content-section {
+    padding: 1.25rem !important;
+    font-size: 0.95rem !important;
+  }
+  
+  .story-meta-section {
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 0.75rem !important;
+  }
+  
+  .story-meta-item {
+    font-size: 0.9rem !important;
+  }
+  
+  .story-tags-container {
+    gap: 0.4rem;
+    margin-bottom: 1rem !important;
+  }
+  
+  .story-tag {
+    padding: 0.4rem 0.75rem !important;
+    font-size: 0.8rem !important;
+  }
+  
+  .story-summary-section {
+    padding: 1rem !important;
+  }
+  
+  .story-summary-text {
+    font-size: 0.95rem !important;
+  }
+  
+  .story-content-section {
+    padding: 1.5rem 1rem !important;
   }
   
   .story-content-text {
-    font-size: 1rem;
-    line-height: 1.8;
+    font-size: 1rem !important;
+    line-height: 1.8 !important;
+  }
+  
+  .story-content-text p {
+    margin-bottom: 1.25rem !important;
+    text-indent: 1.5rem !important;
   }
   
   .story-chapter-nav {
     flex-direction: column;
+    gap: 0.75rem;
+    padding: 0.75rem !important;
   }
   
   .story-chapter-select {
     width: 100%;
+    min-width: 100% !important;
+  }
+  
+  .story-chapter-nav-buttons {
+    width: 100%;
+    justify-content: space-between;
+  }
+  
+  .story-chapter-btn {
+    flex: 1;
+    min-width: 0;
+  }
+  
+  .story-chapter-header {
+    margin-bottom: 1.5rem !important;
+    padding-bottom: 0.75rem !important;
+  }
+  
+  .story-chapter-title {
+    font-size: 1.25rem !important;
+  }
+  
+  .story-chapter-number {
+    font-size: 0.9rem !important;
   }
   
   .mood-board-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 0.75rem;
+    padding: 0.4rem !important;
+  }
+  
+  .story-chapter-nav-bottom {
+    flex-direction: column;
+    padding: 1rem !important;
+    gap: 0.75rem;
+  }
+  
+  .story-chapter-nav-bottom .story-chapter-btn {
+    width: 100% !important;
+    min-width: 100% !important;
+  }
+  
+  .story-chapter-info {
+    order: -1;
+    margin-bottom: 0;
+  }
+}
+
+@media (max-width: 576px) {
+  .detail-scroll,
+  .clan-detail-scroll,
+  .lore-detail-scroll,
+  .story-detail-scroll,
+  .oc-sheet-container {
+    padding-top: 1.5rem !important;
+  }
+  
+  .detail-backdrop,
+  .clan-detail-backdrop,
+  .lore-detail-backdrop,
+  .story-detail-backdrop,
+  .oc-sheet-scroll-top {
+    height: 35px !important;
+    top: 6px !important;
+  }
+  
+  .detail-header,
+  .clan-detail-header,
+  .lore-detail-header,
+  .story-detail-header,
+  .oc-sheet-banner {
+    height: 70px !important;
+    margin-top: -55px !important;
+    width: 98% !important;
+  }
+  
+  .detail-header-inner,
+  .clan-detail-header-inner,
+  .lore-detail-header-inner,
+  .story-detail-header-inner {
+    margin-left: 0.5rem !important;
+    margin-right: 0.5rem !important;
+    width: 98% !important;
+  }
+  
+  .detail-header-border,
+  .clan-detail-header-border,
+  .lore-detail-header-border,
+  .story-detail-header-border {
+    width: 90% !important;
+    border-left: 20px solid var(--color-accent-2) !important;
+    border-right: 20px solid var(--color-accent-2) !important;
+  }
+  
+  .oc-sheet-banner {
+    border-left: 20px solid var(--color-accent-2) !important;
+    border-right: 20px solid var(--color-accent-2) !important;
+  }
+  
+  .detail-content,
+  .clan-detail-content,
+  .lore-detail-content,
+  .story-detail-content {
+    padding: 1rem 0.75rem !important;
+    width: 98% !important;
+    border-width: 0.5rem !important;
+  }
+  
+  .detail-title,
+  .clan-detail-title,
+  .lore-detail-title,
+  .story-detail-title {
+    font-size: 1.25rem !important;
+    margin-bottom: 0.5rem !important;
+    padding-bottom: 0.5rem !important;
+  }
+  
+  .clan-info-section,
+  .lore-content-section,
+  .story-summary-section {
+    padding: 0.75rem !important;
+  }
+  
+  .clan-info-section h3,
+  .lore-related-section h3,
+  .story-characters-section h3 {
+    font-size: 1rem !important;
+  }
+  
+  .clan-info-label,
+  .clan-info-value {
+    font-size: 0.8rem !important;
+  }
+  
+  .lore-category-header {
+    font-size: 1.1rem !important;
+    padding: 0.65rem 0.85rem !important;
+  }
+  
+  .lore-entry-title {
+    font-size: 1rem !important;
+  }
+  
+  .lore-content-section {
+    padding: 1rem !important;
+    font-size: 0.9rem !important;
+  }
+  
+  .story-content-text {
+    font-size: 0.95rem !important;
+    line-height: 1.75 !important;
+  }
+  
+  .story-content-text p {
+    text-indent: 1rem !important;
+  }
+  
+  .story-chapter-title {
+    font-size: 1.1rem !important;
+  }
+  
+  .mood-board-grid {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
   }
 }
 

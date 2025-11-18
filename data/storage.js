@@ -26,17 +26,11 @@ class Storage {
   }
 
   async init() {
-    // Check for GitHub token (from config or localStorage)
-    this._token = getGitHubToken();
+    // Check for GitHub token (from config, .env, or localStorage)
+    this._token = await getGitHubToken();
     
-    // Load all existing data
-    if (this._isLocalhost && !this._token) {
-      // On localhost without token, use localStorage
-      await this.loadAllFromLocalStorage();
-    } else {
-      // Try GitHub first, fallback to localStorage if needed
-      await this.loadAllFromGitHub();
-    }
+    // Load all existing data from GitHub (with localStorage fallback for loading only)
+    await this.loadAllFromGitHub();
   }
 
   // Get file SHA (required for updating existing files)
@@ -258,24 +252,36 @@ class Storage {
     }
   }
 
-  // Save a file to GitHub (or localStorage on localhost)
+  // Prompt user to enter GitHub token
+  async promptForGitHubToken() {
+    const token = prompt(
+      'GitHub Personal Access Token required to save data.\n\n' +
+      'Get your token at: https://github.com/settings/tokens\n' +
+      'Required scope: "repo" (full control of private repositories)\n\n' +
+      'Enter your GitHub token:'
+    );
+    
+    if (token && token.trim()) {
+      saveGitHubToken(token.trim());
+      this._token = token.trim();
+      return true;
+    }
+    return false;
+  }
+
+  // Save a file to GitHub
   async saveFile(type, id, data) {
     if (!this._token) {
-      this._token = getGitHubToken();
+      this._token = await getGitHubToken();
     }
     
-    // If on localhost and no token, use localStorage
-    if (this._isLocalhost && !this._token) {
-      const success = this.saveToLocalStorage(type, id, data);
-      if (success) {
-        this.showNotification(`${type} saved locally!`);
-      }
-      return success;
-    }
-    
+    // If no token, prompt user to enter it
     if (!this._token) {
-      this.showNotification('Error: GitHub token not found. Please set it in data/github-config.js or localStorage.', 'error');
-      return false;
+      const tokenEntered = await this.promptForGitHubToken();
+      if (!tokenEntered) {
+        this.showNotification('GitHub token is required to save data. Operation cancelled.', 'error');
+        return false;
+      }
     }
 
     try {
@@ -356,24 +362,19 @@ class Storage {
     }
   }
 
-  // Delete a file from GitHub (or localStorage on localhost)
+  // Delete a file from GitHub
   async deleteFile(type, id) {
     if (!this._token) {
-      this._token = getGitHubToken();
+      this._token = await getGitHubToken();
     }
     
-    // If on localhost and no token, use localStorage
-    if (this._isLocalhost && !this._token) {
-      const success = this.deleteFromLocalStorage(type, id);
-      if (success) {
-        this.showNotification(`${type} deleted locally!`);
-      }
-      return success;
-    }
-    
+    // If no token, prompt user to enter it
     if (!this._token) {
-      this.showNotification('Error: GitHub token not found. Please set it in data/github-config.js or localStorage.', 'error');
-      return false;
+      const tokenEntered = await this.promptForGitHubToken();
+      if (!tokenEntered) {
+        this.showNotification('GitHub token is required to delete data. Operation cancelled.', 'error');
+        return false;
+      }
     }
 
     try {

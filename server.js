@@ -6,6 +6,23 @@ const fs = require('fs').promises;
 const path = require('path');
 const cors = require('cors');
 
+// Load environment variables from .env file
+let envVars = {};
+try {
+  const envContent = require('fs').readFileSync(path.join(__dirname, '.env'), 'utf8');
+  envContent.split('\n').forEach(line => {
+    const trimmed = line.trim();
+    if (trimmed && !trimmed.startsWith('#')) {
+      const [key, ...valueParts] = trimmed.split('=');
+      if (key && valueParts.length > 0) {
+        envVars[key.trim()] = valueParts.join('=').trim();
+      }
+    }
+  });
+} catch (error) {
+  console.log('No .env file found or error reading it:', error.message);
+}
+
 const app = express();
 const PORT = 3000;
 
@@ -153,9 +170,30 @@ app.get('/api/get/:type/:id', async (req, res) => {
   }
 });
 
+// Get GitHub token from .env (only on localhost for security)
+app.get('/api/github-token', (req, res) => {
+  // Only allow on localhost
+  const host = req.get('host') || '';
+  if (!host.includes('localhost') && !host.includes('127.0.0.1')) {
+    return res.status(403).json({ error: 'Token endpoint only available on localhost' });
+  }
+  
+  const token = envVars.GITHUB_TOKEN;
+  if (token) {
+    res.json({ token });
+  } else {
+    res.status(404).json({ error: 'GitHub token not found in .env file' });
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`\n🚀 Server running at http://localhost:${PORT}`);
   console.log(`📁 Files will be saved to: ${path.join(__dirname, 'data')}`);
+  if (envVars.GITHUB_TOKEN) {
+    console.log(`✅ GitHub token loaded from .env`);
+  } else {
+    console.log(`⚠️  No GitHub token found in .env file`);
+  }
   console.log(`\nPress Ctrl+C to stop the server\n`);
 });
 

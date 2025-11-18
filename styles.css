@@ -867,10 +867,24 @@ body {
         width: 95%;
         margin-left: auto;
         margin-right: auto;
+        padding: 1rem !important;
     }
     
     .scroll-header {
         width: 95%;
+        height: 80px !important;
+        margin-top: -60px !important;
+    }
+    
+    .scroll-header-inner {
+        margin-left: 1rem !important;
+        margin-right: 1rem !important;
+    }
+    
+    .scroll-header-border {
+        width: 85% !important;
+        border-left: 30px solid var(--color-accent-2) !important;
+        border-right: 30px solid var(--color-accent-2) !important;
     }
     
     .section-header-small {
@@ -886,6 +900,8 @@ body {
         text-orientation: initial;
         border-left: none;
         border-top: 1px solid var(--color-teal);
+        padding: var(--spacing-sm) !important;
+        font-size: 1.2rem !important;
     }
     
     .scroll-title {
@@ -910,6 +926,161 @@ body {
     
     .card-title-text {
         font-size: 1.25rem;
+    }
+    
+    .info-row {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+    }
+    
+    .info-label {
+        width: 100% !important;
+        flex: 1 1 100% !important;
+        border-right: none !important;
+        border-bottom: 1px solid var(--color-teal) !important;
+        text-align: left !important;
+        padding: var(--spacing-sm) !important;
+    }
+    
+    .info-value {
+        width: 100% !important;
+        flex: 1 1 100% !important;
+        padding: var(--spacing-sm) !important;
+    }
+    
+    .stat-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+    
+    .stat-bars {
+        width: 100%;
+        justify-content: flex-start;
+    }
+    
+    .trait-row {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .trait-label {
+        flex: 1 1 100% !important;
+        width: 100%;
+    }
+    
+    .trait-bars {
+        width: 100%;
+        justify-content: flex-start;
+    }
+    
+    .gear-item {
+        margin: var(--spacing-sm) 0 !important;
+    }
+    
+    .gear-badge {
+        flex-direction: column !important;
+        text-align: center;
+    }
+    
+    .gear-info {
+        margin-left: 0 !important;
+        margin-top: var(--spacing-sm);
+        text-align: center;
+    }
+    
+    .gear-name {
+        font-size: 1.5rem !important;
+    }
+    
+    .home-nav-card {
+        margin-bottom: 1rem;
+    }
+    
+    .home-nav-body {
+        padding: 0.75rem !important;
+    }
+    
+    .village-crests-section {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    
+    .village-crest-home {
+        max-width: 45px !important;
+    }
+}
+
+@media (max-width: 576px) {
+    .scroll-content {
+        width: 98% !important;
+        padding: 0.75rem !important;
+    }
+    
+    .scroll-header {
+        width: 98% !important;
+        height: 70px !important;
+        margin-top: -55px !important;
+    }
+    
+    .scroll-header-inner {
+        margin-left: 0.5rem !important;
+        margin-right: 0.5rem !important;
+    }
+    
+    .scroll-header-border {
+        width: 90% !important;
+        border-left: 20px solid var(--color-accent-2) !important;
+        border-right: 20px solid var(--color-accent-2) !important;
+    }
+    
+    .scroll-title {
+        font-size: 1rem !important;
+    }
+    
+    .scroll-title img {
+        height: 20px !important;
+    }
+    
+    .section-header {
+        padding: var(--spacing-sm) !important;
+        font-size: 1rem !important;
+    }
+    
+    .section-header-dark {
+        padding: var(--spacing-sm) !important;
+        font-size: 0.95rem !important;
+    }
+    
+    .card-header {
+        padding: 0.75rem !important;
+        font-size: 0.95rem !important;
+    }
+    
+    .card-body {
+        padding: 0.75rem !important;
+    }
+    
+    .info-label,
+    .info-value {
+        font-size: 0.85rem !important;
+    }
+    
+    .stat-row {
+        font-size: 0.8rem !important;
+    }
+    
+    .gear-name {
+        font-size: 1.25rem !important;
+    }
+    
+    .home-nav-header {
+        font-size: 1rem !important;
+        padding: 0.65rem !important;
+    }
+    
+    .home-nav-body p {
+        font-size: 0.85rem !important;
     }
 }
 

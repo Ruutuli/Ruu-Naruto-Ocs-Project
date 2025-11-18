@@ -399,8 +399,39 @@
     padding-top: 1.5rem;
   }
   
+  .home-scroll-backdrop {
+    height: 40px !important;
+    top: -20px !important;
+  }
+  
+  .home-scroll-header {
+    height: 80px !important;
+    width: 95% !important;
+    margin-top: -60px !important;
+  }
+  
+  .home-scroll-header-inner {
+    margin-left: 1rem !important;
+    margin-right: 1rem !important;
+    width: 95% !important;
+  }
+  
+  .home-scroll-header-inner-border {
+    width: 85% !important;
+    border-left: 30px solid #E35E3F !important;
+    border-right: 30px solid #E35E3F !important;
+  }
+  
   .home-scroll-content {
-    padding: 1.25rem;
+    padding: 1.25rem 1rem !important;
+    width: 90% !important;
+    border-width: 0.75rem !important;
+  }
+  
+  .home-scroll-title {
+    font-size: 1.5rem !important;
+    margin-bottom: 1rem !important;
+    margin-top: 1rem !important;
   }
   
   .home-personal-info-wrapper {
@@ -419,24 +450,163 @@
   
   .home-personal-info {
     width: 100%;
+    padding: 1rem !important;
   }
   
   .home-info-row {
     flex-direction: column;
     align-items: flex-start;
     gap: 0.25rem;
+    padding: 0.5rem 0 !important;
   }
   
   .home-info-label {
     min-width: auto;
+    font-size: 0.85rem !important;
+  }
+  
+  .home-info-value {
+    font-size: 1rem !important;
+  }
+  
+  .home-section-title {
+    font-size: 1.1rem !important;
+    margin-top: 1rem !important;
+  }
+  
+  .home-quick-links {
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 0.5rem;
+  }
+  
+  .home-quick-link {
+    padding: 0.65rem !important;
+  }
+  
+  .home-quick-link-icon {
+    font-size: 1.5rem !important;
+  }
+  
+  .home-quick-link-text {
+    font-size: 0.85rem !important;
+  }
+  
+  .home-more-info-content {
+    padding: 1rem !important;
   }
   
   .filter-bar-naruto {
     flex-direction: column;
+    padding: 1rem !important;
+    gap: 0.75rem;
   }
   
   .filter-bar-naruto .search-bar-naruto {
     width: 100%;
+    min-width: 100% !important;
+  }
+  
+  .filter-bar-naruto select {
+    width: 100%;
+    min-width: 100% !important;
+  }
+  
+  .home-scroll-footer {
+    width: 90% !important;
+  }
+  
+  .home-bookmark-link i {
+    font-size: 3rem !important;
+  }
+}
+
+@media (max-width: 576px) {
+  .home-scroll-container {
+    margin: 1.5rem 0.5rem 0.5rem;
+    padding-top: 1rem;
+  }
+  
+  .home-scroll-backdrop {
+    height: 35px !important;
+    top: -18px !important;
+  }
+  
+  .home-scroll-header {
+    height: 70px !important;
+    width: 98% !important;
+    margin-top: -55px !important;
+  }
+  
+  .home-scroll-header-inner {
+    margin-left: 0.5rem !important;
+    margin-right: 0.5rem !important;
+    width: 98% !important;
+  }
+  
+  .home-scroll-header-inner-border {
+    width: 90% !important;
+    border-left: 20px solid #E35E3F !important;
+    border-right: 20px solid #E35E3F !important;
+  }
+  
+  .home-scroll-content {
+    padding: 1rem 0.75rem !important;
+    width: 95% !important;
+    border-width: 0.5rem !important;
+  }
+  
+  .home-scroll-title {
+    font-size: 1.25rem !important;
+    margin-bottom: 0.75rem !important;
+  }
+  
+  .home-profile-image {
+    max-width: 150px;
+  }
+  
+  .home-personal-info {
+    padding: 0.85rem !important;
+  }
+  
+  .home-info-label {
+    font-size: 0.8rem !important;
+  }
+  
+  .home-info-value {
+    font-size: 0.95rem !important;
+  }
+  
+  .home-section-title {
+    font-size: 1rem !important;
+  }
+  
+  .home-quick-links {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+  
+  .home-quick-link {
+    padding: 0.6rem !important;
+  }
+  
+  .home-quick-link-icon {
+    font-size: 1.25rem !important;
+  }
+  
+  .home-quick-link-text {
+    font-size: 0.8rem !important;
+  }
+  
+  .home-more-info-content {
+    padding: 0.85rem !important;
+  }
+  
+  .filter-bar-naruto {
+    padding: 0.75rem !important;
+  }
+  
+  .home-bookmark-link i {
+    font-size: 2.5rem !important;
   }
 }
 
@@ -570,6 +740,34 @@
   
   .compact-card-meta {
     font-size: 0.75rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .compact-preview-grid {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 0.5rem;
+  }
+  
+  .compact-card-image {
+    height: 60px;
+  }
+  
+  .compact-card-content {
+    padding: 0.4rem;
+  }
+  
+  .compact-card-title {
+    font-size: 0.8rem;
+  }
+  
+  .compact-card-meta {
+    font-size: 0.7rem;
+  }
+  
+  .compact-card-type-badge {
+    font-size: 0.65rem !important;
+    padding: 0.15rem 0.4rem !important;
   }
 }
 
