@@ -4,10 +4,23 @@ node_modules/
 # GitHub token (if stored in files - though we use localStorage)
 *.token
 github-token.txt
+**/github-config.js
+data/github-config.js
 
 # Environment variables
 .env
 .env.local
+.env.*
+*.env
+
+# Secrets and API keys
+*secret*
+*key*
+*password*
+*token*
+config.local.*
+*.local.js
+*.local.ts
 
 # OS files
 .DS_Store

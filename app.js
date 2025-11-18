@@ -12,6 +12,12 @@ import { renderOCCard } from './components/oc-card.js';
 import { renderOCDetail } from './components/oc-detail.js';
 import { renderClanCard } from './components/clan-card.js';
 import { renderStoryCard } from './components/story-card.js';
+import { 
+  renderCompactOCCard, 
+  renderCompactClanCard, 
+  renderCompactStoryCard, 
+  renderCompactLoreCard 
+} from './components/compact-preview-card.js';
 
 // ============================================================================
 // ------------------- State Variables -------------------
@@ -725,29 +731,78 @@ function updateCounts() {
   });
 }
 
-// Load recent OCs
-function loadRecentOCs() {
-  const ocs = storage.getAllOCs().slice(-6).reverse();
-  const container = document.getElementById('recent-ocs');
+// Load recent additions (all types)
+function loadRecentAdditions() {
+  const container = document.getElementById('recent-additions');
   
   if (!container) return;
   
   container.innerHTML = '';
   
-  if (ocs.length === 0) return;
+  // Get recent items from each type (last 3-4 of each)
+  const ocs = storage.getAllOCs().slice(-4).reverse();
+  const clans = storage.getAllClans().slice(-4).reverse();
+  const stories = storage.getAllStories().slice(-4).reverse();
+  const lore = storage.getAllLore().slice(-4).reverse();
   
-  ocs.forEach(oc => {
-    const card = renderOCCard(oc, (id) => {
-      window.location.hash = `ocs/${id}`;
-    });
-    container.appendChild(card);
+  // Combine all items with type info for sorting
+  const allItems = [
+    ...ocs.map(oc => ({ type: 'oc', item: oc, sortKey: oc.id })),
+    ...clans.map(clan => ({ type: 'clan', item: clan, sortKey: clan.id })),
+    ...stories.map(story => ({ type: 'story', item: story, sortKey: story.createdAt || story.id })),
+    ...lore.map(l => ({ type: 'lore', item: l, sortKey: l.id }))
+  ];
+  
+  // Sort by most recent (stories have createdAt, others use id which is typically chronological)
+  // For simplicity, just reverse the array since items are already in reverse chronological order
+  allItems.reverse();
+  
+  // Take the most recent 12 items
+  const recentItems = allItems.slice(0, 12);
+  
+  if (recentItems.length === 0) {
+    container.innerHTML = '<p style="text-align: center; color: var(--color-text-dark-2); padding: 1rem;">No recent additions yet.</p>';
+    return;
+  }
+  
+  recentItems.forEach(({ type, item }) => {
+    let card;
+    
+    switch (type) {
+      case 'oc':
+        card = renderCompactOCCard(item, (id) => {
+          window.location.hash = `ocs/${id}`;
+        });
+        break;
+      case 'clan':
+        card = renderCompactClanCard(item, (id) => {
+          window.location.hash = `clans/${id}`;
+        });
+        break;
+      case 'story':
+        card = renderCompactStoryCard(item, (id) => {
+          window.location.hash = `stories/${id}`;
+        });
+        break;
+      case 'lore':
+        card = renderCompactLoreCard(item, (id) => {
+          window.location.hash = `lore/${id}`;
+        });
+        break;
+      default:
+        return;
+    }
+    
+    if (card) {
+      container.appendChild(card);
+    }
   });
 }
 
 // Load home page
 function loadHomePage() {
   updateCounts();
-  loadRecentOCs();
+  loadRecentAdditions();
 }
 
 // ============================================================================
