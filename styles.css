@@ -1,0 +1,960 @@
+/* ============================================
+   RUU'S NARUTO OCS - DESIGN SYSTEM
+   Blended color scheme from Scroll.txt & wip.txt
+   ============================================ */
+
+/* Color Variables - Blended Scheme */
+:root {
+    /* Primary Colors (from wip.txt) */
+    --color-dark: #414141;
+    --color-dark-border: #2d2d2d;
+    --color-teal: #506d63;
+    --color-teal-dark: #384c45;
+    --color-coral: #a75050;
+    --color-coral-dark: #753838;
+    --color-cream: #e9e1c1;
+    --color-cream-light: rgba(223, 205, 165, 0.5);
+    
+    /* Secondary Colors (from Scroll.txt) */
+    --color-brown: #360700;
+    --color-red: #E35E3F;
+    --color-beige: #DAD8A5;
+    --color-light: #f4ede5;
+    
+    /* Text Colors */
+    --text-primary: #414141;
+    --text-secondary: #506d63;
+    --text-light: #e9e1c1;
+    --text-white: #ffffff;
+    
+    /* Spacing */
+    --spacing-xs: 0.25rem;
+    --spacing-sm: 0.5rem;
+    --spacing-md: 1rem;
+    --spacing-lg: 1.5rem;
+    --spacing-xl: 2rem;
+    
+    /* Borders */
+    --border-radius-sm: 1px;
+    --border-radius-md: 15px;
+    --border-radius-lg: 25px;
+    --border-radius-xl: 30px;
+    
+    /* Shadows */
+    --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
+    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.15);
+}
+
+/* ============================================
+   GLOBAL STYLES
+   ============================================ */
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    background-image: 
+        linear-gradient(135deg, rgba(244, 237, 229, 0.85) 0%, rgba(233, 225, 193, 0.75) 50%, rgba(218, 216, 165, 0.85) 100%),
+        url('images/bg/green1.png');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: var(--text-primary);
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+}
+
+/* ============================================
+   NAVIGATION
+   ============================================ */
+
+.navbar {
+    background-color: var(--color-teal) !important;
+    box-shadow: var(--shadow-md);
+}
+
+.navbar-brand {
+    font-weight: 600;
+    color: var(--text-white) !important;
+    display: flex;
+    align-items: center;
+}
+
+.navbar-brand img {
+    margin-right: 0.5rem;
+}
+
+.nav-link {
+    color: var(--text-light) !important;
+    transition: color 0.3s;
+}
+
+.nav-link:hover,
+.nav-link.active {
+    color: var(--text-white) !important;
+}
+
+/* ============================================
+   SCROLL DESIGN CONTAINER
+   ============================================ */
+
+/* Scroll container wrapper - must be positioned relative */
+.container-fluid[style*="max-width: 1000px"] {
+    position: relative;
+    margin: 0 auto;
+    padding-top: 100px;
+}
+
+.container-fluid[style*="max-width: 1000px"] > .d-flex {
+    position: relative;
+    min-height: 200px;
+}
+
+.scroll-background {
+    width: 100%;
+    position: absolute;
+    box-shadow: var(--shadow-md);
+    background-color: #414141;
+    height: 75px;
+    top: 100px;
+    left: 0;
+    border-radius: 1px;
+    border: 1px solid #2d2d2d;
+}
+
+.scroll-header {
+    position: absolute;
+    box-shadow: var(--shadow-md);
+    border-radius: 1px;
+    z-index: 10;
+    margin-top: -87px;
+    height: 100px;
+    background-color: var(--color-coral);
+    width: 900px;
+    max-width: 95%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 0px solid var(--color-coral-dark);
+}
+
+.scroll-header-inner {
+    min-height: 50px;
+    height: 100%;
+    margin: 0 3rem;
+}
+
+.scroll-header-border {
+    background-color: var(--color-teal);
+    min-height: 100px;
+    height: 100%;
+    margin: 0 auto;
+}
+
+.scroll-title {
+    font-size: 1.5rem;
+    letter-spacing: 2px;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.scroll-title img {
+    height: 30px;
+    width: auto;
+}
+
+.scroll-content {
+    background-color: var(--color-cream);
+    border-bottom: 1rem solid var(--color-coral);
+    border-left: 1rem solid var(--color-coral);
+    border-right: 1rem solid var(--color-coral);
+    margin-top: -20px;
+    padding-top: var(--spacing-md);
+    margin-left: auto;
+    margin-right: auto;
+    width: 91.666667%;
+    border-radius: 0;
+    box-shadow: var(--shadow-md);
+    position: relative;
+    z-index: 1;
+}
+
+/* ============================================
+   CARDS & CONTAINERS
+   ============================================ */
+
+.card {
+    border-radius: 0;
+    border: 1px solid var(--color-teal);
+    background-color: var(--color-cream);
+}
+
+.card-header {
+    background-color: var(--color-dark);
+    border: 1px solid var(--color-dark-border);
+    border-radius: 0;
+    color: var(--text-white);
+    text-transform: uppercase;
+    font-weight: 500;
+}
+
+.scroll-card {
+    background-color: var(--color-cream);
+    border: 1px solid var(--color-teal);
+    border-radius: 0;
+    box-shadow: var(--shadow-sm);
+}
+
+.bg-faded {
+    background-color: var(--color-cream-light);
+}
+
+/* ============================================
+   BUTTONS
+   ============================================ */
+
+.btn-custom {
+    background-color: var(--color-coral);
+    color: var(--text-white);
+    border: 1px solid var(--color-coral-dark);
+    padding: var(--spacing-sm) var(--spacing-lg);
+    text-transform: uppercase;
+    font-weight: 500;
+    border-radius: var(--border-radius-lg);
+    transition: all 0.3s;
+}
+
+.btn-custom:hover {
+    background-color: var(--color-coral-dark);
+    color: var(--text-white);
+    transform: scale(1.05);
+    box-shadow: var(--shadow-md);
+}
+
+.btn-home {
+    background-color: var(--color-coral);
+    color: var(--text-white);
+    border: none;
+    padding: 0.75rem 2rem;
+    border-radius: var(--border-radius-lg);
+    font-weight: 500;
+    text-transform: uppercase;
+    transition: all 0.3s;
+}
+
+.btn-home:hover {
+    background-color: var(--color-teal);
+    transform: scale(1.05);
+    box-shadow: var(--shadow-md);
+}
+
+/* ============================================
+   SECTION HEADERS
+   ============================================ */
+
+.section-header {
+    background-color: var(--color-coral);
+    color: var(--text-white);
+    text-transform: uppercase;
+    padding: var(--spacing-md);
+    text-align: center;
+    margin-bottom: 0;
+    border: 1px solid var(--color-coral-dark);
+}
+
+.section-header-dark {
+    background-color: var(--color-dark);
+    color: var(--text-white);
+    text-transform: uppercase;
+    padding: var(--spacing-sm) var(--spacing-md);
+    text-align: center;
+    margin-bottom: 0;
+    border: 1px solid var(--color-dark-border);
+    border-radius: 0;
+}
+
+.section-header-small {
+    background-color: var(--color-coral);
+    color: var(--text-white);
+    text-transform: uppercase;
+    padding: var(--spacing-sm);
+    text-align: center;
+    margin-bottom: 0;
+    border-radius: 0 var(--border-radius-lg) 0 0;
+    border: 1px solid var(--color-coral-dark);
+    width: 75%;
+}
+
+/* ============================================
+   STATS SECTION
+   ============================================ */
+
+.stats-section {
+    background-color: var(--color-teal);
+    border-bottom: 1px solid var(--color-teal-dark);
+    border-right: 1px solid var(--color-teal-dark);
+    border-left: 1px solid var(--color-teal-dark);
+    border-radius: 0 0 var(--border-radius-lg) var(--border-radius-lg);
+    padding: var(--spacing-md);
+    margin-bottom: var(--spacing-md);
+    text-transform: uppercase;
+    font-size: 11px;
+    color: var(--text-primary);
+}
+
+.stat-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-sm) 0;
+    flex-wrap: wrap;
+}
+
+.stat-label {
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.stat-bars {
+    display: flex;
+    gap: var(--spacing-xs);
+    align-items: center;
+}
+
+.stat-bar-img {
+    max-width: 10%;
+    height: auto;
+}
+
+/* ============================================
+   INFO TABLE
+   ============================================ */
+
+.info-table {
+    background-color: transparent;
+    border: 0px solid var(--color-teal);
+    border-radius: 0;
+}
+
+.info-row {
+    display: flex;
+    align-items: center;
+    margin: 0;
+    border-bottom: 1px solid var(--color-teal);
+}
+
+.info-row:last-child {
+    border-bottom: none;
+}
+
+.info-label {
+    background-color: var(--color-cream-light);
+    border-right: 1px solid var(--color-teal);
+    font-weight: 500;
+    text-transform: uppercase;
+    padding: var(--spacing-sm);
+    flex: 1;
+    color: var(--text-primary);
+}
+
+.info-value {
+    padding: var(--spacing-sm);
+    flex: 1;
+    text-transform: uppercase;
+    color: var(--text-primary);
+}
+
+.info-label-small {
+    font-size: 0.875rem;
+    font-style: italic;
+    text-align: center;
+    flex: 0 0 25%;
+    color: var(--text-primary);
+}
+
+/* ============================================
+   CHARACTER DISPLAY
+   ============================================ */
+
+.character-image-container {
+    position: relative;
+    overflow: hidden;
+}
+
+.character-image {
+    width: 100%;
+    height: auto;
+    display: block;
+    z-index: 2;
+    max-width: 39%;
+}
+
+.character-name-kanji {
+    writing-mode: vertical-rl;
+    text-orientation: upright;
+    font-size: 25px;
+    color: var(--text-primary);
+    border-left: 1px solid var(--color-teal);
+    padding: var(--spacing-md);
+    background-color: var(--color-cream-light);
+    z-index: 4;
+    text-align: center;
+}
+
+.character-header-card {
+    border-radius: 0;
+    border: 1px solid var(--color-teal);
+    background-color: transparent;
+}
+
+.character-header-title {
+    border: 1px solid var(--color-dark-border);
+    border-radius: 0;
+    background-color: var(--color-dark);
+    color: var(--text-white);
+    text-transform: uppercase;
+    text-align: center;
+    padding: var(--spacing-sm);
+}
+
+.character-header-title i {
+    font-size: 0.8rem;
+    font-style: normal;
+}
+
+.character-badges {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin-top: var(--spacing-sm);
+}
+
+.character-badge {
+    max-height: 70px;
+    padding: var(--spacing-md);
+    transition: transform 0.3s;
+}
+
+.character-badge:hover {
+    transform: scale(1.1);
+}
+
+/* ============================================
+   ABILITY SECTION
+   ============================================ */
+
+.ability-section {
+    border-left: 5px solid var(--color-coral);
+    padding: var(--spacing-md);
+    margin-bottom: var(--spacing-md);
+    color: var(--text-primary);
+}
+
+.ability-title {
+    font-variant: small-caps;
+    margin-bottom: var(--spacing-sm);
+    color: var(--text-primary);
+}
+
+.ability-meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    border-top: 1px solid var(--color-teal);
+    padding: var(--spacing-xs) 0;
+    color: var(--text-primary);
+}
+
+.ability-meta:last-of-type {
+    border-bottom: 1px solid var(--color-teal);
+}
+
+.ability-rating {
+    display: flex;
+    gap: var(--spacing-xs);
+    align-items: center;
+}
+
+.ability-rating-img {
+    max-width: 4%;
+    height: auto;
+}
+
+/* ============================================
+   PERSONALITY TRAITS
+   ============================================ */
+
+.trait-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: var(--spacing-sm);
+}
+
+.trait-label {
+    flex: 0 0 58.333333%;
+    text-transform: uppercase;
+    color: var(--text-primary);
+}
+
+.trait-bars {
+    flex: 1;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.trait-circle {
+    font-size: 0.875rem;
+    color: var(--text-primary);
+}
+
+.demeanor-section {
+    background-color: var(--color-dark);
+    border: 1px solid var(--color-teal);
+    padding: var(--spacing-md);
+    margin-bottom: var(--spacing-md);
+    text-transform: uppercase;
+    font-size: 11px;
+    color: var(--text-primary);
+}
+
+/* ============================================
+   HISTORY SECTION
+   ============================================ */
+
+.history-section {
+    margin-top: var(--spacing-xl);
+}
+
+.history-item {
+    margin-bottom: var(--spacing-sm);
+}
+
+.history-header {
+    background-color: var(--color-coral);
+    color: var(--text-white);
+    text-transform: uppercase;
+    padding: var(--spacing-sm);
+    text-align: center;
+    width: 100%;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    text-decoration: none;
+    display: block;
+    border: none;
+}
+
+.history-header:hover {
+    background-color: var(--color-coral-dark);
+    color: var(--text-white);
+}
+
+.history-content {
+    padding: var(--spacing-md);
+    background-color: var(--color-cream);
+    border: 1px solid var(--color-teal);
+    color: var(--text-primary);
+}
+
+/* ============================================
+   APPEARANCE & GEAR
+   ============================================ */
+
+.appearance-section {
+    margin-top: var(--spacing-xl);
+}
+
+.color-palette {
+    display: flex;
+    height: 25px;
+    margin-bottom: var(--spacing-sm);
+}
+
+.color-swatch {
+    flex: 1;
+    border: none;
+}
+
+.gear-item {
+    margin: var(--spacing-sm);
+}
+
+.gear-badge {
+    background-color: var(--color-teal);
+    padding: var(--spacing-sm);
+    display: inline-flex;
+    align-items: center;
+}
+
+.gear-icon {
+    font-size: 3rem;
+    color: var(--text-white);
+}
+
+.gear-image {
+    height: 48px;
+    width: auto;
+}
+
+.gear-info {
+    margin-left: var(--spacing-sm);
+    flex: 1;
+}
+
+.gear-name {
+    font-size: 2.5rem;
+    font-weight: bold;
+    display: block;
+    color: var(--text-primary);
+}
+
+.gear-category {
+    color: var(--text-primary);
+    font-size: 0.875rem;
+}
+
+/* ============================================
+   HOME PAGE SPECIFIC - SCROLL STYLE
+   ============================================ */
+
+.welcome-header {
+    color: var(--color-coral);
+    font-weight: 600;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.welcome-header i {
+    margin-right: 0.5rem;
+    color: var(--color-teal);
+}
+
+.welcome-description {
+    color: var(--text-primary);
+    font-size: 1rem;
+    line-height: 1.6;
+    padding: 0 1rem;
+}
+
+/* Navigation Cards - Scroll Style */
+.home-nav-card {
+    background-color: rgba(223, 205, 165, 0.5);
+    border: 1px solid var(--color-teal);
+    border-radius: 0;
+    transition: all 0.3s ease;
+    height: 100%;
+}
+
+.home-nav-card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+}
+
+.home-nav-card-alt {
+    background-color: rgba(223, 205, 165, 0.3);
+    border-color: var(--color-coral);
+}
+
+.home-nav-header {
+    background-color: var(--color-dark);
+    color: var(--text-white);
+    text-transform: uppercase;
+    padding: 0.75rem;
+    margin: 0;
+    border-bottom: 1px solid var(--color-dark-border);
+    font-size: 1.1rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.home-nav-header .nav-icon {
+    max-width: 25px;
+    height: auto;
+}
+
+.home-nav-body {
+    padding: 1rem;
+    color: var(--text-primary);
+}
+
+.home-nav-body p {
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+.home-nav-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--color-coral);
+    text-decoration: none;
+    font-weight: 500;
+    text-transform: uppercase;
+    transition: all 0.3s;
+}
+
+.home-nav-link:hover {
+    color: var(--color-coral-dark);
+    gap: 0.75rem;
+}
+
+/* Stats Section - Scroll Style */
+.stats-section-header {
+    color: var(--color-coral);
+    font-weight: 600;
+    font-size: 1.3rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.stats-header-icon {
+    max-width: 30px;
+    height: auto;
+}
+
+.home-stats-container {
+    background-color: var(--color-teal);
+    border: 1px solid var(--color-teal-dark);
+    padding: 1.5rem;
+}
+
+.home-stat-item {
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 1rem;
+    border-radius: 0;
+    transition: all 0.3s;
+}
+
+.home-stat-item:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+}
+
+.stat-icon {
+    max-width: 35px;
+    height: auto;
+    margin-bottom: 0.5rem;
+    filter: brightness(0) invert(1);
+}
+
+.stat-icon-village {
+    max-width: 45px;
+}
+
+.stat-value {
+    color: var(--text-white);
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 0.5rem 0;
+}
+
+.stat-label {
+    color: var(--text-white);
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    opacity: 0.9;
+    margin: 0;
+}
+
+/* Village Crests Section */
+.village-section-header {
+    color: var(--color-coral);
+    font-weight: 600;
+    font-size: 1.3rem;
+}
+
+.village-crests-section {
+    gap: 1rem;
+    padding: 1.5rem 0;
+}
+
+.village-crest-home {
+    max-width: 55px;
+    height: auto;
+    margin: 0.5rem;
+    transition: all 0.3s ease;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+    cursor: pointer;
+}
+
+.village-crest-home:hover {
+    transform: scale(1.15) rotate(5deg);
+    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.4));
+}
+
+/* Scroll Footer */
+.scroll-footer-text {
+    color: var(--color-coral);
+    font-size: 0.9rem;
+    line-height: 1.8;
+    padding: 1rem;
+}
+
+.footer-scroll-icon {
+    max-width: 25px;
+    height: auto;
+    margin-bottom: 0.5rem;
+}
+
+.footer-brand {
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+/* ============================================
+   UTILITY CLASSES
+   ============================================ */
+
+.text-uppercase {
+    text-transform: uppercase;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.text-right {
+    text-align: right;
+}
+
+.text-justify {
+    text-align: justify;
+}
+
+.footer-text {
+    text-align: right;
+    font-style: italic;
+    margin-bottom: var(--spacing-sm);
+    text-transform: uppercase;
+    color: var(--color-coral);
+}
+
+.bookmark-toggle {
+    color: var(--color-coral);
+    font-size: 3rem;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.bookmark-toggle:hover {
+    color: var(--color-coral-dark);
+}
+
+/* ============================================
+   COLLAPSIBLE SECTIONS
+   ============================================ */
+
+.collapse-section {
+    margin-top: var(--spacing-md);
+}
+
+/* ============================================
+   RESPONSIVE DESIGN
+   ============================================ */
+
+@media (max-width: 768px) {
+    .scroll-content {
+        width: 95%;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    
+    .scroll-header {
+        width: 95%;
+    }
+    
+    .section-header-small {
+        width: 100%;
+    }
+    
+    .character-image {
+        max-width: 100%;
+    }
+    
+    .character-name-kanji {
+        writing-mode: horizontal-tb;
+        text-orientation: initial;
+        border-left: none;
+        border-top: 1px solid var(--color-teal);
+    }
+    
+    .scroll-title {
+        font-size: 1.2rem;
+    }
+    
+    .scroll-title img {
+        height: 25px;
+    }
+    
+    .home-card {
+        margin-bottom: 1rem;
+    }
+    
+    .stats-card {
+        padding: var(--spacing-md);
+    }
+    
+    .stat-number {
+        font-size: 1.5rem;
+    }
+    
+    .card-title-text {
+        font-size: 1.25rem;
+    }
+}
+
+/* ============================================
+   ANIMATIONS
+   ============================================ */
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fade-in {
+    animation: fadeIn 0.5s ease-in;
+}
+
+.gear-info-list {
+    color: var(--text-primary);
+}
+
+/* Character card body styling */
+.character-header-body {
+    background-color: var(--color-cream-light);
+    overflow: hidden;
+    border: 0px solid var(--color-teal);
+    min-height: 100px;
+}
+
+/* ============================================
+   FANFICTION
+   ============================================ */
+
+.fanfiction-content {
+    line-height: 1.8;
+    font-size: 1.1rem;
+    color: var(--text-primary);
+}
+
+.fanfiction-content p {
+    margin-bottom: 1rem;
+    text-align: justify;
+}

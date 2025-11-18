@@ -1,0 +1,52 @@
+/* Naruto Theme Color Variables */
+:root {
+  /* Primary Dark Colors */
+  --color-dark-1: #414141;
+  --color-dark-2: #360700;
+  --color-dark-3: #506d63;
+  
+  /* Accent Colors */
+  --color-accent-1: #a75050;
+  --color-accent-2: #E35E3F;
+  --color-accent-3: #753838;
+  
+  /* Background Colors */
+  --color-bg-1: #e9e1c1;
+  --color-bg-2: #DAD8A5;
+  --color-bg-3: #f4ede5;
+  --color-bg-transparent: rgba(223, 205, 165, 0.5);
+  
+  /* Text Colors */
+  --color-text-dark: #414141;
+  --color-text-dark-2: #360700;
+  --color-text-light: #ffffff;
+  
+  /* Border Colors */
+  --color-border-1: #2d2d2d;
+  --color-border-2: #506d63;
+  --color-border-3: #360700;
+  
+  /* Stat Icons */
+  --stat-intelligence: #a75050;
+  --stat-stamina: #506d63;
+  --stat-strength: #506d63;
+  --stat-speed: #a75050;
+  --stat-ninjutsu: #506d63;
+  --stat-genjutsu: #E35E3F;
+  --stat-taijutsu: #506d63;
+  --stat-hand-seals: #506d63;
+}
+
+/* Village Colors */
+.village-konoha { --village-color: #228B22; }
+.village-suna { --village-color: #DAA520; }
+.village-kiri { --village-color: #4682B4; }
+.village-kumo { --village-color: #8B4513; }
+.village-iwa { --village-color: #808080; }
+
+/* Rank Colors */
+.rank-genin { color: #228B22; }
+.rank-chunin { color: #4169E1; }
+.rank-jonin { color: #FF6347; }
+.rank-s-rank { color: #8B0000; font-weight: bold; }
+

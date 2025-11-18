@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fanfiction - Ruu's Naruto OCs</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="index.html">
+                <img src="images/scroll.png" alt="Scroll" style="height: 30px; margin-right: 10px;">
+                Ruu's Naruto OCs
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="characters.html">Characters</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="clans.html">Clans</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="history.html">History</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="fanfiction.html">Fanfiction</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid" style="max-width: 1000px;">
+        <div class="d-flex flex-column align-items-center pt-4">
+            <div class="w-100 position-absolute shadow scroll-background"></div>
+            <div class="position-absolute shadow h-100 display-block scroll-header">
+                <div class="flex-row no-gutters h-100 mx-5" style="min-height: 50px;">
+                    <div class="col-md-12 h-100 mx-auto my-auto scroll-header-border">
+                        <div class="d-flex justify-content-center align-items-center h-100">
+                            <h1 class="text-white text-uppercase mb-0 scroll-title">
+                                <img src="images/scroll2.png" alt="Scroll">
+                                Fanfiction
+                            </h1>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-11 mx-auto pt-3 mx-5 scroll-content">
+                <!-- Fanfiction List View -->
+                <div id="fanfiction-list" class="w-100">
+                    <div class="row py-4 px-3">
+                        <div class="col-12 mb-4">
+                            <div class="input-group mb-3">
+                                <input type="text" class="form-control" id="fanfiction-search" placeholder="Search fanfiction...">
+                                <button class="btn btn-custom" type="button">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="row" id="fanfiction-grid">
+                            <!-- Fanfiction cards will be rendered here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Fanfiction Detail View -->
+                <div id="fanfiction-detail" class="w-100" style="display: none;">
+                    <div class="row py-4 px-3">
+                        <div class="col-12 mb-3">
+                            <button class="btn btn-custom" onclick="showFanfictionList()">
+                                <i class="fas fa-arrow-left"></i> Back to List
+                            </button>
+                        </div>
+                        <div class="col-12">
+                            <div class="card scroll-card">
+                                <div class="card-header section-header-dark">
+                                    <h2 id="fanfiction-title" class="mb-0">Title</h2>
+                                    <small id="fanfiction-chapter" style="display: none;"></small>
+                                    <small id="fanfiction-date" style="display: none;"></small>
+                                </div>
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        <strong>Characters:</strong> <span id="fanfiction-characters"></span>
+                                    </div>
+                                    <div id="fanfiction-tags-container" style="display: none;" class="mb-3">
+                                        <strong>Tags:</strong> <span id="fanfiction-tags"></span>
+                                    </div>
+                                    <hr>
+                                    <div id="fanfiction-content" class="fanfiction-content">
+                                        <!-- Content will be rendered here -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer mt-5 py-3">
+        <div class="container text-center">
+            <p class="mb-0">Ruu's Personal Collection | Shinobi Registration File</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
+

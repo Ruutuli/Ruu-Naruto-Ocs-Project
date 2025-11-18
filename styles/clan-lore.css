@@ -1,0 +1,720 @@
+/* Enhanced Clan and Lore View Styling - Scroll-style Design */
+
+/* Clan Card Enhancements */
+.clan-card {
+  position: relative;
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
+
+.clan-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--color-accent-2) 0%, var(--color-accent-3) 100%);
+  transform: scaleX(0);
+  transition: transform 0.3s ease;
+}
+
+.clan-card:hover::before {
+  transform: scaleX(1);
+}
+
+.clan-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.clan-symbol {
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.clan-card:hover .clan-symbol {
+  transform: scale(1.05);
+}
+
+/* Shared Detail Scroll-style Container */
+.detail-scroll,
+.clan-detail-scroll,
+.lore-detail-scroll,
+.story-detail-scroll,
+.oc-sheet-container {
+  max-width: 1800px;
+  margin: 0 auto;
+  position: relative;
+  padding-top: 4rem;
+}
+
+.detail-backdrop,
+.clan-detail-backdrop,
+.lore-detail-backdrop,
+.story-detail-backdrop,
+.oc-sheet-scroll-top {
+  width: 105%;
+  height: 50px;
+  background-color: var(--color-bg-3);
+  border-radius: 15px;
+  position: absolute;
+  top: 12px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  max-width: 2000px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.detail-header,
+.clan-detail-header,
+.lore-detail-header,
+.story-detail-header,
+.oc-sheet-banner {
+  position: absolute;
+  z-index: 10;
+  height: 100px;
+  width: 100%;
+  border-radius: 30px;
+  margin-top: -75px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  display: block;
+  background-color: var(--color-dark-2);
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.detail-header-inner,
+.clan-detail-header-inner,
+.lore-detail-header-inner,
+.story-detail-header-inner {
+  width: 98%;
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  margin-left: 4rem;
+  margin-right: 3rem;
+  min-height: 50px;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* OC Sheet Banner - use border directly instead of inner wrapper */
+.oc-sheet-banner {
+  border-left: 50px solid var(--color-accent-2);
+  border-right: 50px solid var(--color-accent-2);
+}
+
+.detail-header-border,
+.clan-detail-header-border,
+.lore-detail-header-border,
+.story-detail-header-border {
+  width: 90%;
+  height: 100%;
+  background-color: var(--color-dark-2);
+  border-left: 50px solid var(--color-accent-2);
+  border-right: 50px solid var(--color-accent-2);
+  min-height: 100px;
+  box-sizing: border-box;
+}
+
+.detail-content,
+.clan-detail-content,
+.lore-detail-content,
+.story-detail-content {
+  background-color: var(--color-bg-2);
+  border: 1rem solid var(--color-accent-2);
+  padding: 2rem 3rem;
+  margin-top: -20px;
+  margin-left: auto;
+  margin-right: auto;
+  position: relative;
+  width: 95%;
+  max-height: calc(100vh - 200px);
+  overflow-y: auto;
+}
+
+/* OC Sheet content - override background for OC detail */
+.detail-content .oc-sheet-character-info {
+  background-color: transparent;
+}
+
+/* Custom Scrollbar Styling for Detail Content */
+/* Webkit browsers (Chrome, Safari, Edge) */
+.detail-content::-webkit-scrollbar,
+.clan-detail-content::-webkit-scrollbar,
+.lore-detail-content::-webkit-scrollbar,
+.story-detail-content::-webkit-scrollbar {
+  width: 14px;
+}
+
+.detail-content::-webkit-scrollbar-track,
+.clan-detail-content::-webkit-scrollbar-track,
+.lore-detail-content::-webkit-scrollbar-track,
+.story-detail-content::-webkit-scrollbar-track {
+  background: var(--color-bg-1);
+  border-radius: 8px;
+  border: 2px solid var(--color-dark-3);
+  margin: 4px 0;
+}
+
+.detail-content::-webkit-scrollbar-thumb,
+.clan-detail-content::-webkit-scrollbar-thumb,
+.lore-detail-content::-webkit-scrollbar-thumb,
+.story-detail-content::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--color-accent-2) 0%, var(--color-accent-3) 100%);
+  border-radius: 8px;
+  border: 2px solid var(--color-dark-2);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2), 0 1px 2px rgba(0, 0, 0, 0.1);
+  min-height: 40px;
+}
+
+.detail-content::-webkit-scrollbar-thumb:hover,
+.clan-detail-content::-webkit-scrollbar-thumb:hover,
+.lore-detail-content::-webkit-scrollbar-thumb:hover,
+.story-detail-content::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, var(--color-accent-3) 0%, var(--color-accent-2) 100%);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3), 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+
+.detail-content::-webkit-scrollbar-thumb:active,
+.clan-detail-content::-webkit-scrollbar-thumb:active,
+.lore-detail-content::-webkit-scrollbar-thumb:active,
+.story-detail-content::-webkit-scrollbar-thumb:active {
+  background: var(--color-accent-3);
+}
+
+/* Firefox */
+.detail-content,
+.clan-detail-content,
+.lore-detail-content,
+.story-detail-content {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-accent-2) var(--color-bg-1);
+}
+
+.detail-title,
+.clan-detail-title,
+.lore-detail-title,
+.story-detail-title {
+  text-align: center;
+  color: var(--color-text-dark-2);
+  text-transform: uppercase;
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  margin-top: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 3px solid var(--color-dark-2);
+}
+
+
+.clan-info-section {
+  background-color: var(--color-bg-1);
+  border: 2px solid var(--color-dark-3);
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.clan-info-section h3 {
+  color: var(--color-dark-2);
+  text-transform: uppercase;
+  font-size: 1.25rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--color-accent-2);
+}
+
+.clan-info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid rgba(54, 7, 0, 0.1);
+}
+
+.clan-info-row:last-child {
+  border-bottom: none;
+}
+
+.clan-info-label {
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--color-dark-1);
+  font-size: 0.9rem;
+}
+
+.clan-info-value {
+  color: var(--color-text-dark-2);
+  font-size: 1rem;
+}
+
+.clan-abilities-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.clan-abilities-list li {
+  padding: 0.75rem 1rem;
+  margin-bottom: 0.5rem;
+  background-color: rgba(227, 94, 63, 0.1);
+  border-left: 4px solid var(--color-accent-2);
+  border-radius: 4px;
+  color: var(--color-text-dark-2);
+}
+
+.clan-members-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.clan-member-card {
+  background-color: var(--color-bg-1);
+  border: 2px solid var(--color-dark-3);
+  border-radius: 8px;
+  padding: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: center;
+}
+
+.clan-member-card:hover {
+  background-color: var(--color-bg-2);
+  border-color: var(--color-accent-2);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Lore List Enhancements */
+.lore-category-card {
+  background-color: var(--color-bg-1);
+  border: 2px solid var(--color-dark-3);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.lore-category-header {
+  background-color: var(--color-dark-2);
+  color: var(--color-text-light);
+  text-transform: uppercase;
+  font-size: 1.5rem;
+  font-weight: bold;
+  padding: 1rem 1.5rem;
+  margin: -1.5rem -1.5rem 1.5rem -1.5rem;
+  border-radius: 10px 10px 0 0;
+  border-bottom: 3px solid var(--color-accent-2);
+}
+
+.lore-entry-card {
+  background-color: var(--color-bg-2);
+  border: 2px solid var(--color-border-2);
+  border-radius: 8px;
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.lore-entry-card::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background-color: var(--color-accent-2);
+  transform: scaleY(0);
+  transition: transform 0.3s ease;
+}
+
+.lore-entry-card:hover::before {
+  transform: scaleY(1);
+}
+
+.lore-entry-card:hover {
+  background-color: var(--color-bg-1);
+  border-color: var(--color-accent-2);
+  transform: translateX(4px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.lore-entry-title {
+  color: var(--color-dark-2);
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+  text-transform: uppercase;
+}
+
+.lore-entry-preview {
+  color: var(--color-text-dark);
+  line-height: 1.6;
+  font-size: 0.95rem;
+}
+
+
+.lore-category-badge {
+  display: inline-block;
+  background-color: var(--color-accent-2);
+  color: var(--color-text-light);
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  font-weight: 600;
+  margin-bottom: 2rem;
+}
+
+.lore-content-section {
+  background-color: var(--color-bg-1);
+  border: 2px solid var(--color-dark-3);
+  border-radius: 8px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  line-height: 1.8;
+  white-space: pre-wrap;
+  color: var(--color-text-dark-2);
+  font-size: 1rem;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.lore-related-section {
+  background-color: var(--color-bg-1);
+  border: 2px solid var(--color-dark-3);
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.lore-related-section h3 {
+  color: var(--color-dark-2);
+  text-transform: uppercase;
+  font-size: 1.25rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--color-accent-2);
+}
+
+.lore-related-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.lore-related-card {
+  background-color: var(--color-bg-2);
+  border: 2px solid var(--color-border-2);
+  border-radius: 8px;
+  padding: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: center;
+}
+
+.lore-related-card:hover {
+  background-color: var(--color-bg-1);
+  border-color: var(--color-accent-2);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Story Card Enhancements */
+.story-card {
+  position: relative;
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
+
+.story-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--color-accent-2) 0%, var(--color-accent-3) 100%);
+  transform: scaleX(0);
+  transition: transform 0.3s ease;
+}
+
+.story-card:hover::before {
+  transform: scaleX(1);
+}
+
+.story-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+
+.story-meta-section {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+  margin-bottom: 2rem;
+  padding: 1rem;
+  background-color: rgba(227, 94, 63, 0.1);
+  border-radius: 8px;
+}
+
+.story-meta-item {
+  color: var(--color-text-dark-2);
+  font-size: 0.95rem;
+}
+
+.story-tags-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+
+.story-tag {
+  background-color: var(--color-accent-2);
+  color: var(--color-text-light);
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.story-summary-section {
+  background-color: var(--color-bg-1);
+  border: 2px solid var(--color-dark-3);
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  border-left: 4px solid var(--color-accent-2);
+}
+
+.story-summary-section h3 {
+  color: var(--color-dark-2);
+  text-transform: uppercase;
+  font-size: 1.25rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--color-accent-2);
+}
+
+.story-summary-text {
+  line-height: 1.8;
+  color: var(--color-text-dark-2);
+  white-space: pre-wrap;
+  font-size: 1.05rem;
+}
+
+.story-characters-section {
+  background-color: var(--color-bg-1);
+  border: 2px solid var(--color-dark-3);
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.story-characters-section h3 {
+  color: var(--color-dark-2);
+  text-transform: uppercase;
+  font-size: 1.25rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--color-accent-2);
+}
+
+.story-characters-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.story-character-card {
+  background-color: var(--color-bg-2);
+  border: 2px solid var(--color-border-2);
+  border-radius: 8px;
+  padding: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: center;
+}
+
+.story-character-card:hover {
+  background-color: var(--color-bg-1);
+  border-color: var(--color-accent-2);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Chapter Navigation */
+.story-chapter-nav {
+  background-color: var(--color-bg-1);
+  border: 2px solid var(--color-dark-3);
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.story-chapter-select {
+  flex: 1;
+  min-width: 200px;
+  padding: 0.75rem 1rem;
+  border: 2px solid var(--color-border-2);
+  border-radius: 8px;
+  background-color: var(--color-bg-2);
+  color: var(--color-text-dark-2);
+  font-size: 1rem;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23E35E3F' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 12px;
+}
+
+.story-chapter-nav-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.story-chapter-btn {
+  padding: 0.5rem 1rem;
+  border: 2px solid var(--color-accent-2);
+  border-radius: 6px;
+  background-color: var(--color-accent-2);
+  color: var(--color-text-light);
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.story-chapter-btn:hover:not(:disabled) {
+  background-color: var(--color-accent-3);
+  transform: translateY(-2px);
+}
+
+.story-chapter-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Story Content Section - Optimized for Long Text */
+.story-content-section {
+  background-color: var(--color-bg-1);
+  border: 2px solid var(--color-dark-3);
+  border-radius: 8px;
+  padding: 2.5rem;
+  margin-bottom: 2rem;
+  position: relative;
+}
+
+.story-content-section h3 {
+  color: var(--color-dark-2);
+  text-transform: uppercase;
+  font-size: 1.25rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--color-accent-2);
+}
+
+.story-content-text {
+  white-space: pre-wrap;
+  line-height: 2;
+  color: var(--color-text-dark-2);
+  font-size: 1.1rem;
+  max-width: 100%;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  text-align: justify;
+  font-family: 'Georgia', 'Times New Roman', serif;
+  letter-spacing: 0.3px;
+}
+
+.story-content-text p {
+  margin-bottom: 1.5rem;
+  text-indent: 2rem;
+}
+
+.story-content-text strong {
+  color: var(--color-dark-2);
+  font-weight: 700;
+}
+
+.story-content-text em {
+  font-style: italic;
+  color: var(--color-text-dark);
+}
+
+/* Chapter Header */
+.story-chapter-header {
+  text-align: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid var(--color-accent-2);
+}
+
+.story-chapter-title {
+  color: var(--color-dark-2);
+  text-transform: uppercase;
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.story-chapter-number {
+  color: var(--color-text-dark);
+  font-size: 1rem;
+  font-style: italic;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .clan-detail-content,
+  .lore-detail-content,
+  .story-detail-content {
+    padding: 1.5rem;
+    width: 95%;
+  }
+  
+  .clan-detail-header,
+  .lore-detail-header,
+  .story-detail-header {
+    width: 95%;
+  }
+  
+  .clan-members-grid,
+  .lore-related-grid,
+  .story-characters-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .story-content-text {
+    font-size: 1rem;
+    line-height: 1.8;
+  }
+  
+  .story-chapter-nav {
+    flex-direction: column;
+  }
+  
+  .story-chapter-select {
+    width: 100%;
+  }
+}
+

@@ -1,0 +1,671 @@
+
+<div class="container-fluid" style="max-width: 1000px;">
+<div class="d-flex flex-column align-items-center pt-4">
+  
+<!---Scroll--->
+  <div class="w-100 position-absolute shadow" style="background-color:#f4ede5; height:50px; top:100px; border-radius:15px;"></div>
+  <div class="col-md-11 position-absolute shadow h-100 display-block" style="border-radius:30px; z-index:10; margin-top:-75px; height:100px; background-color: #360700;"><div class="flex-row no-gutters h-100 mx-5" style="min-height:50px;"><div class="col-md-12 h-100" style="border-right:50px solid #E35E3F; border-left:50px solid #E35E3F; background-color:#360700; min-height:100px;"></div></div></div>
+  <div class="col-md-10 mx-auto pt-3 mx-5" style="background-color:#DAD8A5; border:1rem solid #E35E3F; margin-top:-20px;">
+    
+<!---Content--->
+
+<div class="row no-gutters p-2 align-items-center">
+    <div class="col-lg-4 flex-md-column">
+      <div class="card bg-transparent h-100 border-0" style="border-radius:0;border:1px solid #360700;">
+        <h1 class="card-header text-center text-uppercase bg-faded" style="border:1px solid #360700;border-radius:0;">
+          Character Lastname
+        </h1>
+        <div class="card-body m-0 p-0" style="overflow:hidden;border:1px solid #360700;min-height:100px;">
+          <div class="row-lg no-gutters flex-nowrap">
+            <div class="flex-shrink-0">
+              <img src="https://f2.toyhou.se/file/f2-toyhou-se/characters/18093576?1663795748" style="z-index:2;">
+            </div>
+            <div class="flex-grow-1 flex-column text-center p-3 bg-faded ml-n3" style="color:#360700;font-size:25px;border-left:1px solid #360700;z-index:4;">
+              山<br>
+              田<br>
+              太<br>
+              郎
+            </div>
+        </div>
+      </div>
+      <div class="row no-gutters justify-content-around">
+          <span class="fa-stack fa-2x tooltipster" data-placement="bottom" title="Village" style="color: #360700;">
+            <i class="fas fa-rectangle fa-stack-2x"></i>
+            <i class="fas fa-hourglass fa-stack-1x fa-inverse"></i>
+          </span>
+          <span class="fa-stack fa-2x tooltipster" data-placement="bottom" title="Level" style="color: #360700;">
+            <i class="fas fa-rectangle fa-stack-2x"></i>
+            <i class="fas fa-screen-users fa-stack-1x fa-inverse"></i>
+          </span>
+          <span class="fa-stack fa-2x tooltipster" data-placement="bottom" title="Rank" style="color: #360700;">
+            <i class="fas fa-rectangle fa-stack-2x"></i>
+            <i class="fas fa-c fa-stack-1x fa-inverse"></i>
+          </span>
+      </div>
+    </div>
+      <div class="p-3 mb-3 text-uppercase bg-faded" style="border-top:1px solid #360700;border-right:1px solid #360700;border-left:1px solid #360700;border-radius:0px 0px 25px 25px;font-size:11px;">
+        <div class="flex-column">
+      <p class="justify-content-between flex-wrap">
+      <span>Intelligence</span>
+        <span>
+          <i class="fas fa-rectangle-wide"></i>
+          <i class="fas fa-rectangle-wide"></i>
+          <i class="fas fa-rectangle-wide"></i>
+          <i class="fas fa-rectangle-wide"></i>
+          <i class="far fa-rectangle-wide"></i>
+        </span>
+      </p>
+      <p class="justify-content-between flex-wrap">
+        <span>Stamina</span>
+        <span>
+          <i class="fas fa-rectangle-wide"></i>
+          <i class="fas fa-rectangle-wide"></i>
+          <i class="far fa-rectangle-wide"></i>
+          <i class="far fa-rectangle-wide"></i>
+          <i class="far fa-rectangle-wide"></i>
+        </span>
+      </p>
+      <p class="justify-content-between flex-wrap">
+      <span>Force</span>
+      <span>
+      <i class="fas fa-rectangle-wide"></i>
+      <i class="far fa-rectangle-wide"></i>
+      <i class="far fa-rectangle-wide"></i>
+      <i class="far fa-rectangle-wide"></i>
+      <i class="far fa-rectangle-wide"></i>
+      </span>
+      </p>
+      <p class="justify-content-between flex-wrap">
+      <span>Speed</span>
+      <span>
+      <i class="fas fa-rectangle-wide"></i>
+      <i class="fas fa-rectangle-wide"></i>
+      <i class="fas fa-rectangle-wide"></i>
+      <i class="far fa-rectangle-wide"></i>
+      <i class="far fa-rectangle-wide"></i>
+      </span>
+      </p>
+      <p class="justify-content-between flex-wrap">
+      <span>Ninjutsu</span>
+      <span>
+      <i class="fas fa-rectangle-wide"></i>
+      <i class="fas fa-rectangle-wide"></i>
+      <i class="fas fa-rectangle-wide"></i>
+      <i class="far fa-rectangle-wide"></i>
+      <i class="far fa-rectangle-wide"></i>
+      </span>
+      </p>
+      <p class="justify-content-between flex-wrap">
+      <span>Genjutsu</span>
+      <span>
+      <i class="fas fa-rectangle-wide"></i>
+      <i class="fas fa-rectangle-wide"></i>
+      <i class="far fa-rectangle-wide"></i>
+      <i class="far fa-rectangle-wide"></i>
+      <i class="far fa-rectangle-wide"></i>
+      </span>
+      </p>
+      <p class="justify-content-between flex-wrap">
+      <span>Taijutsu </span>
+      <span>
+      <i class="fas fa-rectangle-wide"></i>
+      <i class="fas fa-rectangle-wide"></i>
+      <i class="far fa-rectangle-wide"></i>
+      <i class="far fa-rectangle-wide"></i>
+      <i class="far fa-rectangle-wide"></i>
+      </span>
+      </p>
+      <p class="justify-content-between flex-wrap">
+      <span>Fuinjutsu</span>
+      <span>
+      <i class="fas fa-rectangle-wide"></i>
+      <i class="fas fa-rectangle-wide"></i>
+      <i class="far fa-rectangle-wide"></i>
+      <i class="far fa-rectangle-wide"></i>
+      <i class="far fa-rectangle-wide"></i>
+      </span>
+      </p>
+    </div>
+</div>
+</div>
+    <div class="col-lg ml-2 mb-auto">
+      <div class="row">
+      <div class="col-lg text-uppercase">
+        <h1 class="p-2 mb-0 text-right bg-faded" style="border:1px solid #360700;">Identifying Information</h1>
+        <div class="card bg-transparent" style="border:1px solid #360700;border-radius:0;">
+          <div class="row no-gutters align-items-center m-0">
+            <div class="col text-uppercase p-1" style="background-color:rgba(62,51,38,.05);border-right:1px solid #360700;font-weight:500;">
+              Content
+            </div>
+            <div class="col-3 font-italic text-center">
+              <small>aliases</small>
+            </div>
+          </div>
+          <div class="row no-gutters align-items-center m-0">
+            <div class="col text-uppercase p-1" style="background-color:rgba(62,51,38,.05);border-right:1px solid #360700;font-weight:500;">
+              Content
+            </div>
+            <div class="col-3 font-italic text-center">
+              <small>date of birth</small>
+            </div>
+          </div>
+          <div class="row no-gutters align-items-center m-0">
+            <div class="col text-uppercase p-1" style="background-color:rgba(62,51,38,.05);border-right:1px solid #360700;font-weight:500;">
+              Content
+            </div>
+            <div class="col-3 font-italic text-center">
+              <small>age</small>
+            </div>
+          </div>
+          <div class="row no-gutters align-items-center m-0">
+            <div class="col text-uppercase p-1" style="background-color:rgba(62,51,38,.05);border-right:1px solid #360700;font-weight:500;">
+              Content
+            </div>
+            <div class="col-3 font-italic text-center">
+              <small>blood type</small>
+            </div>
+          </div>
+          <div class="row no-gutters align-items-center m-0">
+            <div class="col text-uppercase p-1" style="background-color:rgba(62,51,38,.05);border-right:1px solid #360700;font-weight:500;">
+              Content
+            </div>
+            <div class="col-3 font-italic text-center">
+              <small>gender</small>
+            </div>
+          </div>
+        </div>
+        <div class="card bg-transparent mt-2" style="border:1px solid #360700;border-radius:0;">
+           <div class="row no-gutters align-items-center m-0">
+            <div class="col text-uppercase p-1" style="background-color:rgba(62,51,38,.05);border-right:1px solid #360700;font-weight:500;">
+              Content
+            </div>
+            <div class="col-3 font-italic text-center">
+              <small>chakra type</small>
+            </div>
+          </div>
+          <div class="row no-gutters align-items-center m-0">
+            <div class="col text-uppercase p-1" style="background-color:rgba(62,51,38,.05);border-right:1px solid #360700;font-weight:500;">
+              Content
+            </div>
+            <div class="col-3 font-italic text-center">
+              <small>made genin</small>
+            </div>
+            <div class="col text-uppercase p-1" style="background-color:rgba(62,51,38,.05);border-right:1px solid #360700;font-weight:500;">
+              Content
+            </div>
+            <div class="col-3 font-italic text-center">
+              <small>made chunin</small>
+            </div>
+          </div>
+      </div>
+        <div class="card bg-transparent mt-2" style="border:1px solid #360700;border-radius:0;">
+          <div class="row no-gutters align-items-center m-0">
+            <div class="col text-uppercase p-1" style="background-color:rgba(62,51,38,.05);border-right:1px solid #360700;font-weight:500;">
+              Content
+            </div>
+            <div class="col-3 font-italic text-center">
+              <small>body type</small>
+            </div>
+          </div>
+          <div class="row no-gutters align-items-center m-0">
+            <div class="col text-uppercase p-1" style="background-color:rgba(62,51,38,.05);border-right:1px solid #360700;font-weight:500;">
+              Content
+            </div>
+            <div class="col-3 font-italic text-center">
+              <small>height</small>
+            </div>
+            <div class="col text-uppercase p-1" style="background-color:rgba(62,51,38,.05);border-right:1px solid #360700;font-weight:500;">
+              Content
+            </div>
+            <div class="col-3 font-italic text-center">
+              <small>weight</small>
+            </div>
+          </div>
+          
+        </div>
+    </div>
+      <div class="col-auto p-0"> 
+        <div class="flex-lg-column align-items-center align-self-center text-center">
+            <span class="fa-stack fa-2x tooltipster" data-placement="right" title="123" style="color: #360700;">
+              <i class="fas fa-square fa-stack-2x"></i>
+              <i class="fas fa-s fa-stack-1x fa-inverse"></i>
+            </span>
+            <span class="fa-stack fa-2x tooltipster" data-placement="right" title="123" style="color: #360700;">
+              <i class="fas fa-square fa-stack-2x"></i>
+              <i class="fas fa-a fa-stack-1x fa-inverse"></i>
+            </span>
+            <span class="fa-stack fa-2x tooltipster" data-placement="right" title="123" style="color: #360700;">
+              <i class="fas fa-square fa-stack-2x"></i>
+              <i class="fas fa-b fa-stack-1x fa-inverse"></i>
+            </span>
+            <span class="fa-stack fa-2x tooltipster" data-placement="right" title="123" style="color: #360700;">
+              <i class="fas fa-square fa-stack-2x"></i>
+              <i class="fas fa-c fa-stack-1x fa-inverse"></i>
+            </span>
+            <span class="fa-stack fa-2x tooltipster" data-placement="right" title="123" style="color: #360700;">
+              <i class="fas fa-square fa-stack-2x"></i>
+              <i class="fas fa-d fa-stack-1x fa-inverse"></i>
+            </span>
+        </div>
+    </div>
+    </div>
+      <div class="row mt-3 text-justify">
+        <div class="col-12 mb-2">
+        <h3 class="text-center text-uppercase mb-1 p-1 bg-faded" style="border:1px solid #360700;">
+          Battle Strategy
+        </h3>
+          <span class="px-3">
+            <b>In a team:</b> Content
+            <p class="px-3"><b>Alone:</b> Content
+          </span>
+        </div>
+        <div class="col-6 mb-2">
+          <h4 class="text-center text-uppercase mb-1 p-1" style="border:1px solid #360700;">
+          Field Position
+        </h4>
+          <span class="px-3">
+            Content
+          </span>
+        </div>
+        <div class="col-6 mb-2">
+        <h4 class="text-center text-uppercase mb-1 p-1" style="border:1px solid #360700;">
+          Effective Distance
+        </h4>
+          <span class="px-3">
+            Content
+          </span>
+        </div>
+        <div class="col-6 mb-2">
+        <h4 class="text-center text-uppercase mb-1 p-1" style="border:1px solid #360700;">
+          Specialty
+        </h4>
+          <span class="px-3">
+            Content
+          </span>
+        </div>
+        <div class="col-6 mb-2">
+        <h4 class="text-center text-uppercase mb-1 p-1" style="border:1px solid #360700;">
+          Notable Abilities
+        </h4>
+          <span class="px-3">
+            Content
+          </span>
+      </div>
+    </div>
+  </div>
+  </div>
+
+<!---Personality & Abilities--->
+<div id="collapse" class="collapse">
+<div class="row no-gutters">
+  <div class="col-lg px-2 mb-2">
+    <div>
+      <h1 class="p-2 text-uppercase text-white text-center mb-0" style="background-color:#360700;">
+          known behavior
+      </h1>
+      <div class="card" style="border:1px solid #360700;border-radius:0;background-color:#DAD8A5;">
+      <h4 class="p-2 text-uppercase text-center bg-faded" style="border-top:1px solid #360700;border-bottom:1px solid #360700;">Likes</h4>
+        <div class="card-body">
+              <ul class="fa-ul">
+                <li><span class="fa-li"><i class="fas fa-check-square"/></span>Content</li>
+                <li><span class="fa-li"><i class="fas fa-check-square"/></span>Content</li>
+                <li><span class="fa-li"><i class="fas fa-check-square"/></span>Content</li>
+                <li><span class="fa-li"><i class="fas fa-check-square"/></span>Content</li>
+              </ul>
+          </div>
+      <h4 class="p-2 text-uppercase text-center bg-faded" style="border-top:1px solid #360700;border-bottom:1px solid #360700;">Dislikes</h4>
+        <div class="card-body">
+          <ul class="fa-ul">
+                <li><span class="fa-li"><i class="fas fa-square-xmark"/></span>Content</li>
+                <li><span class="fa-li"><i class="fas fa-square-xmark"/></span>Content</li>
+                <li><span class="fa-li"><i class="fas fa-square-xmark"/></span>Content</li>
+                <li><span class="fa-li"><i class="fas fa-square-xmark"/></span>Content</li>
+                
+              </ul>
+          </div>
+      </div>
+      </div>
+    <div>
+       <h1 class="p-2 text-uppercase text-white text-center mb-0 mt-2" style="background-color:#360700;">
+          known associates
+      </h1>
+      <div class="card" style="border:1px solid #360700;border-radius:0;background-color:#DAD8A5;">
+      <div class="bg-faded p-2">
+        <div class="text-center align-items-center flex-column">
+         <div class="m-1 p-1">
+            <p class="text-justify"><img src="https://f2.toyhou.se/file/f2-toyhou-se/characters/19029548?1669579314" class="float-left img-thumbnail w-25 mr-2 mt-2"><a class="text-uppercase" href="https://toyhou.se/16882374.huangfu-suyin">Character Lastname</a><br> Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+          </div>
+         <div class="m-1 p-1">
+            <p class="text-justify"><img src="https://f2.toyhou.se/file/f2-toyhou-se/characters/19029548?1669579314" class="float-left img-thumbnail w-25 mr-2 mt-2"><a class="text-uppercase" href="https://toyhou.se/16882374.huangfu-suyin">Character Lastname</a><br> Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+          </div>
+         <div class="m-1 p-1">
+            <p class="text-justify"><img src="https://f2.toyhou.se/file/f2-toyhou-se/characters/19029548?1669579314" class="float-left img-thumbnail w-25 mr-2 mt-2"><a class="text-uppercase" href="https://toyhou.se/16882374.huangfu-suyin">Character Lastname</a><br> Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+          </div>
+    </div>
+      </div>
+    </div>
+    
+    
+  </div>
+  </div>
+  <div class="col-lg-7">
+     <h1 class="p-2 text-white text-uppercase mb-0" style="background-color:#360700;">
+        Demeanor
+      </h1>
+      <div class="p-3 mb-3 text-uppercase bg-faded" style="border:1px solid #360700;font-size:11px;">
+        <div class="row">
+        <div class="col-7">
+          charisma
+        </div>
+        <div class="col align-items-center justify-content-around">
+          <i class="fas fa-circle"></i>
+          <i class="fas fa-circle"></i>
+          <i class="fas fa-circle"></i>
+          <i class="far fa-circle"></i>
+          <i class="far fa-circle"></i>
+        </div>
+      </div>
+        <div class="row">
+        <div class="col-7">
+          extraversion
+        </div>
+        <div class="col align-items-center justify-content-around">
+          <i class="fas fa-circle"></i>
+          <i class="fas fa-circle"></i>
+          <i class="fas fa-circle"></i>
+          <i class="far fa-circle"></i>
+          <i class="far fa-circle"></i>
+        </div>
+      </div>
+        <div class="row">
+        <div class="col-7">
+          energy
+        </div>
+        <div class="col align-items-center justify-content-around">
+          <i class="fas fa-circle"></i>
+          <i class="fas fa-circle"></i>
+          <i class="fas fa-circle"></i>
+          <i class="far fa-circle"></i>
+          <i class="far fa-circle"></i>
+        </div>
+      </div>
+        <div class="row">
+        <div class="col-7">
+          empathy
+          </div>
+        <div class="col align-items-center justify-content-around">
+          <i class="fas fa-circle"></i>
+          <i class="fas fa-circle"></i>
+          <i class="fas fa-circle"></i>
+          <i class="far fa-circle"></i>
+          <i class="far fa-circle"></i>
+        </div>
+      </div>
+        <div class="row">
+        <div class="col-7">
+          impulsivity
+        </div>
+        <div class="col align-items-center justify-content-around">
+          <i class="fas fa-circle"></i>
+          <i class="fas fa-circle"></i>
+          <i class="fas fa-circle"></i>
+          <i class="far fa-circle"></i>
+          <i class="far fa-circle"></i>
+        </div>
+      </div>
+        <div class="row">
+        <div class="col-7">
+          neuroticism
+        </div>
+        <div class="col align-items-center justify-content-around">
+          <i class="fas fa-circle"></i>
+          <i class="fas fa-circle"></i>
+          <i class="fas fa-circle"></i>
+          <i class="far fa-circle"></i>
+          <i class="far fa-circle"></i>
+        </div>
+      </div>
+        <div class="row">
+        <div class="col-7">
+          intuition
+        </div>
+        <div class="col align-items-center justify-content-around">
+          <i class="fas fa-circle"></i>
+          <i class="fas fa-circle"></i>
+          <i class="fas fa-circle"></i>
+          <i class="far fa-circle"></i>
+          <i class="far fa-circle"></i>
+        </div>
+      </div>
+        <div class="row">
+        <div class="col-7">
+          observation
+        </div>
+        <div class="col align-items-center justify-content-around">
+          <i class="fas fa-circle"></i>
+          <i class="fas fa-circle"></i>
+          <i class="fas fa-circle"></i>
+          <i class="far fa-circle"></i>
+          <i class="far fa-circle"></i>
+        </div>
+      </div>
+        <div class="row">
+        <div class="col-7">
+          sensitivity
+        </div>
+        <div class="col align-items-center justify-content-around">
+          <i class="fas fa-circle"></i>
+          <i class="fas fa-circle"></i>
+          <i class="fas fa-circle"></i>
+          <i class="far fa-circle"></i>
+          <i class="far fa-circle"></i>
+        </div>
+      </div>
+        <div class="row">
+        <div class="col-7">
+          generosity
+        </div>
+        <div class="col align-items-center justify-content-around">
+          <i class="fas fa-circle"></i>
+          <i class="fas fa-circle"></i>
+          <i class="fas fa-circle"></i>
+          <i class="far fa-circle"></i>
+          <i class="far fa-circle"></i>
+        </div>
+      </div>
+        <div class="row">
+        <div class="col-7">
+          respect for authority
+        </div>
+        <div class="col align-items-center justify-content-around">
+          <i class="fas fa-circle"></i>
+          <i class="fas fa-circle"></i>
+          <i class="fas fa-circle"></i>
+          <i class="far fa-circle"></i>
+          <i class="far fa-circle"></i>
+        </div>
+      </div>
+    </div>
+    
+      <h3 class="p-2 w-75 text-center mb-0" style="background-color:#E35E3F;border-radius:0px 25px 0px 0px;">Taijutsu</h3>
+        <div style="border-left:5px solid #E35E3F;">
+          <div class="p-3">
+            <h5 class="mb-0" style="font-variant:small-caps;">Style: Content</h5>
+            <div class="justify-content-between" style="font-size:12px;border-top:1px solid #360700;">
+              <span>Base Style: </span>
+              <span>Content</span>
+            </div>
+            <div class="justify-content-between" style="font-size:12px;border-bottom:1px solid #360700;">
+              <span>Mastery: </span>
+              <span>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+              </span>
+            </div>
+            <p class="text-justify">Words.</p>
+          </div>
+        </div>
+      <h3 class="p-2 w-75 text-center mb-0" style="background-color:#E35E3F;border-radius:0px 25px 0px 0px;">Ninjutsu</h3>
+        <div style="border-left:5px solid #E35E3F;">
+          <div class="p-3">
+            <h5 class="mb-0" style="font-variant:small-caps;">Style: Content <small class="pull-right">A</small></h5>
+              <div class="justify-content-between" style="font-size:12px;border-top:1px solid #360700;">
+                  <span>Difficulty: </span>
+                  <span>
+                  <i class="fa-solid fa-star"></i>
+                  <i class="fa-solid fa-star"></i>
+                  <i class="fa-solid fa-star"></i>
+                  <i class="fa-solid fa-star"></i>
+                  <i class="fa-regular fa-star"></i>
+                  </span>
+                  </div>
+                  <div class="justify-content-between" style="font-size:12px;border-bottom:1px solid #360700;">
+                  <span>Chakra Intensity: </span>
+                  <span>
+                  <i class="fa-solid fa-star"></i>
+                  <i class="fa-solid fa-star"></i>
+                  <i class="fa-solid fa-star"></i>
+                   <i class="fa-solid fa-star"></i>
+                  <i class="fa-solid fa-star"></i>
+                  </span>
+                  </div>
+                  <p class="text-justify">
+                  Description
+                  </p>
+          </div>
+      </div>
+      
+      <h3 class="p-2 w-75 text-center mb-0" style="background-color:#E35E3F;border-radius:0px 25px 0px 0px;">Ninjutsu</h3>
+        <div style="border-left:5px solid #E35E3F;">
+          <div class="p-3">
+            <h5 class="mb-0" style="font-variant:small-caps;">Style: Content <small class="pull-right">A</small></h5>
+              <div class="justify-content-between" style="font-size:12px;border-top:1px solid #360700;">
+                  <span>Difficulty: </span>
+                  <span>
+                  <i class="fa-solid fa-star"></i>
+                  <i class="fa-solid fa-star"></i>
+                  <i class="fa-solid fa-star"></i>
+                  <i class="fa-solid fa-star"></i>
+                  <i class="fa-regular fa-star"></i>
+                  </span>
+                  </div>
+                  <div class="justify-content-between" style="font-size:12px;border-bottom:1px solid #360700;">
+                  <span>Chakra Intensity: </span>
+                  <span>
+                  <i class="fa-solid fa-star"></i>
+                  <i class="fa-solid fa-star"></i>
+                  <i class="fa-solid fa-star"></i>
+                   <i class="fa-solid fa-star"></i>
+                  <i class="fa-solid fa-star"></i>
+                  </span>
+                  </div>
+                  <p class="text-justify">
+                  Description
+                  </p>
+          </div>
+      </div>
+      
+      </div> 
+</div>
+  
+<!---History--->
+
+<div class="row mt-4">
+  <h1 class="w-100 text-white text-center text-uppercase p-3" style="background-color:#E35E3F;">
+      Record History
+  </h1>
+  
+    <div class="col-12 mb-1">
+      <a href="#gencollapse" data-toggle="collapse" class="text-decoration-none text-white tooltipster" title="click to read">
+      <h3 class="w-100 text-white text-center text-uppercase p-2" style="background-color:#E35E3F;">
+        Childhood
+      </h3></a><div id="gencollapse" class="collapse">
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+    </div>
+    </div>
+    <div class="col-12 mb-1">
+       <a href="#chucollapse" data-toggle="collapse" class="text-decoration-none text-white tooltipster" title="click to read">
+        <h3 class="w-100 text-white text-center text-uppercase p-2" style="background-color:#E35E3F;">
+          Adolescence
+        </h3></a><div id="chucollapse" class="collapse">
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+        </p>
+    </div>
+    </div>
+    <div class="col-12 mb-1">
+       <a href="#joucollapse" data-toggle="collapse" class="text-decoration-none text-white tooltipster" title="click to read">
+         <h3 class="w-100 text-white text-center text-uppercase p-2" style="background-color:#E35E3F;">
+           Adulthood
+          </h3></a>
+          <div id="joucollapse" class="collapse">
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+    </div>
+  </div>
+  
+    
+</div>
+  
+<!---DESIGN--->
+
+<div class="row mt-4">
+    <h1 class="w-100 text-white text-center text-uppercase p-3" style="background-color:#E35E3F;">
+      Appearance & Gear
+    </h1>
+      <div class="card bg-transparent p-2 m-3 w-100">
+        <div class="btn-group" style="height:25px;">
+          <div class="btn flex-fill" style="background-color:#262A32;"></div>
+          <div class="btn flex-fill" style="background-color:#8A281A;"></div>
+          <div class="btn flex-fill" style="background-color:#DB9059;"></div>
+          <div class="btn flex-fill" style="background-color:#1E100A;"></div>
+        </div>
+        <img src="URL_HERE">
+      </div>
+        
+      <div class="row">
+        <div class="col m-2">
+          <div class="p-2 justify-content-between">
+            <div class="badge pull-left align-items-center p-1" style="background-color:#360700;">
+              <i class="far fa-fan fa-3x"></i>
+            </div>
+          <div class="ml-2 flex-fill"><span class="display-4 font-weight-bold">Item Name</span><hr class="m-0">
+          <span class="text-secondary">Item Category <small><em>(small)</em></small>. Material, use. </span></div>
+          </div>
+          <ul>
+            <li>Information</li>
+          </ul>
+        </div>
+        <div class="col m-2">
+          <div class="p-2 justify-content-between">
+            <div class="badge pull-left align-items-center p-1" style="background-color:#360700;">
+              <i class="far fa-fan fa-3x"></i>
+            </div>
+          <div class="ml-2 flex-fill"><span class="display-4 font-weight-bold">Item Name</span><hr class="m-0">
+          <span class="text-secondary">Item Category <small><em>(small)</em></small>. Material, use. </span></div>
+          </div>
+          <ul>
+            <li>Information</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+
+  <div class="text-right font-italic mb-1 text-uppercase" style="color:#E35E3F;">
+    authorized personnel only<br>
+    shinobi registration file
+  </div>
+  
+  
+  
+  </div>
+  <div class="col-md-10 text-right mt-n2"><a style="color:#E35E3F;" href="#collapse" data-toggle="collapse">
+    <i class="fas fa-bookmark fa-5x tooltipster" title="open" data-placement="right"/></a>
+  </div>
+</div>
+</div>
+<div class="container text-right" style="font-size:8px;"><a href="/versias"><i class="fa-solid fa-code"></i></a></div>

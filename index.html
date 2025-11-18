@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Naruto OC Website - Data Book</title>
+  
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="styles/theme.css">
+  <link rel="stylesheet" href="styles/main.css">
+  <link rel="stylesheet" href="styles/oc-sheet.css">
+  <link rel="stylesheet" href="styles/home-scroll.css">
+  <link rel="stylesheet" href="styles/clan-lore.css">
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-naruto">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#home">Naruto OC Data Book</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" style="border: 2px solid var(--color-text-light); background-color: var(--color-dark-1);">
+        <span class="navbar-toggler-icon" style="color: var(--color-text-light);"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item" id="nav-back-item" style="display: none;">
+            <button class="nav-link nav-back-btn" id="nav-back-btn" onclick="window.handleNavBack()">
+              <i class="fas fa-arrow-left"></i> Back
+            </button>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#home" data-page="home">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#ocs" data-page="ocs">OCs</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#clans" data-page="clans">Clans</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#stories" data-page="stories">Stories</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#lore" data-page="lore">Lore</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#admin" data-page="admin" style="opacity: 0.6;">
+              <i class="fas fa-cog"></i> Admin
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content Container -->
+  <div class="main-container">
+    <!-- Home Page -->
+    <div id="home-page" class="page-section active" style="padding-top: 2rem;">
+      <div class="home-scroll-container">
+        <div class="home-scroll-backdrop"></div>
+        <div class="home-scroll-header">
+          <div class="home-scroll-header-inner">
+            <div class="home-scroll-header-inner-border"></div>
+          </div>
+        </div>
+        <div class="home-scroll-content">
+          <h1 class="home-scroll-title">Ruu's OC Collection</h1>
+          
+          <div class="home-personal-info-wrapper">
+            <div class="home-profile-image">
+              <img src="images/assets/ruubday.png" alt="Ruu" style="width: 100%; height: auto;">
+            </div>
+            <div class="home-personal-info">
+              <div class="home-info-row">
+                <div class="home-info-label"><i class="fas fa-user"></i> Name:</div>
+                <div class="home-info-value" id="home-name">Ruu</div>
+              </div>
+              <div class="home-info-row">
+                <div class="home-info-label"><i class="fas fa-venus"></i> Pronouns:</div>
+                <div class="home-info-value" id="home-pronouns">She/Her</div>
+              </div>
+              <div class="home-info-row">
+                <div class="home-info-label"><i class="fas fa-birthday-cake"></i> Age:</div>
+                <div class="home-info-value" id="home-age">30+</div>
+              </div>
+              <div class="home-info-row">
+                <div class="home-info-label"><i class="fas fa-star"></i> Sign:</div>
+                <div class="home-info-value" id="home-sign">Virgo</div>
+              </div>
+              <div class="home-info-row">
+                <div class="home-info-label"><i class="fas fa-clock"></i> Timezone:</div>
+                <div class="home-info-value" id="home-timezone">EST</div>
+              </div>
+            </div>
+          </div>
+          
+          <p style="color: #360700; font-size: 1rem; line-height: 1.6; text-align: center; margin: 1.5rem 0; font-style: italic;">
+            Welcome to my Naruto OC universe! Here you'll find all my original characters, their clans, stories, and world-building lore. Explore, discover, and enjoy!
+          </p>
+          
+          <!-- More Info Section with Quick Links (collapsible) -->
+          <div id="home-more-info" class="collapse">
+            <div class="home-more-info-content">
+              <h2 class="home-section-title">Quick Links</h2>
+              <div class="home-quick-links">
+                <a href="#ocs" class="home-quick-link">
+                  <span class="home-quick-link-icon"><i class="fas fa-users"></i></span>
+                  <span class="home-quick-link-text">My OCs</span>
+                  <small style="display: block; margin-top: 0.25rem; font-weight: normal; text-transform: none;" id="quick-oc-count">(0 characters)</small>
+                </a>
+                <a href="#clans" class="home-quick-link">
+                  <span class="home-quick-link-icon"><i class="fas fa-shield-alt"></i></span>
+                  <span class="home-quick-link-text">Clans</span>
+                  <small style="display: block; margin-top: 0.25rem; font-weight: normal; text-transform: none;" id="quick-clan-count">(0 clans)</small>
+                </a>
+                <a href="#stories" class="home-quick-link">
+                  <span class="home-quick-link-icon"><i class="fas fa-scroll"></i></span>
+                  <span class="home-quick-link-text">Stories</span>
+                  <small style="display: block; margin-top: 0.25rem; font-weight: normal; text-transform: none;" id="quick-story-count">(0 stories)</small>
+                </a>
+                <a href="#lore" class="home-quick-link">
+                  <span class="home-quick-link-icon"><i class="fas fa-book"></i></span>
+                  <span class="home-quick-link-text">Lore</span>
+                  <small style="display: block; margin-top: 0.25rem; font-weight: normal; text-transform: none;" id="quick-lore-count">(0 entries)</small>
+                </a>
+              </div>
+              
+              <h2 class="home-section-title">Recent Additions</h2>
+              <div id="recent-ocs" class="grid-ocs" style="margin-top: 0.75rem;">
+                <p class="text-center" style="grid-column: 1 / -1; color: rgba(54, 7, 0, 0.6); font-style: italic;">
+                  No OCs yet. <span style="color: #999;">Use the Admin panel to add OCs.</span>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Bookmark at bottom of scroll container (matches Scroll.txt) -->
+        <div class="home-scroll-footer">
+          <div class="home-bookmark-container">
+            <a href="#home-more-info" class="home-bookmark-link" data-bs-toggle="collapse" aria-expanded="false" aria-controls="home-more-info" role="button" title="Open / More Info">
+              <i class="fas fa-bookmark fa-5x"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- OCs Page -->
+    <div id="ocs-page" class="page-section">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1 style="color: var(--color-dark-2); text-transform: uppercase;">OCs</h1>
+      </div>
+      
+      <div class="filter-bar-naruto">
+        <div class="search-bar-naruto">
+          <i class="fas fa-search search-icon" aria-hidden="true"></i>
+          <input type="text" id="oc-search" placeholder="Search OCs...">
+          <span class="search-clear" id="oc-search-clear" onclick="document.getElementById('oc-search').value = ''; document.getElementById('oc-search').dispatchEvent(new Event('input'));" style="display: none;">×</span>
+        </div>
+        <select id="oc-village-filter">
+          <option value="">All Villages</option>
+          <option value="Konoha">Konoha</option>
+          <option value="Suna">Suna</option>
+          <option value="Kiri">Kiri</option>
+          <option value="Kumo">Kumo</option>
+          <option value="Iwa">Iwa</option>
+        </select>
+        <select id="oc-rank-filter">
+          <option value="">All Ranks</option>
+          <option value="Genin">Genin</option>
+          <option value="Chunin">Chunin</option>
+          <option value="Jonin">Jonin</option>
+          <option value="S-Rank">S-Rank</option>
+        </select>
+      </div>
+      
+      <div id="ocs-list" class="grid-ocs">
+        <p class="text-center" style="grid-column: 1 / -1; color: #999;">No OCs found. <span style="color: #999;">Use the Admin panel to add OCs.</span></p>
+      </div>
+    </div>
+
+    <!-- OC Detail Page -->
+    <div id="oc-detail-page" class="page-section">
+      <div id="oc-detail-container"></div>
+    </div>
+
+    <!-- OC Form Page -->
+    <div id="oc-form-page" class="page-section">
+      <div id="oc-form-container"></div>
+    </div>
+
+    <!-- Clans Page -->
+    <div id="clans-page" class="page-section">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1 style="color: var(--color-dark-2); text-transform: uppercase;">Clans</h1>
+      </div>
+      
+      <div class="filter-bar-naruto">
+        <div class="search-bar-naruto">
+          <i class="fas fa-search search-icon" aria-hidden="true"></i>
+          <input type="text" id="clan-search" placeholder="Search Clans...">
+          <span class="search-clear" id="clan-search-clear" onclick="document.getElementById('clan-search').value = ''; document.getElementById('clan-search').dispatchEvent(new Event('input'));" style="display: none;">×</span>
+        </div>
+        <select id="clan-village-filter">
+          <option value="">All Villages</option>
+          <option value="Konoha">Konoha</option>
+          <option value="Suna">Suna</option>
+          <option value="Kiri">Kiri</option>
+          <option value="Kumo">Kumo</option>
+          <option value="Iwa">Iwa</option>
+          <option value="Iron">Iron</option>
+        </select>
+      </div>
+      
+      <div id="clans-list" class="grid-clans">
+        <p class="text-center" style="grid-column: 1 / -1; color: #999;">No clans found. <span style="color: #999;">Use the Admin panel to add clans.</span></p>
+      </div>
+    </div>
+
+    <!-- Clan Detail Page -->
+    <div id="clan-detail-page" class="page-section">
+      <div id="clan-detail-container"></div>
+    </div>
+
+    <!-- Clan Form Page -->
+    <div id="clan-form-page" class="page-section">
+      <div id="clan-form-container"></div>
+    </div>
+
+    <!-- Stories Page -->
+    <div id="stories-page" class="page-section">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1 style="color: var(--color-dark-2); text-transform: uppercase;">Stories</h1>
+      </div>
+      
+      <div class="filter-bar-naruto">
+        <div class="search-bar-naruto">
+          <i class="fas fa-search search-icon" aria-hidden="true"></i>
+          <input type="text" id="story-search" placeholder="Search Stories...">
+          <span class="search-clear" id="story-search-clear" onclick="document.getElementById('story-search').value = ''; document.getElementById('story-search').dispatchEvent(new Event('input'));" style="display: none;">×</span>
+        </div>
+        <div class="search-bar-naruto" style="min-width: 200px;">
+          <i class="fas fa-tag search-icon" aria-hidden="true"></i>
+          <input type="text" id="story-tag-filter" placeholder="Filter by tag...">
+          <span class="search-clear" id="story-tag-clear" onclick="document.getElementById('story-tag-filter').value = ''; document.getElementById('story-tag-filter').dispatchEvent(new Event('input'));" style="display: none;">×</span>
+        </div>
+      </div>
+      
+      <div id="stories-list" class="grid-stories">
+        <p class="text-center" style="grid-column: 1 / -1; color: #999;">No stories found. <span style="color: #999;">Use the Admin panel to add stories.</span></p>
+      </div>
+    </div>
+
+    <!-- Story Detail Page -->
+    <div id="story-detail-page" class="page-section">
+      <div id="story-detail-container"></div>
+    </div>
+
+    <!-- Story Form Page -->
+    <div id="story-form-page" class="page-section">
+      <div id="story-form-container"></div>
+    </div>
+
+    <!-- Lore Page -->
+    <div id="lore-page" class="page-section">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1 style="color: var(--color-dark-2); text-transform: uppercase;">Lore</h1>
+      </div>
+      
+      <div class="filter-bar-naruto">
+        <div class="search-bar-naruto">
+          <i class="fas fa-search search-icon" aria-hidden="true"></i>
+          <input type="text" id="lore-search" placeholder="Search Lore...">
+          <span class="search-clear" id="lore-search-clear" onclick="document.getElementById('lore-search').value = ''; document.getElementById('lore-search').dispatchEvent(new Event('input'));" style="display: none;">×</span>
+        </div>
+        <select id="lore-category-filter">
+          <option value="">All Categories</option>
+          <option value="village">Village</option>
+          <option value="technique">Technique</option>
+          <option value="history">History</option>
+          <option value="world">World</option>
+        </select>
+      </div>
+      
+      <div id="lore-list">
+        <p class="text-center" style="color: #999;">No lore entries found. <span style="color: #999;">Use the Admin panel to add lore entries.</span></p>
+      </div>
+    </div>
+
+    <!-- Lore Detail Page -->
+    <div id="lore-detail-page" class="page-section">
+      <div id="lore-detail-container"></div>
+    </div>
+
+    <!-- Lore Form Page -->
+    <div id="lore-form-page" class="page-section">
+      <div id="lore-form-container"></div>
+    </div>
+
+    <!-- Admin Page -->
+    <div id="admin-page" class="page-section">
+      <div class="container" style="max-width: 800px; margin: 0 auto; padding: 2rem;">
+        <div class="card-naruto">
+          <div class="card-header-naruto">
+            <h2><i class="fas fa-shield-alt"></i> Admin Panel</h2>
+          </div>
+          <div class="card-body">
+            <div id="admin-login-section">
+              <p style="color: var(--color-text-dark-2); margin-bottom: 1.5rem;">
+                Enter the admin password to access data management tools.
+              </p>
+              <div class="form-group">
+                <label class="form-label">Password</label>
+                <input type="password" class="form-control" id="admin-password" placeholder="Enter admin password" onkeypress="if(event.key === 'Enter') window.checkAdminPassword()">
+              </div>
+              <button class="btn-naruto" onclick="window.checkAdminPassword()">
+                <i class="fas fa-unlock"></i> Access Admin Panel
+              </button>
+              <div id="admin-error" style="color: #d32f2f; margin-top: 1rem; display: none;">
+                <i class="fas fa-exclamation-circle"></i> Incorrect password. Please try again.
+              </div>
+            </div>
+            
+            <div id="admin-panel-section" style="display: none;">
+              <div class="alert alert-warning" style="background-color: #fff3cd; border: 1px solid #ffc107; color: #856404; padding: 1rem; border-radius: 4px; margin-bottom: 2rem;">
+                <i class="fas fa-exclamation-triangle"></i> <strong>Warning:</strong> These actions cannot be undone. Please use with caution.
+              </div>
+              
+              <h3 style="color: var(--color-dark-2); margin-bottom: 1.5rem;">Add New Data</h3>
+              
+              <div class="admin-actions-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem;" id="admin-add-section">
+                <div class="admin-action-card" style="border: 2px solid var(--color-accent-2); border-radius: 8px; padding: 1.5rem; background: var(--color-bg-transparent);">
+                  <h4 style="color: var(--color-dark-2); margin-bottom: 0.5rem;">
+                    <i class="fas fa-user-plus"></i> Add New OC
+                  </h4>
+                  <p style="color: var(--color-text-dark-2); font-size: 0.9rem; margin-bottom: 1rem;">
+                    Create a new original character entry.
+                  </p>
+                  <button class="btn-naruto" onclick="window.adminAddOC()" style="width: 100%;">
+                    <i class="fas fa-plus"></i> Add OC
+                  </button>
+                </div>
+                
+                <div class="admin-action-card" style="border: 2px solid var(--color-accent-2); border-radius: 8px; padding: 1.5rem; background: var(--color-bg-transparent);">
+                  <h4 style="color: var(--color-dark-2); margin-bottom: 0.5rem;">
+                    <i class="fas fa-flag"></i> Add New Clan
+                  </h4>
+                  <p style="color: var(--color-text-dark-2); font-size: 0.9rem; margin-bottom: 1rem;">
+                    Create a new clan entry.
+                  </p>
+                  <button class="btn-naruto" onclick="window.adminAddClan()" style="width: 100%;">
+                    <i class="fas fa-plus"></i> Add Clan
+                  </button>
+                </div>
+                
+                <div class="admin-action-card" style="border: 2px solid var(--color-accent-2); border-radius: 8px; padding: 1.5rem; background: var(--color-bg-transparent);">
+                  <h4 style="color: var(--color-dark-2); margin-bottom: 0.5rem;">
+                    <i class="fas fa-book"></i> Add New Story
+                  </h4>
+                  <p style="color: var(--color-text-dark-2); font-size: 0.9rem; margin-bottom: 1rem;">
+                    Create a new story entry.
+                  </p>
+                  <button class="btn-naruto" onclick="window.adminAddStory()" style="width: 100%;">
+                    <i class="fas fa-plus"></i> Add Story
+                  </button>
+                </div>
+                
+                <div class="admin-action-card" style="border: 2px solid var(--color-accent-2); border-radius: 8px; padding: 1.5rem; background: var(--color-bg-transparent);">
+                  <h4 style="color: var(--color-dark-2); margin-bottom: 0.5rem;">
+                    <i class="fas fa-scroll"></i> Add New Lore
+                  </h4>
+                  <p style="color: var(--color-text-dark-2); font-size: 0.9rem; margin-bottom: 1rem;">
+                    Create a new lore entry.
+                  </p>
+                  <button class="btn-naruto" onclick="window.adminAddLore()" style="width: 100%;">
+                    <i class="fas fa-plus"></i> Add Lore
+                  </button>
+                </div>
+              </div>
+              
+              <h3 style="color: var(--color-dark-2); margin-bottom: 1.5rem; margin-top: 2rem;">Edit Existing Entries</h3>
+              
+              <div class="admin-edit-section" style="margin-bottom: 2rem;">
+                <div class="admin-edit-tabs" style="display: flex; gap: 0.5rem; margin-bottom: 1rem; border-bottom: 2px solid var(--color-dark-2);">
+                  <button class="admin-edit-tab active" onclick="window.loadAdminEditSection('ocs', this)" style="padding: 0.75rem 1.5rem; background: transparent; border: none; border-bottom: 3px solid var(--color-accent-2); color: var(--color-dark-2); font-weight: 600; cursor: pointer;">
+                    <i class="fas fa-users"></i> OCs
+                  </button>
+                  <button class="admin-edit-tab" onclick="window.loadAdminEditSection('clans', this)" style="padding: 0.75rem 1.5rem; background: transparent; border: none; border-bottom: 3px solid transparent; color: var(--color-text-dark-2); cursor: pointer;">
+                    <i class="fas fa-flag"></i> Clans
+                  </button>
+                  <button class="admin-edit-tab" onclick="window.loadAdminEditSection('stories', this)" style="padding: 0.75rem 1.5rem; background: transparent; border: none; border-bottom: 3px solid transparent; color: var(--color-text-dark-2); cursor: pointer;">
+                    <i class="fas fa-book"></i> Stories
+                  </button>
+                  <button class="admin-edit-tab" onclick="window.loadAdminEditSection('lore', this)" style="padding: 0.75rem 1.5rem; background: transparent; border: none; border-bottom: 3px solid transparent; color: var(--color-text-dark-2); cursor: pointer;">
+                    <i class="fas fa-scroll"></i> Lore
+                  </button>
+                </div>
+                <div id="admin-edit-content" style="min-height: 200px; max-height: 400px; overflow-y: auto; padding: 1rem; background: var(--color-bg-1); border-radius: 8px; border: 2px solid var(--color-dark-2);">
+                  <p style="text-align: center; color: var(--color-text-dark-2); padding: 2rem;">Select a category above to view and edit entries.</p>
+                </div>
+              </div>
+              
+              <h3 style="color: var(--color-dark-2); margin-bottom: 1.5rem; margin-top: 2rem;">Data Management</h3>
+              
+              <div class="admin-actions-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
+                <div class="admin-action-card" style="border: 2px solid var(--color-dark-2); border-radius: 8px; padding: 1.5rem; background: var(--color-bg-transparent);">
+                  <h4 style="color: var(--color-dark-2); margin-bottom: 0.5rem;">
+                    <i class="fas fa-users"></i> Clear All OCs
+                  </h4>
+                  <p style="color: var(--color-text-dark-2); font-size: 0.9rem; margin-bottom: 1rem;">
+                    Remove all OC entries. This will also clear OC references from clans, stories, and lore.
+                  </p>
+                  <button class="btn-naruto btn-naruto-danger" onclick="window.adminClearOCs()" style="width: 100%;">
+                    <i class="fas fa-trash"></i> Clear All OCs
+                  </button>
+                </div>
+                
+                <div class="admin-action-card" style="border: 2px solid var(--color-dark-2); border-radius: 8px; padding: 1.5rem; background: var(--color-bg-transparent);">
+                  <h4 style="color: var(--color-dark-2); margin-bottom: 0.5rem;">
+                    <i class="fas fa-flag"></i> Clear All Clans
+                  </h4>
+                  <p style="color: var(--color-text-dark-2); font-size: 0.9rem; margin-bottom: 1rem;">
+                    Remove all clan entries. OC clan associations will be cleared.
+                  </p>
+                  <button class="btn-naruto btn-naruto-danger" onclick="window.adminClearClans()" style="width: 100%;">
+                    <i class="fas fa-trash"></i> Clear All Clans
+                  </button>
+                </div>
+                
+                <div class="admin-action-card" style="border: 2px solid var(--color-dark-2); border-radius: 8px; padding: 1.5rem; background: var(--color-bg-transparent);">
+                  <h4 style="color: var(--color-dark-2); margin-bottom: 0.5rem;">
+                    <i class="fas fa-book"></i> Clear All Stories
+                  </h4>
+                  <p style="color: var(--color-text-dark-2); font-size: 0.9rem; margin-bottom: 1rem;">
+                    Remove all story entries.
+                  </p>
+                  <button class="btn-naruto btn-naruto-danger" onclick="window.adminClearStories()" style="width: 100%;">
+                    <i class="fas fa-trash"></i> Clear All Stories
+                  </button>
+                </div>
+                
+                <div class="admin-action-card" style="border: 2px solid var(--color-dark-2); border-radius: 8px; padding: 1.5rem; background: var(--color-bg-transparent);">
+                  <h4 style="color: var(--color-dark-2); margin-bottom: 0.5rem;">
+                    <i class="fas fa-scroll"></i> Clear All Lore
+                  </h4>
+                  <p style="color: var(--color-text-dark-2); font-size: 0.9rem; margin-bottom: 1rem;">
+                    Remove all lore entries.
+                  </p>
+                  <button class="btn-naruto btn-naruto-danger" onclick="window.adminClearLore()" style="width: 100%;">
+                    <i class="fas fa-trash"></i> Clear All Lore
+                  </button>
+                </div>
+              </div>
+              
+              <div style="border-top: 2px solid var(--color-dark-2); padding-top: 2rem; margin-top: 2rem;">
+                <h3 style="color: #d32f2f; margin-bottom: 1.5rem;">
+                  <i class="fas fa-exclamation-triangle"></i> Danger Zone
+                </h3>
+                <div class="admin-action-card" style="border: 2px solid #d32f2f; border-radius: 8px; padding: 1.5rem; background: rgba(211, 47, 47, 0.1);">
+                  <h4 style="color: #d32f2f; margin-bottom: 0.5rem;">
+                    <i class="fas fa-bomb"></i> Clear ALL Data
+                  </h4>
+                  <p style="color: var(--color-text-dark-2); font-size: 0.9rem; margin-bottom: 1rem;">
+                    <strong>This will permanently delete everything:</strong> All OCs, clans, stories, and lore. This action cannot be undone!
+                  </p>
+                  <button class="btn-naruto" onclick="window.adminClearAll()" style="width: 100%; background-color: #d32f2f; border-color: #d32f2f;">
+                    <i class="fas fa-exclamation-triangle"></i> Clear ALL Data
+                  </button>
+                </div>
+              </div>
+              
+              <div style="margin-top: 2rem; padding-top: 2rem; border-top: 1px solid var(--color-dark-2);">
+                <button class="btn-naruto btn-naruto-secondary" onclick="window.adminLogout()" style="width: 100%;">
+                  <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <!-- Font Awesome Kit -->
+  <script src="https://kit.fontawesome.com/262000d25d.js" crossorigin="anonymous"></script>
+  
+  <!-- Marked.js for Markdown rendering -->
+  <script src="https://cdn.jsdelivr.net/npm/marked@9.1.6/marked.min.js"></script>
+  
+  <!-- App Scripts -->
+  <script type="module" src="app.js"></script>
+</body>
+</html>
