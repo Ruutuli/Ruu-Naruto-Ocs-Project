@@ -1,0 +1,106 @@
+{
+  "id": "clanTest",
+  "name": "test",
+  "kanji": "",
+  "meaning": "",
+  "tagline": "",
+  "summary": "",
+  "affiliation": "",
+  "classification": "",
+  "status": "",
+  "village": "Land of Whirlpools",
+  "symbol": "",
+  "overview": {
+    "origins": "",
+    "knownFor": "",
+    "purpose": "",
+    "fitInUniverse": ""
+  },
+  "kekkeiGenkai": {
+    "name": "",
+    "type": "",
+    "classification": "",
+    "chakraNature": "",
+    "description": "",
+    "activation": "",
+    "mechanics": [],
+    "strengths": [],
+    "weaknesses": [],
+    "notableJutsu": []
+  },
+  "clanStructure": {
+    "clanHead": "",
+    "councilElders": "",
+    "branchSystem": "",
+    "crestsSeals": "",
+    "politicalTensions": "",
+    "lawsRules": ""
+  },
+  "cultureTraditions": {
+    "values": [],
+    "longHeldTraditions": "",
+    "clanSayings": []
+  },
+  "villagePlacement": {
+    "primaryVillage": "",
+    "dutiesAssigned": "",
+    "relationsWithClans": "",
+    "roleInConflicts": ""
+  },
+  "combatInfo": {
+    "signatureWeaponry": "",
+    "battleStrengths": [],
+    "battleWeaknesses": []
+  },
+  "villagesLands": {
+    "primaryLocation": "",
+    "branches": [],
+    "territory": "",
+    "reputation": ""
+  },
+  "appearancePhysicalTraits": "",
+  "abilities": {
+    "signatureJutsu": [],
+    "chakraNatures": {
+      "primary": "",
+      "secondary": "",
+      "rare": ""
+    },
+    "combatStyle": "",
+    "roleInVillage": "",
+    "strengths": [],
+    "weaknesses": []
+  },
+  "leaders": {
+    "currentLeader": "",
+    "pastLeaders": [],
+    "heirs": ""
+  },
+  "notableMembers": [],
+  "ocCreationAllowed": "Ask",
+  "clanHistory": {
+    "ancientEra": "",
+    "feudalEra": "",
+    "foundingOfVillages": "",
+    "modernEra": ""
+  },
+  "clanSymbols": {
+    "clanCrest": "",
+    "artifacts": [],
+    "secretKnowledge": ""
+  },
+  "optionalExtras": {
+    "bloodlineMutations": "",
+    "branchFamilySpecialties": "",
+    "clanWeaknessDisease": "",
+    "summoningContractHistory": "",
+    "restrictedTechniques": [],
+    "clanMotto": "",
+    "clanRankingSystem": "",
+    "clanArchitecture": ""
+  },
+  "trivia": "",
+  "references": "",
+  "members": [],
+  "moodBoardImages": []
+}
