@@ -1,0 +1,95 @@
+{
+  "id": "ocAkene",
+  "lastName": "Chigiri",
+  "firstName": "Akene",
+  "aliases": [],
+  "dob": "",
+  "age": 0,
+  "bloodType": "",
+  "gender": "",
+  "chakraType": "",
+  "village": "Konoha",
+  "rank": "Genin",
+  "clanId": null,
+  "stats": {
+    "intelligence": 3,
+    "stamina": 3,
+    "strength": 3,
+    "speed": 3,
+    "ninjutsu": 3,
+    "genjutsu": 3,
+    "taijutsu": 3,
+    "handSeals": 3
+  },
+  "identifyingInfo": {
+    "bodyType": "",
+    "height": "",
+    "weight": "",
+    "madeGenin": "",
+    "madeChunin": ""
+  },
+  "battleStrategy": {
+    "inTeam": "",
+    "alone": "",
+    "fieldPosition": "",
+    "effectiveDistance": "",
+    "specialty": "",
+    "notableAbilities": ""
+  },
+  "personality": {
+    "likes": [],
+    "dislikes": [],
+    "demeanor": {
+      "charisma": 0,
+      "extraversion": 0,
+      "energy": 0,
+      "empathy": 0,
+      "impulsivity": 0,
+      "neuroticism": 0,
+      "intuition": 0,
+      "observation": 0,
+      "sensitivity": 0,
+      "generosity": 0,
+      "respectForAuthority": 0
+    }
+  },
+  "abilities": {
+    "taijutsu": [],
+    "ninjutsu": []
+  },
+  "knownAssociates": [],
+  "recordHistory": {
+    "childhood": "",
+    "adolescence": "",
+    "adulthood": ""
+  },
+  "appearance": {
+    "image": "",
+    "colors": [],
+    "gear": []
+  },
+  "profileImage": "",
+  "zodiac": "",
+  "sexualOrientation": "",
+  "romanticOrientation": "",
+  "ninjaRegistrationNumber": "",
+  "academyGraduationAge": "",
+  "classification": [],
+  "kekkeiGenkai": "",
+  "themeSong": "",
+  "voiceActors": {
+    "japanese": "",
+    "english": ""
+  },
+  "fears": [],
+  "moralAlignment": "",
+  "mbti": "",
+  "enneagram": "",
+  "missions": {
+    "s": 0,
+    "a": 0,
+    "b": 0,
+    "c": 0,
+    "d": 0
+  }
+}
