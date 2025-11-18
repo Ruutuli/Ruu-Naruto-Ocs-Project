@@ -226,8 +226,14 @@ export const defaultLore = {
   relatedClans: []
 };
 
-// Helper to generate unique IDs
-export function generateId() {
-  return Date.now().toString(36) + Math.random().toString(36).substr(2);
+// Helper to generate unique IDs with prefix
+// New format: prefix + Name (e.g., "clanChigiri", "ocAkene", "storyName")
+export function generateId(prefix = '', name = '') {
+  if (prefix && name) {
+    const cleanName = name.replace(/[^a-zA-Z0-9]/g, ''); // Remove special characters
+    return prefix + cleanName.charAt(0).toUpperCase() + cleanName.slice(1);
+  }
+  // Fallback: temporary ID for forms (will be replaced when saved)
+  return 'temp' + Date.now().toString(36) + Math.random().toString(36).substr(2);
 }
 
