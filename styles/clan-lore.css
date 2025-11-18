@@ -686,8 +686,8 @@
 /* Mood Board Styling */
 .mood-board-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 1.25rem;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
   margin-top: 1rem;
   padding: 0.5rem;
 }
@@ -774,8 +774,162 @@
   }
   
   .mood-board-grid {
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    grid-template-columns: repeat(2, 1fr);
     gap: 0.75rem;
+  }
+}
+
+/* Bottom Chapter Navigation */
+.story-chapter-nav-bottom {
+  margin-top: 3rem;
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background-color: var(--color-bg-1);
+  border: 2px solid var(--color-dark-3);
+  border-radius: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.story-chapter-info {
+  color: var(--color-text-dark-2);
+  font-size: 1rem;
+  font-weight: 600;
+  text-align: center;
+  flex: 1;
+  min-width: 150px;
+}
+
+.story-chapter-nav-bottom .story-chapter-btn {
+  flex: 1;
+  min-width: 150px;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+}
+
+/* Reader Mode Styles */
+.reader-mode-active {
+  max-width: 100% !important;
+}
+
+.reader-mode-active .story-meta-section,
+.reader-mode-active .story-tags-container,
+.reader-mode-active .story-summary-section,
+.reader-mode-active .story-characters-section,
+.reader-mode-active .story-chapter-nav:not(.story-chapter-nav-bottom),
+.reader-mode-active .story-chapter-header {
+  display: none;
+}
+
+.reader-mode-active .detail-title {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  font-size: 2rem;
+}
+
+.reader-mode-active .story-content-section {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
+  background-color: var(--color-bg-1);
+  border: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.reader-mode-active .story-content-text {
+  font-size: 1.15rem;
+  line-height: 1.9;
+  color: var(--color-text-dark-2);
+  max-width: 100%;
+  text-align: left;
+  font-family: 'Georgia', 'Times New Roman', serif;
+}
+
+.reader-mode-active .story-content-text p {
+  margin-bottom: 1.5rem;
+  text-indent: 0;
+  text-align: justify;
+}
+
+.reader-mode-active .story-chapter-nav-bottom {
+  max-width: 800px;
+  margin: 3rem auto 2rem;
+  position: sticky;
+  bottom: 1rem;
+  z-index: 10;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.reader-mode-active #reader-mode-toggle {
+  position: fixed;
+  top: 5rem;
+  right: 1rem;
+  z-index: 100;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  background-color: var(--color-accent-2);
+  color: white;
+}
+
+.reader-mode-active #reader-mode-toggle:hover {
+  background-color: var(--color-accent-3);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+}
+
+/* Mobile Reader Mode */
+@media (max-width: 768px) {
+  .reader-mode-active .story-content-section {
+    padding: 1.5rem;
+    margin: 0;
+    max-width: 100%;
+    border-radius: 0;
+  }
+  
+  .reader-mode-active .story-content-text {
+    font-size: 1.05rem;
+    line-height: 1.8;
+    padding: 0;
+  }
+  
+  .reader-mode-active .story-content-text p {
+    margin-bottom: 1.25rem;
+    text-align: left;
+  }
+  
+  .reader-mode-active .story-chapter-nav-bottom {
+    position: relative;
+    bottom: auto;
+    margin: 2rem 0;
+    flex-direction: column;
+    padding: 1rem;
+  }
+  
+  .reader-mode-active .story-chapter-nav-bottom .story-chapter-btn {
+    width: 100%;
+    min-width: 100%;
+  }
+  
+  .reader-mode-active .story-chapter-info {
+    order: -1;
+    margin-bottom: 0.5rem;
+  }
+  
+  .reader-mode-active #reader-mode-toggle {
+    top: 4.5rem;
+    right: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.85rem;
+  }
+  
+  .reader-mode-active #reader-mode-toggle span {
+    display: none;
+  }
+  
+  .reader-mode-active #reader-mode-toggle i {
+    margin: 0;
   }
 }
 

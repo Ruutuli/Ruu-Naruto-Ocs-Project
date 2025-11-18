@@ -210,6 +210,7 @@ export const defaultStory = {
   title: '',
   summary: '',
   content: '',
+  author: '',
   characters: [],
   tags: [],
   createdAt: '',

@@ -19,6 +19,9 @@ export function renderStoryCard(story, onClick) {
         ${story.updatedAt && story.updatedAt !== story.createdAt ? 
           `<br><strong style="color: var(--color-dark-2); text-transform: uppercase; font-size: 0.85rem;">Updated:</strong> <span style="color: var(--color-text-dark-2); font-weight: 500;">${new Date(story.updatedAt).toLocaleDateString()}</span>` 
           : ''}
+        ${story.author ? 
+          `<br><strong style="color: var(--color-dark-2); text-transform: uppercase; font-size: 0.85rem;">Author:</strong> <span style="color: var(--color-text-dark-2); font-weight: 500;">${story.author}</span>` 
+          : ''}
       </div>
       ${chapterCount > 1 ? `
         <div style="padding: 0.5rem; background-color: rgba(227, 94, 63, 0.1); border-radius: 4px; margin-bottom: 0.75rem; text-align: center;">
@@ -26,11 +29,16 @@ export function renderStoryCard(story, onClick) {
           <strong style="color: var(--color-dark-2);">${chapterCount} Chapters</strong>
         </div>
       ` : ''}
-      ${story.summary ? `
-        <p style="margin-top: 1rem; font-size: 0.95rem; line-height: 1.6; color: var(--color-text-dark); max-height: 120px; overflow: hidden; text-overflow: ellipsis; padding: 0.75rem; background-color: var(--color-bg-1); border-left: 3px solid var(--color-accent-2); border-radius: 4px;">
-          ${story.summary.substring(0, 200)}${story.summary.length > 200 ? '...' : ''}
-        </p>
-      ` : '<p style="color: #999; font-style: italic; padding: 0.75rem;">No summary available.</p>'}
+      ${story.summary && story.summary.trim() ? `
+        <div style="margin-top: 1rem;">
+          <strong style="color: var(--color-dark-2); text-transform: uppercase; font-size: 0.85rem; display: block; margin-bottom: 0.5rem;">
+            <i class="fas fa-scroll" style="color: var(--color-accent-2); margin-right: 0.5rem;"></i>Summary
+          </strong>
+          <p style="font-size: 0.95rem; line-height: 1.6; color: var(--color-text-dark); max-height: 120px; overflow: hidden; text-overflow: ellipsis; padding: 0.75rem; background-color: var(--color-bg-1); border-left: 3px solid var(--color-accent-2); border-radius: 4px;">
+            ${story.summary.trim().substring(0, 200)}${story.summary.trim().length > 200 ? '...' : ''}
+          </p>
+        </div>
+      ` : ''}
       ${story.tags && story.tags.length > 0 ? `
         <div style="margin-top: 1rem; display: flex; flex-wrap: wrap; gap: 0.5rem;">
           ${story.tags.map(tag => `<span class="badge" style="background-color: var(--color-accent-2); color: white; padding: 0.35rem 0.75rem; border-radius: 15px; font-size: 0.8rem; font-weight: 600; text-transform: uppercase;">${tag}</span>`).join('')}

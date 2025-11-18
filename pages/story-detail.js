@@ -22,7 +22,7 @@ export function renderStoryDetail(story) {
       <select class="story-chapter-select" id="story-chapter-select" onchange="window.changeStoryChapter('${story.id}', parseInt(this.value))">
         ${chapters.map((chapter, index) => `
           <option value="${index}" ${index === currentChapterIndex ? 'selected' : ''}>
-            ${chapter.title || `Chapter ${index + 1}`}
+            Chapter ${index + 1}${chapter.title ? `: ${chapter.title}` : ''}
           </option>
         `).join('')}
       </select>
@@ -58,6 +58,12 @@ export function renderStoryDetail(story) {
           <div class="story-meta-item">
             <i class="fas fa-edit" style="color: var(--color-accent-2); margin-right: 0.5rem;"></i>
             <strong>Updated:</strong> ${updatedAt}
+          </div>
+        ` : ''}
+        ${story.author ? `
+          <div class="story-meta-item">
+            <i class="fas fa-user" style="color: var(--color-accent-2); margin-right: 0.5rem;"></i>
+            <strong>Author:</strong> ${story.author}
           </div>
         ` : ''}
         ${chapters.length > 1 ? `
@@ -106,10 +112,31 @@ export function renderStoryDetail(story) {
         </div>
       ` : ''}
       
-      <div class="story-content-section">
-        ${chapters.length > 1 ? '' : '<h3><i class="fas fa-scroll" style="margin-right: 0.5rem; color: var(--color-accent-2);"></i>Story Content</h3>'}
-        <div class="story-content-text markdown-content">${renderMarkdown(currentChapter.content || 'No content available.')}</div>
+      <div class="story-content-section" id="story-content-section">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 1rem;">
+          ${chapters.length > 1 ? '' : '<h3 style="margin: 0;"><i class="fas fa-scroll" style="margin-right: 0.5rem; color: var(--color-accent-2);"></i>Story Content</h3>'}
+          <button class="btn-naruto" id="reader-mode-toggle" onclick="window.toggleReaderMode()" style="padding: 0.5rem 1rem; font-size: 0.9rem;">
+            <i class="fas fa-book-reader"></i> <span id="reader-mode-text">Reader Mode</span>
+          </button>
+        </div>
+        <div class="story-content-text markdown-content" id="story-content-text">${renderMarkdown(currentChapter.content || 'No content available.')}</div>
       </div>
+      
+      ${chapters.length > 1 ? `
+        <div class="story-chapter-nav story-chapter-nav-bottom">
+          <button class="story-chapter-btn" ${currentChapterIndex === 0 ? 'disabled' : ''} 
+            onclick="window.changeStoryChapter('${story.id}', ${currentChapterIndex - 1})">
+            <i class="fas fa-chevron-left"></i> Previous Chapter
+          </button>
+          <div class="story-chapter-info">
+            Chapter ${currentChapterIndex + 1} of ${chapters.length}
+          </div>
+          <button class="story-chapter-btn" ${currentChapterIndex >= chapters.length - 1 ? 'disabled' : ''} 
+            onclick="window.changeStoryChapter('${story.id}', ${currentChapterIndex + 1})">
+            Next Chapter <i class="fas fa-chevron-right"></i>
+          </button>
+        </div>
+      ` : ''}
       
     </div>
   `;
@@ -138,6 +165,9 @@ window.changeStoryChapter = function(storyId, chapterIndex) {
       container.innerHTML = '';
       container.appendChild(detail);
       
+      // Restore reader mode if it was active
+      window.restoreReaderMode();
+      
       // Scroll to top of content
       const contentSection = container.querySelector('.story-content-section');
       if (contentSection) {
@@ -158,6 +188,49 @@ window.deleteStory = function(id) {
       module.default.deleteStory(id);
       window.navigateTo('stories');
     });
+  }
+};
+
+// Reader mode toggle
+window.toggleReaderMode = function() {
+  const container = document.querySelector('.detail-content');
+  const contentSection = document.getElementById('story-content-section');
+  const contentText = document.getElementById('story-content-text');
+  const toggleBtn = document.getElementById('reader-mode-toggle');
+  const toggleText = document.getElementById('reader-mode-text');
+  
+  if (!container || !contentSection || !contentText) return;
+  
+  const isReaderMode = container.classList.toggle('reader-mode-active');
+  
+  if (isReaderMode) {
+    toggleText.textContent = 'Exit Reader Mode';
+    toggleBtn.innerHTML = '<i class="fas fa-times"></i> <span id="reader-mode-text">Exit Reader Mode</span>';
+    // Scroll to content
+    setTimeout(() => {
+      contentSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 100);
+  } else {
+    toggleText.textContent = 'Reader Mode';
+    toggleBtn.innerHTML = '<i class="fas fa-book-reader"></i> <span id="reader-mode-text">Reader Mode</span>';
+  }
+  
+  // Save preference to localStorage
+  localStorage.setItem('storyReaderMode', isReaderMode ? 'true' : 'false');
+};
+
+// Restore reader mode preference on load
+window.restoreReaderMode = function() {
+  const savedMode = localStorage.getItem('storyReaderMode');
+  if (savedMode === 'true') {
+    const container = document.querySelector('.detail-content');
+    if (container) {
+      container.classList.add('reader-mode-active');
+      const toggleBtn = document.getElementById('reader-mode-toggle');
+      if (toggleBtn) {
+        toggleBtn.innerHTML = '<i class="fas fa-times"></i> <span id="reader-mode-text">Exit Reader Mode</span>';
+      }
+    }
   }
 };
 

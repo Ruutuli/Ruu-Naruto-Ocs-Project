@@ -1358,6 +1358,13 @@ window.showStoryDetail = function(id) {
     const detail = module.renderStoryDetail(story);
     container.innerHTML = '';
     container.appendChild(detail);
+    
+    // Restore reader mode if it was active
+    setTimeout(() => {
+      if (window.restoreReaderMode) {
+        window.restoreReaderMode();
+      }
+    }, 100);
   });
 };
 
