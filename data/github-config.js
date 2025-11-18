@@ -15,8 +15,9 @@ export const githubConfig = {
   // Get one at: https://github.com/settings/tokens
   // Required scopes: 'repo' (full control of private repositories)
   // Store this securely - never commit it to GitHub!
-  // You can set it here, or it will be loaded from localStorage
-  token: 'null', // Set your token here or use localStorage
+  // Token should be stored in localStorage (use saveGitHubToken() function)
+  // or set via environment variable
+  token: null, // Use localStorage instead - never hardcode tokens!
 };
 
 // Function to get token from config, localStorage, or return null
