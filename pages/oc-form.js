@@ -22,14 +22,29 @@ export function renderOCForm(oc = null, onSave) {
         <div class="row">
           <div class="col-md-6">
             <div class="form-group">
-              <label class="form-label">Last Name 名字</label>
+              <label class="form-label">Last Name 名字 <small style="font-weight: normal; color: var(--color-text-dark-2);">(e.g., Chigiri)</small></label>
               <input type="text" class="form-control" id="lastName" value="${formOC.lastName || ''}" required>
             </div>
           </div>
           <div class="col-md-6">
             <div class="form-group">
-              <label class="form-label">First Name 名前</label>
+              <label class="form-label">First Name 名前 <small style="font-weight: normal; color: var(--color-text-dark-2);">(e.g., Akene)</small></label>
               <input type="text" class="form-control" id="firstName" value="${formOC.firstName || ''}" required>
+            </div>
+          </div>
+        </div>
+        
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group">
+              <label class="form-label">Name in Kanji/Hiragana/Katakana</label>
+              <input type="text" class="form-control" id="nameJapanese" value="${formOC.nameJapanese || ''}" placeholder="e.g., 千切 明音">
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <label class="form-label">Name Meaning</label>
+              <input type="text" class="form-control" id="nameMeaning" value="${formOC.nameMeaning || ''}" placeholder="e.g., Thousand cuts, bright sound">
             </div>
           </div>
         </div>
@@ -370,6 +385,8 @@ export function renderOCForm(oc = null, onSave) {
       id: formOC.id,
       lastName: document.getElementById('lastName').value,
       firstName: document.getElementById('firstName').value,
+      nameJapanese: document.getElementById('nameJapanese').value,
+      nameMeaning: document.getElementById('nameMeaning').value,
       aliases: document.getElementById('aliases').value.split(',').map(a => a.trim()).filter(a => a),
       dob: document.getElementById('dob').value,
       age: parseInt(document.getElementById('age').value) || 0,

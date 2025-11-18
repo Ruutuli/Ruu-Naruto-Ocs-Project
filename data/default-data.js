@@ -4,6 +4,8 @@ export const defaultOC = {
   id: '',
   lastName: '',
   firstName: '',
+  nameJapanese: '',
+  nameMeaning: '',
   aliases: [],
   dob: '',
   age: 0,

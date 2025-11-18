@@ -14,15 +14,29 @@ class Storage {
     };
     this._githubBase = `https://api.github.com/repos/${githubConfig.owner}/${githubConfig.repo}`;
     this._token = null;
+    this._isLocalhost = this.isLocalhost();
     this.init();
+  }
+
+  // Check if running on localhost
+  isLocalhost() {
+    return window.location.hostname === 'localhost' || 
+           window.location.hostname === '127.0.0.1' || 
+           window.location.hostname === '';
   }
 
   async init() {
     // Check for GitHub token (from config or localStorage)
     this._token = getGitHubToken();
     
-    // Load all existing data from GitHub
-    await this.loadAllFromGitHub();
+    // Load all existing data
+    if (this._isLocalhost && !this._token) {
+      // On localhost without token, use localStorage
+      await this.loadAllFromLocalStorage();
+    } else {
+      // Try GitHub first, fallback to localStorage if needed
+      await this.loadAllFromGitHub();
+    }
   }
 
   // Get file SHA (required for updating existing files)
@@ -55,26 +69,23 @@ class Storage {
 
   // Load all files from GitHub
   async loadAllFromGitHub() {
-    if (!this._token) {
-      console.warn('No GitHub token available, loading from static files');
-      await this.loadAllFromStaticFiles();
-      return;
-    }
-
+    // Try GitHub API first (works for public repos even without token)
     try {
       const types = ['ocs', 'clans', 'stories', 'lore'];
       
       for (const type of types) {
         try {
-          // Get directory contents from GitHub
+          // Get directory contents from GitHub (works for public repos without token)
+          const headers = {
+            'Accept': 'application/vnd.github.v3+json'
+          };
+          if (this._token) {
+            headers['Authorization'] = `token ${this._token}`;
+          }
+          
           const response = await fetch(
             `${this._githubBase}/contents/data/${type}?ref=${githubConfig.branch}`,
-            {
-              headers: {
-                'Authorization': `token ${this._token}`,
-                'Accept': 'application/vnd.github.v3+json'
-              }
-            }
+            { headers }
           );
 
           if (response.ok) {
@@ -100,16 +111,37 @@ class Storage {
           } else if (response.status === 404) {
             // Directory doesn't exist yet, that's fine - silently handle
             // This is expected behavior when directories haven't been created in GitHub yet
+            // On localhost, try localStorage as fallback
+            if (this._isLocalhost) {
+              this.loadTypeFromLocalStorage(type);
+            }
+          } else if (response.status === 403 && !this._token) {
+            // Rate limited or private repo - fallback to static files or localStorage
+            if (this._isLocalhost) {
+              // Try localStorage first on localhost
+              this.loadTypeFromLocalStorage(type);
+            } else {
+              await this.loadFromStaticFiles(type);
+            }
           }
         } catch (e) {
           console.log(`Could not load ${type} from GitHub:`, e);
-          // Fallback to static files
-          await this.loadFromStaticFiles(type);
+          // Fallback to localStorage on localhost, otherwise static files
+          if (this._isLocalhost) {
+            this.loadTypeFromLocalStorage(type);
+          } else {
+            await this.loadFromStaticFiles(type);
+          }
         }
       }
     } catch (e) {
-      console.log('Could not load from GitHub, trying static files:', e);
-      await this.loadAllFromStaticFiles();
+      console.log('Could not load from GitHub:', e);
+      // On localhost, try localStorage, otherwise static files
+      if (this._isLocalhost) {
+        await this.loadAllFromLocalStorage();
+      } else {
+        await this.loadAllFromStaticFiles();
+      }
     }
   }
 
@@ -123,26 +155,122 @@ class Storage {
   }
 
   async loadFromStaticFiles(type) {
-    if (type === 'clans') {
-      const knownFiles = ['clanChigiri'];
-      for (const fileId of knownFiles) {
+    // Try to discover files dynamically
+    // First, try to get a manifest file that lists available files
+    try {
+      const manifestResponse = await fetch(`data/${type}/manifest.json`);
+      if (manifestResponse.ok) {
+        const manifest = await manifestResponse.json();
+        const files = manifest.files || [];
+        for (const fileId of files) {
+          await this.loadStaticFile(type, fileId);
+        }
+        return;
+      }
+    } catch (e) {
+      // Manifest doesn't exist, continue to other methods
+    }
+
+    // If no manifest, try to discover files by attempting to load them
+    // This is a fallback - we'll try common patterns
+    // Note: This is not ideal but works when we can't list directories
+    await this.discoverStaticFiles(type);
+  }
+
+  async loadStaticFile(type, fileId) {
+    try {
+      const response = await fetch(`data/${type}/${fileId}.json`);
+      if (response.ok) {
+        const data = await response.json();
+        if (data && data.id) {
+          this._cache[type].set(data.id, data);
+        }
+      }
+    } catch (e) {
+      // File doesn't exist or other error, skip it silently
+    }
+  }
+
+  async discoverStaticFiles(type) {
+    // Try to discover files by checking if common file patterns exist
+    // This is a best-effort approach when we can't list directories
+    // We'll try files that might exist based on IDs we've seen in the cache or common patterns
+    
+    // Since we can't list directories in the browser, we'll rely on:
+    // 1. Files already loaded from GitHub (if any)
+    // 2. Files that might be referenced by other loaded data
+    
+    // For now, we'll just skip discovery and let files be loaded on-demand
+    // when they're accessed through the application
+    // This prevents unnecessary 404 errors
+  }
+
+  // Save to localStorage (for localhost fallback)
+  saveToLocalStorage(type, id, data) {
+    try {
+      const key = `naruto_oc_${type}_${id}`;
+      localStorage.setItem(key, JSON.stringify(data));
+      
+      // Also maintain a list of all IDs for this type
+      const listKey = `naruto_oc_${type}_list`;
+      let idList = JSON.parse(localStorage.getItem(listKey) || '[]');
+      if (!idList.includes(id)) {
+        idList.push(id);
+        localStorage.setItem(listKey, JSON.stringify(idList));
+      }
+      
+      // Update cache
+      this._cache[type].set(id, data);
+      return true;
+    } catch (e) {
+      console.error(`Error saving to localStorage:`, e);
+      return false;
+    }
+  }
+
+  // Load a single type from localStorage
+  loadTypeFromLocalStorage(type) {
+    const listKey = `naruto_oc_${type}_list`;
+    const idList = JSON.parse(localStorage.getItem(listKey) || '[]');
+    
+    for (const id of idList) {
+      const key = `naruto_oc_${type}_${id}`;
+      const data = localStorage.getItem(key);
+      if (data) {
         try {
-          const response = await fetch(`data/${type}/${fileId}.json`);
-          if (response.ok) {
-            const data = await response.json();
-            this._cache[type].set(data.id, data);
+          const parsed = JSON.parse(data);
+          if (parsed && parsed.id) {
+            this._cache[type].set(parsed.id, parsed);
           }
         } catch (e) {
-          // File doesn't exist, skip it
+          console.error(`Error loading ${type}/${id} from localStorage:`, e);
         }
       }
     }
   }
 
-  // Save a file to GitHub
+  // Load from localStorage (for localhost fallback)
+  loadAllFromLocalStorage() {
+    const types = ['ocs', 'clans', 'stories', 'lore'];
+    
+    for (const type of types) {
+      this.loadTypeFromLocalStorage(type);
+    }
+  }
+
+  // Save a file to GitHub (or localStorage on localhost)
   async saveFile(type, id, data) {
     if (!this._token) {
       this._token = getGitHubToken();
+    }
+    
+    // If on localhost and no token, use localStorage
+    if (this._isLocalhost && !this._token) {
+      const success = this.saveToLocalStorage(type, id, data);
+      if (success) {
+        this.showNotification(`${type} saved locally!`);
+      }
+      return success;
     }
     
     if (!this._token) {
@@ -207,10 +335,40 @@ class Storage {
     }
   }
 
-  // Delete a file from GitHub
+  // Delete from localStorage (for localhost fallback)
+  deleteFromLocalStorage(type, id) {
+    try {
+      const key = `naruto_oc_${type}_${id}`;
+      localStorage.removeItem(key);
+      
+      // Remove from ID list
+      const listKey = `naruto_oc_${type}_list`;
+      let idList = JSON.parse(localStorage.getItem(listKey) || '[]');
+      idList = idList.filter(existingId => existingId !== id);
+      localStorage.setItem(listKey, JSON.stringify(idList));
+      
+      // Remove from cache
+      this._cache[type].delete(id);
+      return true;
+    } catch (e) {
+      console.error(`Error deleting from localStorage:`, e);
+      return false;
+    }
+  }
+
+  // Delete a file from GitHub (or localStorage on localhost)
   async deleteFile(type, id) {
     if (!this._token) {
       this._token = getGitHubToken();
+    }
+    
+    // If on localhost and no token, use localStorage
+    if (this._isLocalhost && !this._token) {
+      const success = this.deleteFromLocalStorage(type, id);
+      if (success) {
+        this.showNotification(`${type} deleted locally!`);
+      }
+      return success;
     }
     
     if (!this._token) {
@@ -269,6 +427,12 @@ class Storage {
   }
 
   getOC(id) {
+    // Try to load on-demand if not in cache (non-blocking)
+    if (!this._cache.ocs.has(id)) {
+      this.loadStaticFile('ocs', id).catch(() => {
+        // Silently fail - file might not exist
+      });
+    }
     return this._cache.ocs.get(id) || null;
   }
 
@@ -294,6 +458,12 @@ class Storage {
   }
 
   getClan(id) {
+    // Try to load on-demand if not in cache (non-blocking)
+    if (!this._cache.clans.has(id)) {
+      this.loadStaticFile('clans', id).catch(() => {
+        // Silently fail - file might not exist
+      });
+    }
     return this._cache.clans.get(id) || null;
   }
 
@@ -319,6 +489,12 @@ class Storage {
   }
 
   getStory(id) {
+    // Try to load on-demand if not in cache (non-blocking)
+    if (!this._cache.stories.has(id)) {
+      this.loadStaticFile('stories', id).catch(() => {
+        // Silently fail - file might not exist
+      });
+    }
     return this._cache.stories.get(id) || null;
   }
 
@@ -344,6 +520,12 @@ class Storage {
   }
 
   getLore(id) {
+    // Try to load on-demand if not in cache (non-blocking)
+    if (!this._cache.lore.has(id)) {
+      this.loadStaticFile('lore', id).catch(() => {
+        // Silently fail - file might not exist
+      });
+    }
     return this._cache.lore.get(id) || null;
   }
 

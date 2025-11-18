@@ -15,13 +15,32 @@ export function renderOCDetail(oc) {
       <div class="oc-sheet-character-info">
         <div class="oc-sheet-left">
         <div class="oc-name-card">
-          <h3>
-            Last Name <i style="font-size:.8rem;">名字</i><br>
-            First Name <i style="font-size:.8rem;">名前</i>
-          </h3>
-          <div style="font-size: 1.2rem; margin-top: 0.5rem;">
-            ${oc.lastName || ''} ${oc.firstName || ''}
+          <div style="margin-bottom: 0.75rem;">
+            <h3 style="margin-bottom: 0.25rem;">
+              Last Name <i style="font-size:.8rem;">名字</i>
+            </h3>
+            <div style="font-size: 1.2rem; margin-top: 0.25rem;">
+              ${oc.lastName || ''}
+            </div>
           </div>
+          <div style="margin-bottom: 0.75rem;">
+            <h3 style="margin-bottom: 0.25rem;">
+              First Name <i style="font-size:.8rem;">名前</i>
+            </h3>
+            <div style="font-size: 1.2rem; margin-top: 0.25rem;">
+              ${oc.firstName || ''}
+            </div>
+          </div>
+          ${oc.nameJapanese ? `
+            <div style="font-size: 1rem; margin-top: 0.5rem; color: var(--color-text-2);">
+              ${oc.nameJapanese}
+            </div>
+          ` : ''}
+          ${oc.nameMeaning ? `
+            <div style="font-size: 0.9rem; margin-top: 0.3rem; color: var(--color-text-3); font-style: italic;">
+              "${oc.nameMeaning}"
+            </div>
+          ` : ''}
         </div>
         
         ${oc.profileImage ? 
