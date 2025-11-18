@@ -371,6 +371,19 @@ export function renderClanDetail(clan) {
         </div>
       ` : ''}
       
+      ${hasArray('moodBoardImages') ? `
+        <div class="clan-info-section">
+          <h3><i class="fas fa-images"></i> Aesthetic Mood Board</h3>
+          <div class="mood-board-grid">
+            ${getValue('moodBoardImages', []).map((imgUrl, index) => `
+              <div class="mood-board-item" style="animation-delay: ${index * 0.1}s;">
+                <img src="${imgUrl}" alt="Mood board image ${index + 1}" loading="lazy" onerror="this.style.display='none';">
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      ` : ''}
+      
       <div class="clan-info-section">
         <h3><i class="fas fa-users"></i> Clan Members (${members.length})</h3>
         ${members.length > 0 ? `

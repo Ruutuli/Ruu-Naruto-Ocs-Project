@@ -381,10 +381,41 @@ window.editLore = function(id) {
   window.location.hash = `lore/edit/${id}`;
 };
 
+// Utility function to remove duplicate Chigiri clans
+function removeDuplicateChigiriClans() {
+  const existingClans = storage.getAllClans();
+  const chigiriClans = existingClans.filter(c => 
+    c.name && (c.name.toLowerCase() === 'chigiri' || c.name.toLowerCase().includes('chigiri'))
+  );
+  
+  if (chigiriClans.length > 1) {
+    // Keep the most complete one (prefer the one with more data fields)
+    chigiriClans.sort((a, b) => {
+      const aDataCount = Object.keys(a).filter(k => a[k] !== null && a[k] !== undefined && a[k] !== '').length;
+      const bDataCount = Object.keys(b).filter(k => b[k] !== null && b[k] !== undefined && b[k] !== '').length;
+      return bDataCount - aDataCount;
+    });
+    
+    const keepClan = chigiriClans[0];
+    const removeIds = chigiriClans.slice(1).map(c => c.id);
+    
+    // Remove duplicates
+    removeIds.forEach(id => {
+      storage.deleteClan(id);
+      console.log('🗑️ Removed duplicate Chigiri Clan with ID:', id);
+    });
+    
+    console.log('✅ Kept Chigiri Clan with ID:', keepClan.id);
+    return keepClan;
+  }
+  
+  return chigiriClans[0] || null;
+}
+
 // Utility function to add Chigiri Clan (exposed globally for console use)
 window.addChigiriClan = function() {
-  const existingClans = storage.getAllClans();
-  const existingClan = existingClans.find(c => c.name === 'Chigiri' || c.name === 'Chigiri Clan');
+  // First, remove any duplicates
+  const existingClan = removeDuplicateChigiriClans();
   
   if (existingClan) {
     // Update symbol if it's missing
@@ -615,6 +646,8 @@ document.addEventListener('DOMContentLoaded', () => {
   window.addChigiriClan();
   loadHomePage();
   updateCounts();
+  // Set initial page title
+  updatePageTitle('home');
 });
 
 // Load user info to home page
@@ -761,6 +794,62 @@ function handleHashChange() {
   }
 }
 
+// Update page title based on current page
+function updatePageTitle(page, itemName = null) {
+  const baseTitle = 'Naruto OC | Website';
+  
+  let title = baseTitle;
+  
+  switch(page) {
+    case 'home':
+      title = 'Home | ' + baseTitle;
+      break;
+    case 'ocs':
+      title = 'OCs | ' + baseTitle;
+      break;
+    case 'oc-detail':
+      title = itemName ? `${itemName} | OCs | ${baseTitle}` : 'OC Detail | ' + baseTitle;
+      break;
+    case 'oc-form':
+      title = editingOC ? `Edit OC | ${baseTitle}` : `New OC | ${baseTitle}`;
+      break;
+    case 'clans':
+      title = 'Clans | ' + baseTitle;
+      break;
+    case 'clan-detail':
+      title = itemName ? `${itemName} | Clans | ${baseTitle}` : 'Clan Detail | ' + baseTitle;
+      break;
+    case 'clan-form':
+      title = editingClan ? `Edit Clan | ${baseTitle}` : `New Clan | ${baseTitle}`;
+      break;
+    case 'stories':
+      title = 'Stories | ' + baseTitle;
+      break;
+    case 'story-detail':
+      title = itemName ? `${itemName} | Stories | ${baseTitle}` : 'Story Detail | ' + baseTitle;
+      break;
+    case 'story-form':
+      title = editingStory ? `Edit Story | ${baseTitle}` : `New Story | ${baseTitle}`;
+      break;
+    case 'lore':
+      title = 'Lore | ' + baseTitle;
+      break;
+    case 'lore-detail':
+      title = itemName ? `${itemName} | Lore | ${baseTitle}` : 'Lore Detail | ' + baseTitle;
+      break;
+    case 'lore-form':
+      title = editingLore ? `Edit Lore | ${baseTitle}` : `New Lore | ${baseTitle}`;
+      break;
+    case 'admin':
+      title = 'Admin | ' + baseTitle;
+      break;
+    default:
+      title = baseTitle;
+  }
+  
+  document.title = title;
+}
+
 // Navigation function
 window.navigateTo = function(page) {
   // Hide all pages
@@ -774,6 +863,9 @@ window.navigateTo = function(page) {
     targetPage.classList.add('active');
     currentPage = page;
     window.location.hash = page;
+    
+    // Update page title
+    updatePageTitle(page);
     
     // Update nav links
     document.querySelectorAll('.nav-link').forEach(link => {
@@ -968,6 +1060,10 @@ window.showOCDetail = function(id) {
   currentPage = 'oc-detail';
   updateBackButton('oc-detail');
   
+  // Update page title with OC name
+  const ocName = `${oc.firstName || ''} ${oc.lastName || ''}`.trim() || 'Unnamed OC';
+  updatePageTitle('oc-detail', ocName);
+  
   const container = document.getElementById('oc-detail-container');
   const detail = renderOCDetail(oc);
   container.innerHTML = '';
@@ -982,6 +1078,9 @@ window.showOCForm = function(id = null) {
   formPage.classList.add('active');
   currentPage = 'oc-form';
   updateBackButton('oc-form');
+  
+  // Update page title
+  updatePageTitle('oc-form');
   
   // Import and render form dynamically
   import('./pages/oc-form.js').then(module => {
@@ -1106,6 +1205,10 @@ window.showClanDetail = function(id) {
     currentPage = 'clan-detail';
     updateBackButton('clan-detail');
     
+    // Update page title with clan name
+    const clanName = clan.name || 'Unnamed Clan';
+    updatePageTitle('clan-detail', clanName);
+    
     const container = document.getElementById('clan-detail-container');
     const detail = module.renderClanDetail(clan);
     container.innerHTML = '';
@@ -1114,28 +1217,47 @@ window.showClanDetail = function(id) {
 };
 
 window.showClanForm = function(id = null) {
-  editingClan = id ? storage.getClan(id) : null;
-  const formPage = document.getElementById('clan-form-page');
-  const currentActive = document.querySelector('.page-section.active');
-  if (currentActive) currentActive.classList.remove('active');
-  formPage.classList.add('active');
-  currentPage = 'clan-form';
-  updateBackButton('clan-form');
-  
-  import('./pages/clan-form.js').then(module => {
-    const container = document.getElementById('clan-form-container');
-    const form = module.renderClanForm(editingClan, (clan) => {
-      if (editingClan) {
-        clan.id = editingClan.id;
-      } else {
-        clan.id = Date.now().toString(36) + Math.random().toString(36).substr(2);
-      }
-      storage.saveClan(clan);
-      window.location.hash = `clans/${clan.id}`;
+  // Check if this is a template request (e.g., 'chigiri')
+  let templateData = null;
+  if (id === 'chigiri') {
+    // Load Chigiri template data
+    import('./data/chigiri-clan-data.js').then(dataModule => {
+      templateData = dataModule.chigiriClanData;
+      editingClan = templateData;
+      loadClanForm();
     });
-    container.innerHTML = '';
-    container.appendChild(form);
-  });
+    return;
+  }
+  
+  editingClan = id ? storage.getClan(id) : null;
+  loadClanForm();
+  
+  function loadClanForm() {
+    const formPage = document.getElementById('clan-form-page');
+    const currentActive = document.querySelector('.page-section.active');
+    if (currentActive) currentActive.classList.remove('active');
+    formPage.classList.add('active');
+    currentPage = 'clan-form';
+    updateBackButton('clan-form');
+    
+    // Update page title
+    updatePageTitle('clan-form');
+    
+    import('./pages/clan-form.js').then(module => {
+      const container = document.getElementById('clan-form-container');
+      const form = module.renderClanForm(editingClan, (clan) => {
+        if (editingClan && editingClan.id) {
+          clan.id = editingClan.id;
+        } else {
+          clan.id = Date.now().toString(36) + Math.random().toString(36).substr(2);
+        }
+        storage.saveClan(clan);
+        window.location.hash = `clans/${clan.id}`;
+      });
+      container.innerHTML = '';
+      container.appendChild(form);
+    });
+  }
 };
 
 // Stories Page
@@ -1228,6 +1350,10 @@ window.showStoryDetail = function(id) {
     currentPage = 'story-detail';
     updateBackButton('story-detail');
     
+    // Update page title with story title
+    const storyTitle = story.title || 'Untitled Story';
+    updatePageTitle('story-detail', storyTitle);
+    
     const container = document.getElementById('story-detail-container');
     const detail = module.renderStoryDetail(story);
     container.innerHTML = '';
@@ -1243,6 +1369,9 @@ window.showStoryForm = function(id = null) {
   formPage.classList.add('active');
   currentPage = 'story-form';
   updateBackButton('story-form');
+  
+  // Update page title
+  updatePageTitle('story-form');
   
   import('./pages/story-form.js').then(module => {
     const container = document.getElementById('story-form-container');
@@ -1340,6 +1469,10 @@ window.showLoreDetail = function(id) {
     currentPage = 'lore-detail';
     updateBackButton('lore-detail');
     
+    // Update page title with lore title
+    const loreTitle = lore.title || 'Untitled Lore';
+    updatePageTitle('lore-detail', loreTitle);
+    
     const container = document.getElementById('lore-detail-container');
     const detail = module.renderLoreDetail(lore);
     container.innerHTML = '';
@@ -1355,6 +1488,9 @@ window.showLoreForm = function(id = null) {
   formPage.classList.add('active');
   currentPage = 'lore-form';
   updateBackButton('lore-form');
+  
+  // Update page title
+  updatePageTitle('lore-form');
   
   import('./pages/lore-form.js').then(module => {
     const container = document.getElementById('lore-form-container');

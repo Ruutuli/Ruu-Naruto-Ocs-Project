@@ -578,6 +578,14 @@ export function renderClanForm(clan = null, onSave) {
           <small>Hold Ctrl/Cmd to select multiple members</small>
         </div>
         
+        <h3 class="mb-3 mt-4" style="border-bottom: 2px solid var(--color-accent-2); padding-bottom: 0.5rem;"><i class="fas fa-images"></i> Aesthetic Mood Board</h3>
+        
+        <div class="form-group">
+          <label class="form-label">Mood Board Images (one URL per line)</label>
+          <textarea class="form-control" id="moodBoardImages" rows="6" placeholder="Enter image URLs, one per line. These will be displayed in an aesthetic mood board layout on the clan detail page.&#10;Example:&#10;https://example.com/image1.jpg&#10;https://example.com/image2.jpg">${getArrayValue('moodBoardImages').join('\n')}</textarea>
+          <small class="form-text text-muted">Add image URLs to create a visual mood board for the clan's aesthetic. Images will be displayed in a Pinterest-style grid layout.</small>
+        </div>
+        
         <div class="mt-4">
           <button type="submit" class="btn-naruto">${isEdit ? 'Update' : 'Create'} Clan</button>
           <button type="button" class="btn-naruto btn-naruto-secondary" onclick="window.navigateTo('clans')" style="margin-left: 0.5rem;">Cancel</button>
@@ -641,6 +649,9 @@ export function renderClanForm(clan = null, onSave) {
     
     const restrictedTechniquesText = getElementValue('optionalExtras-restrictedTechniques');
     const restrictedTechniques = restrictedTechniquesText ? restrictedTechniquesText.split('\n').filter(t => t.trim()) : [];
+    
+    const moodBoardImagesText = getElementValue('moodBoardImages');
+    const moodBoardImages = moodBoardImagesText ? moodBoardImagesText.split('\n').filter(img => img.trim()) : [];
     
     const clanData = {
       id: formClan.id,
@@ -729,6 +740,7 @@ export function renderClanForm(clan = null, onSave) {
         modernEra: getElementValue('clanHistory-modernEra')
       },
       clanSymbols: {
+        clanCrest: getElementValue('clanSymbols-clanCrest'),
         artifacts: artifacts,
         secretKnowledge: getElementValue('clanSymbols-secretKnowledge')
       },
@@ -747,7 +759,8 @@ export function renderClanForm(clan = null, onSave) {
       members: (() => {
         const membersElement = document.getElementById('members');
         return membersElement ? Array.from(membersElement.selectedOptions).map(opt => opt.value) : [];
-      })()
+      })(),
+      moodBoardImages: moodBoardImages
     };
     
     onSave(clanData);

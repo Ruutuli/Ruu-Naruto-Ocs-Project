@@ -201,7 +201,8 @@ export const defaultClan = {
   },
   trivia: '',
   references: '',
-  members: []
+  members: [],
+  moodBoardImages: []
 };
 
 export const defaultStory = {
