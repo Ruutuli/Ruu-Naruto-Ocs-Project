@@ -41,12 +41,26 @@ export function renderOCForm(oc = null, onSave) {
               <input type="text" class="form-control" id="nameJapanese" value="${formOC.nameJapanese || ''}" placeholder="e.g., 千切 明音">
             </div>
           </div>
+        </div>
+        
+        <div class="row">
           <div class="col-md-6">
             <div class="form-group">
-              <label class="form-label">Name Meaning</label>
-              <input type="text" class="form-control" id="nameMeaning" value="${formOC.nameMeaning || ''}" placeholder="e.g., Thousand cuts, bright sound">
+              <label class="form-label">Last Name Meaning</label>
+              <input type="text" class="form-control" id="lastNameMeaning" value="${formOC.lastNameMeaning || ''}" placeholder="e.g., Thousand cuts">
             </div>
           </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <label class="form-label">First Name Meaning</label>
+              <input type="text" class="form-control" id="firstNameMeaning" value="${formOC.firstNameMeaning || ''}" placeholder="e.g., bright sound">
+            </div>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">Full Name Meaning <small style="font-weight: normal; color: var(--color-text-dark-2);">(Optional - will auto-combine if left empty)</small></label>
+          <input type="text" class="form-control" id="nameMeaning" value="${formOC.nameMeaning || ''}" placeholder="e.g., Thousand cuts, bright sound">
         </div>
         
         <div class="form-group">
@@ -58,13 +72,75 @@ export function renderOCForm(oc = null, onSave) {
           <div class="col-md-4">
             <div class="form-group">
               <label class="form-label">Date of Birth</label>
-              <input type="date" class="form-control" id="dob" value="${formOC.dob || ''}">
+              <div class="row" style="margin: 0;">
+                <div class="col-6" style="padding-right: 0.25rem;">
+                  <select class="form-control" id="dobMonth">
+                    <option value="">Month</option>
+                    ${(() => {
+                      // Parse existing dob: handle both MM-DD and YYYY-MM-DD formats
+                      let existingMonth = '';
+                      if (formOC.dob) {
+                        const parts = formOC.dob.split('-');
+                        // If YYYY-MM-DD format, month is at index 1; if MM-DD, it's at index 0
+                        existingMonth = parts.length === 3 ? parts[1] : (parts.length === 2 ? parts[0] : '');
+                      }
+                      return Array.from({length: 12}, (_, i) => {
+                        const month = String(i + 1).padStart(2, '0');
+                        const monthName = new Date(2000, i).toLocaleString('en-US', { month: 'long' });
+                        const selected = existingMonth === month ? 'selected' : '';
+                        return `<option value="${month}" ${selected}>${monthName}</option>`;
+                      }).join('');
+                    })()}
+                  </select>
+                </div>
+                <div class="col-6" style="padding-left: 0.25rem;">
+                  <select class="form-control" id="dobDay">
+                    <option value="">Day</option>
+                    ${(() => {
+                      // Parse existing dob: handle both MM-DD and YYYY-MM-DD formats
+                      let existingDay = '';
+                      if (formOC.dob) {
+                        const parts = formOC.dob.split('-');
+                        // If YYYY-MM-DD format, day is at index 2; if MM-DD, it's at index 1
+                        existingDay = parts.length === 3 ? parts[2] : (parts.length === 2 ? parts[1] : '');
+                      }
+                      return Array.from({length: 31}, (_, i) => {
+                        const day = String(i + 1).padStart(2, '0');
+                        const selected = existingDay === day ? 'selected' : '';
+                        return `<option value="${day}" ${selected}>${day}</option>`;
+                      }).join('');
+                    })()}
+                  </select>
+                </div>
+              </div>
             </div>
           </div>
           <div class="col-md-4">
             <div class="form-group">
-              <label class="form-label">Age</label>
-              <input type="number" class="form-control" id="age" value="${formOC.age || ''}" min="0">
+              <label class="form-label">Age (Era)</label>
+              <select class="form-control" id="age">
+                <option value="">Select Era</option>
+                <option value="Part I: 12–13" ${(() => {
+                  const ageStr = typeof formOC.age === 'string' ? formOC.age : String(formOC.age || '');
+                  return ageStr === 'Part I: 12–13' || ageStr.includes('Part I: 12–13') ? 'selected' : '';
+                })()}>Part I: 12–13</option>
+                <option value="Part II: 15–17" ${(() => {
+                  const ageStr = typeof formOC.age === 'string' ? formOC.age : String(formOC.age || '');
+                  return ageStr === 'Part II: 15–17' || ageStr.includes('Part II: 15–17') ? 'selected' : '';
+                })()}>Part II: 15–17</option>
+                <option value="Blank Period: 17–19" ${(() => {
+                  const ageStr = typeof formOC.age === 'string' ? formOC.age : String(formOC.age || '');
+                  return ageStr === 'Blank Period: 17–19' || ageStr.includes('Blank Period: 17–19') ? 'selected' : '';
+                })()}>Blank Period: 17–19</option>
+                <option value="Gaiden: 20" ${(() => {
+                  const ageStr = typeof formOC.age === 'string' ? formOC.age : String(formOC.age || '');
+                  return ageStr === 'Gaiden: 20' || ageStr.includes('Gaiden: 20') ? 'selected' : '';
+                })()}>Gaiden: 20</option>
+                <option value="Boruto: 32" ${(() => {
+                  const ageStr = typeof formOC.age === 'string' ? formOC.age : String(formOC.age || '');
+                  return ageStr === 'Boruto: 32' || ageStr.includes('Boruto: 32') ? 'selected' : '';
+                })()}>Boruto: 32</option>
+              </select>
             </div>
           </div>
           <div class="col-md-4">
@@ -264,14 +340,12 @@ export function renderOCForm(oc = null, onSave) {
         
         <!-- Stats -->
         <h3 class="mb-3 mt-4">Stats (1-5)</h3>
-        <div class="row">
-          <div class="col-md-6">
+        <div class="stats-container">
+          <div class="stats-grid">
             ${renderStatInput('intelligence', formOC.stats?.intelligence || 3)}
             ${renderStatInput('stamina', formOC.stats?.stamina || 3)}
             ${renderStatInput('strength', formOC.stats?.strength || 3)}
             ${renderStatInput('speed', formOC.stats?.speed || 3)}
-          </div>
-          <div class="col-md-6">
             ${renderStatInput('ninjutsu', formOC.stats?.ninjutsu || 3)}
             ${renderStatInput('genjutsu', formOC.stats?.genjutsu || 3)}
             ${renderStatInput('taijutsu', formOC.stats?.taijutsu || 3)}
@@ -386,10 +460,27 @@ export function renderOCForm(oc = null, onSave) {
       lastName: document.getElementById('lastName').value,
       firstName: document.getElementById('firstName').value,
       nameJapanese: document.getElementById('nameJapanese').value,
-      nameMeaning: document.getElementById('nameMeaning').value,
+      lastNameMeaning: document.getElementById('lastNameMeaning').value,
+      firstNameMeaning: document.getElementById('firstNameMeaning').value,
+      nameMeaning: (() => {
+        const fullMeaning = document.getElementById('nameMeaning').value;
+        const lastNameMeaning = document.getElementById('lastNameMeaning').value;
+        const firstNameMeaning = document.getElementById('firstNameMeaning').value;
+        // If full meaning is provided, use it; otherwise auto-combine from parts
+        if (fullMeaning) {
+          return fullMeaning;
+        } else if (lastNameMeaning || firstNameMeaning) {
+          return [lastNameMeaning, firstNameMeaning].filter(m => m).join(', ');
+        }
+        return '';
+      })(),
       aliases: document.getElementById('aliases').value.split(',').map(a => a.trim()).filter(a => a),
-      dob: document.getElementById('dob').value,
-      age: parseInt(document.getElementById('age').value) || 0,
+      dob: (() => {
+        const month = document.getElementById('dobMonth').value;
+        const day = document.getElementById('dobDay').value;
+        return (month && day) ? `${month}-${day}` : '';
+      })(),
+      age: document.getElementById('age').value || '',
       bloodType: document.getElementById('bloodType').value,
       gender: document.getElementById('gender').value,
       chakraType: document.getElementById('chakraType').value,
@@ -467,12 +558,70 @@ export function renderOCForm(oc = null, onSave) {
 }
 
 function renderStatInput(name, value) {
+  const displayName = name.charAt(0).toUpperCase() + name.slice(1).replace(/([A-Z])/g, ' $1').trim();
   return `
-    <div class="form-group">
-      <label class="form-label">${name.charAt(0).toUpperCase() + name.slice(1)}</label>
-      <input type="range" class="form-control" id="${name}" min="1" max="5" value="${value}" oninput="document.getElementById('${name}-value').textContent = this.value">
-      <span id="${name}-value">${value}</span>
+    <div class="stat-input-wrapper">
+      <div class="stat-header">
+        <label class="stat-label">${displayName}</label>
+        <div class="stat-value-display">
+          <span class="stat-number" id="${name}-value">${value}</span>
+          <span class="stat-max">/5</span>
+        </div>
+      </div>
+      <div class="stat-control-wrapper">
+        <input type="range" class="stat-slider" id="${name}" min="1" max="5" value="${value}" 
+               oninput="document.getElementById('${name}-value').textContent = this.value; updateStatVisual('${name}', this.value)">
+        <div class="stat-dots" id="${name}-dots">
+          ${Array.from({length: 5}, (_, i) => 
+            `<span class="stat-dot ${i < value ? 'active' : ''}" data-value="${i + 1}"></span>`
+          ).join('')}
+        </div>
+      </div>
     </div>
   `;
+}
+
+// Make updateStatVisual function globally available
+if (typeof window !== 'undefined') {
+  window.updateStatVisual = function(name, value) {
+    const dots = document.getElementById(`${name}-dots`);
+    const slider = document.getElementById(name);
+    
+    // Update dots
+    if (dots) {
+      const dotElements = dots.querySelectorAll('.stat-dot');
+      dotElements.forEach((dot, index) => {
+        if (index < value) {
+          dot.classList.add('active');
+        } else {
+          dot.classList.remove('active');
+        }
+      });
+    }
+    
+    // Update slider background
+    if (slider) {
+      const percentage = (value / 5) * 100;
+      slider.style.background = `linear-gradient(to right, 
+        var(--color-accent-2) 0%, 
+        var(--color-accent-2) ${percentage}%,
+        var(--color-border-2) ${percentage}%,
+        var(--color-border-2) 100%)`;
+    }
+  };
+  
+  // Initialize slider backgrounds on page load
+  window.addEventListener('DOMContentLoaded', function() {
+    const statSliders = document.querySelectorAll('.stat-slider');
+    statSliders.forEach(slider => {
+      const value = slider.value;
+      const percentage = (value / 5) * 100;
+      slider.style.background = `linear-gradient(to right, 
+        var(--color-accent-2) 0%, 
+        var(--color-accent-2) ${percentage}%,
+        var(--color-border-2) ${percentage}%,
+        var(--color-border-2) 100%)`;
+    });
+  });
 }
 

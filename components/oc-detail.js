@@ -36,11 +36,6 @@ export function renderOCDetail(oc) {
               ${oc.nameJapanese}
             </div>
           ` : ''}
-          ${oc.nameMeaning ? `
-            <div style="font-size: 0.9rem; margin-top: 0.3rem; color: var(--color-text-3); font-style: italic;">
-              "${oc.nameMeaning}"
-            </div>
-          ` : ''}
         </div>
         
         ${oc.profileImage ? 
@@ -455,7 +450,23 @@ function renderIdentifyingInfo(oc) {
       <h1>Identifying Information <i class="japanese-header">識別情報</i></h1>
       <div class="info-grid">
         ${renderInfoRow('Aliases', oc.aliases?.join(', ') || 'None')}
-        ${renderInfoRow('Date of Birth', oc.dob || 'Unknown')}
+        ${(() => {
+          // Show separate meanings if available, otherwise show combined
+          const lastNameMeaning = oc.lastNameMeaning;
+          const firstNameMeaning = oc.firstNameMeaning;
+          const combinedMeaning = oc.nameMeaning;
+          
+          if (lastNameMeaning || firstNameMeaning) {
+            const meanings = [];
+            if (lastNameMeaning) meanings.push(`<strong>Last:</strong> ${lastNameMeaning}`);
+            if (firstNameMeaning) meanings.push(`<strong>First:</strong> ${firstNameMeaning}`);
+            return renderInfoRow('Name Meaning', meanings.join('<br>'));
+          } else if (combinedMeaning) {
+            return renderInfoRow('Name Meaning', combinedMeaning);
+          }
+          return '';
+        })()}
+        ${renderInfoRow('Date of Birth', formatDateOfBirth(oc.dob) || 'Unknown')}
         ${oc.zodiac ? renderInfoRow('Zodiac', oc.zodiac) : ''}
         ${ageData.hasEra ? renderMultiEraRow('Age', ageData) : renderInfoRow('Age', oc.age?.toString() || 'Unknown')}
         ${renderInfoRow('Blood Type', oc.bloodType || 'Unknown')}
@@ -508,6 +519,25 @@ function getOrientation(oc) {
   if (parts.length === 0) return null;
   if (parts.length === 1) return parts[0];
   return parts.join('/');
+}
+
+function formatDateOfBirth(dob) {
+  if (!dob) return '';
+  
+  // Handle MM-DD format (no year)
+  const match = dob.match(/^(\d{2})-(\d{2})$/);
+  if (match) {
+    const month = parseInt(match[1], 10) - 1; // 0-indexed for Date
+    const day = parseInt(match[2], 10);
+    
+    if (month >= 0 && month < 12 && day >= 1 && day <= 31) {
+      const monthName = new Date(2000, month).toLocaleString('en-US', { month: 'long' });
+      return `${monthName} ${day}`;
+    }
+  }
+  
+  // Fallback: return as-is if format doesn't match
+  return dob;
 }
 
 function parseMultiEraData(data) {
