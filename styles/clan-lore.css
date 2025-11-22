@@ -787,6 +787,67 @@
     border-right: 30px solid var(--color-accent-2) !important;
   }
   
+  .detail-content,
+  .clan-detail-content,
+  .lore-detail-content,
+  .story-detail-content {
+    padding: 1rem !important;
+  }
+}
+
+@media (max-width: 576px) {
+  .detail-scroll,
+  .clan-detail-scroll,
+  .lore-detail-scroll,
+  .story-detail-scroll,
+  .oc-sheet-container {
+    padding-top: 1.5rem !important;
+  }
+  
+  .detail-backdrop,
+  .clan-detail-backdrop,
+  .lore-detail-backdrop,
+  .story-detail-backdrop,
+  .oc-sheet-scroll-top {
+    height: 35px !important;
+    top: 5px !important;
+  }
+  
+  .detail-header,
+  .clan-detail-header,
+  .lore-detail-header,
+  .story-detail-header,
+  .oc-sheet-banner {
+    height: 70px !important;
+    margin-top: -50px !important;
+    width: 98% !important;
+  }
+  
+  .detail-header-inner,
+  .clan-detail-header-inner,
+  .lore-detail-header-inner,
+  .story-detail-header-inner {
+    margin-left: 0.75rem !important;
+    margin-right: 0.75rem !important;
+    width: 98% !important;
+  }
+  
+  .detail-header-border,
+  .clan-detail-header-border,
+  .lore-detail-header-border,
+  .story-detail-header-border {
+    width: 90% !important;
+    border-left: 20px solid var(--color-accent-2) !important;
+    border-right: 20px solid var(--color-accent-2) !important;
+  }
+  
+  .detail-content,
+  .clan-detail-content,
+  .lore-detail-content,
+  .story-detail-content {
+    padding: 0.75rem !important;
+  }
+  
   .oc-sheet-banner {
     border-left: 30px solid var(--color-accent-2) !important;
     border-right: 30px solid var(--color-accent-2) !important;
