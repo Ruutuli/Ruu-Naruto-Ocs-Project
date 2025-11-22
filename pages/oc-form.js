@@ -20,13 +20,13 @@ export function renderOCForm(oc = null, onSave) {
         <!-- Basic Info -->
         <h3 class="mb-3">Basic Information</h3>
         <div class="row">
-          <div class="col-md-6">
+          <div class="col-12 col-md-6">
             <div class="form-group">
               <label class="form-label">Last Name 名字 <small style="font-weight: normal; color: var(--color-text-dark-2);">(e.g., Chigiri)</small></label>
               <input type="text" class="form-control" id="lastName" value="${formOC.lastName || ''}" required>
             </div>
           </div>
-          <div class="col-md-6">
+          <div class="col-12 col-md-6">
             <div class="form-group">
               <label class="form-label">First Name 名前 <small style="font-weight: normal; color: var(--color-text-dark-2);">(e.g., Akene)</small></label>
               <input type="text" class="form-control" id="firstName" value="${formOC.firstName || ''}" required>
@@ -35,7 +35,7 @@ export function renderOCForm(oc = null, onSave) {
         </div>
         
         <div class="row">
-          <div class="col-md-6">
+          <div class="col-12 col-md-6">
             <div class="form-group">
               <label class="form-label">Name in Kanji/Hiragana/Katakana</label>
               <input type="text" class="form-control" id="nameJapanese" value="${formOC.nameJapanese || ''}" placeholder="e.g., 千切 明音">
@@ -44,13 +44,13 @@ export function renderOCForm(oc = null, onSave) {
         </div>
         
         <div class="row">
-          <div class="col-md-6">
+          <div class="col-12 col-md-6">
             <div class="form-group">
               <label class="form-label">Last Name Meaning</label>
               <input type="text" class="form-control" id="lastNameMeaning" value="${formOC.lastNameMeaning || ''}" placeholder="e.g., Thousand cuts">
             </div>
           </div>
-          <div class="col-md-6">
+          <div class="col-12 col-md-6">
             <div class="form-group">
               <label class="form-label">First Name Meaning</label>
               <input type="text" class="form-control" id="firstNameMeaning" value="${formOC.firstNameMeaning || ''}" placeholder="e.g., bright sound">
@@ -69,7 +69,7 @@ export function renderOCForm(oc = null, onSave) {
         </div>
         
         <div class="row">
-          <div class="col-md-4">
+          <div class="col-12 col-md-4">
             <div class="form-group">
               <label class="form-label">Date of Birth</label>
               <div class="row" style="margin: 0;">
@@ -115,41 +115,59 @@ export function renderOCForm(oc = null, onSave) {
               </div>
             </div>
           </div>
-          <div class="col-md-4">
+          <div class="col-md-8">
             <div class="form-group">
-              <label class="form-label">Age (Era)</label>
-              <select class="form-control" id="age">
-                <option value="">Select Era</option>
-                <option value="Part I: 12–13" ${(() => {
-                  const ageStr = typeof formOC.age === 'string' ? formOC.age : String(formOC.age || '');
-                  return ageStr === 'Part I: 12–13' || ageStr.includes('Part I: 12–13') ? 'selected' : '';
-                })()}>Part I: 12–13</option>
-                <option value="Part II: 15–17" ${(() => {
-                  const ageStr = typeof formOC.age === 'string' ? formOC.age : String(formOC.age || '');
-                  return ageStr === 'Part II: 15–17' || ageStr.includes('Part II: 15–17') ? 'selected' : '';
-                })()}>Part II: 15–17</option>
-                <option value="Blank Period: 17–19" ${(() => {
-                  const ageStr = typeof formOC.age === 'string' ? formOC.age : String(formOC.age || '');
-                  return ageStr === 'Blank Period: 17–19' || ageStr.includes('Blank Period: 17–19') ? 'selected' : '';
-                })()}>Blank Period: 17–19</option>
-                <option value="Gaiden: 20" ${(() => {
-                  const ageStr = typeof formOC.age === 'string' ? formOC.age : String(formOC.age || '');
-                  return ageStr === 'Gaiden: 20' || ageStr.includes('Gaiden: 20') ? 'selected' : '';
-                })()}>Gaiden: 20</option>
-                <option value="Boruto: 32" ${(() => {
-                  const ageStr = typeof formOC.age === 'string' ? formOC.age : String(formOC.age || '');
-                  return ageStr === 'Boruto: 32' || ageStr.includes('Boruto: 32') ? 'selected' : '';
-                })()}>Boruto: 32</option>
-              </select>
+              <label class="form-label">Age by Era</label>
+              <div class="age-era-inputs">
+                <div class="row">
+                  ${(() => {
+                    // Helper function to extract age value from old format or ageByEra
+                    const getAgeValue = (era) => {
+                      // First check ageByEra
+                      if (formOC.ageByEra && formOC.ageByEra[era]) {
+                        return formOC.ageByEra[era];
+                      }
+                      // Then check old format string (e.g., "Part I: 12–13, Part II: 15–17")
+                      if (typeof formOC.age === 'string') {
+                        // Escape special regex characters in era name
+                        const escapedEra = era.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                        // Match era: value pattern, value can contain dashes, numbers, and spaces
+                        const eraMatch = formOC.age.match(new RegExp(`${escapedEra}:\\s*([^,]+)`));
+                        if (eraMatch && eraMatch[1]) {
+                          return eraMatch[1].trim();
+                        }
+                      }
+                      return '';
+                    };
+                    
+                    const eras = [
+                      { key: 'Part I', label: 'Part I Age', placeholder: 'e.g., 12–13' },
+                      { key: 'Part II', label: 'Part II Age', placeholder: 'e.g., 15–17' },
+                      { key: 'Blank Period', label: 'Blank Period Age', placeholder: 'e.g., 17–19' },
+                      { key: 'Gaiden', label: 'Gaiden Age', placeholder: 'e.g., 20' },
+                      { key: 'Boruto', label: 'Boruto Age', placeholder: 'e.g., 32' }
+                    ];
+                    
+                    return eras.map(era => `
+                      <div class="col-md-6 col-lg-4" style="margin-bottom: 0.75rem;">
+                        <label style="font-size: 0.85rem; color: var(--color-text-dark-2); margin-bottom: 0.25rem; display: block;">${era.label}</label>
+                        <input type="text" class="form-control" id="age-${era.key}" 
+                               value="${getAgeValue(era.key)}" 
+                               placeholder="${era.placeholder}">
+                      </div>
+                    `).join('');
+                  })()}
+                </div>
+              </div>
             </div>
           </div>
-          <div class="col-md-4">
+          <div class="col-12 col-md-4">
             <div class="form-group">
               <label class="form-label">Blood Type</label>
               <input type="text" class="form-control" id="bloodType" value="${formOC.bloodType || ''}">
             </div>
           </div>
-          <div class="col-md-4">
+          <div class="col-12 col-md-4">
             <div class="form-group">
               <label class="form-label">Zodiac Sign</label>
               <input type="text" class="form-control" id="zodiac" value="${formOC.zodiac || ''}" placeholder="e.g., ♉ Taurus">
@@ -158,19 +176,19 @@ export function renderOCForm(oc = null, onSave) {
         </div>
         
         <div class="row">
-          <div class="col-md-4">
+          <div class="col-12 col-md-4">
             <div class="form-group">
               <label class="form-label">Gender</label>
               <input type="text" class="form-control" id="gender" value="${formOC.gender || ''}">
             </div>
           </div>
-          <div class="col-md-4">
+          <div class="col-12 col-md-4">
             <div class="form-group">
               <label class="form-label">Chakra Type</label>
               <input type="text" class="form-control" id="chakraType" value="${formOC.chakraType || ''}">
             </div>
           </div>
-          <div class="col-md-4">
+          <div class="col-12 col-md-4">
             <div class="form-group">
               <label class="form-label">Kekkei Genkai</label>
               <input type="text" class="form-control" id="kekkeiGenkai" value="${formOC.kekkeiGenkai || ''}">
@@ -179,13 +197,13 @@ export function renderOCForm(oc = null, onSave) {
         </div>
         
         <div class="row">
-          <div class="col-md-6">
+          <div class="col-12 col-md-6">
             <div class="form-group">
               <label class="form-label">Sexual Orientation</label>
               <input type="text" class="form-control" id="sexualOrientation" value="${formOC.sexualOrientation || ''}">
             </div>
           </div>
-          <div class="col-md-6">
+          <div class="col-12 col-md-6">
             <div class="form-group">
               <label class="form-label">Romantic Orientation</label>
               <input type="text" class="form-control" id="romanticOrientation" value="${formOC.romanticOrientation || ''}">
@@ -194,13 +212,13 @@ export function renderOCForm(oc = null, onSave) {
         </div>
         
         <div class="row">
-          <div class="col-md-6">
+          <div class="col-12 col-md-6">
             <div class="form-group">
               <label class="form-label">Ninja Registration Number</label>
               <input type="text" class="form-control" id="ninjaRegistrationNumber" value="${formOC.ninjaRegistrationNumber || ''}">
             </div>
           </div>
-          <div class="col-md-6">
+          <div class="col-12 col-md-6">
             <div class="form-group">
               <label class="form-label">Academy Graduation Age</label>
               <input type="number" class="form-control" id="academyGraduationAge" value="${formOC.academyGraduationAge || ''}" min="0">
@@ -214,7 +232,7 @@ export function renderOCForm(oc = null, onSave) {
         </div>
         
         <div class="row">
-          <div class="col-md-4">
+          <div class="col-12 col-md-4">
             <div class="form-group">
               <label class="form-label">Village</label>
               <select class="form-control" id="village" required>
@@ -232,7 +250,7 @@ export function renderOCForm(oc = null, onSave) {
         </div>
         
         <div class="row">
-          <div class="col-md-6">
+          <div class="col-12 col-md-6">
             <div class="form-group">
               <label class="form-label">Rank</label>
               <select class="form-control" id="rank" required>
@@ -243,7 +261,7 @@ export function renderOCForm(oc = null, onSave) {
               </select>
             </div>
           </div>
-          <div class="col-md-6">
+          <div class="col-12 col-md-6">
             <div class="form-group">
               <label class="form-label">Clan</label>
               <select class="form-control" id="clanId">
@@ -257,7 +275,7 @@ export function renderOCForm(oc = null, onSave) {
         <!-- Additional Info -->
         <h3 class="mb-3 mt-4">Additional Information</h3>
         <div class="row">
-          <div class="col-md-6">
+          <div class="col-12 col-md-6">
             <div class="form-group">
               <label class="form-label">Theme Song</label>
               <input type="text" class="form-control" id="themeSong" value="${formOC.themeSong || ''}">
@@ -265,13 +283,13 @@ export function renderOCForm(oc = null, onSave) {
           </div>
         </div>
         <div class="row">
-          <div class="col-md-6">
+          <div class="col-12 col-md-6">
             <div class="form-group">
               <label class="form-label">Voice Actor (Japanese)</label>
               <input type="text" class="form-control" id="voiceActorJP" value="${formOC.voiceActors?.japanese || ''}">
             </div>
           </div>
-          <div class="col-md-6">
+          <div class="col-12 col-md-6">
             <div class="form-group">
               <label class="form-label">Voice Actor (English)</label>
               <input type="text" class="form-control" id="voiceActorEN" value="${formOC.voiceActors?.english || ''}">
@@ -279,19 +297,19 @@ export function renderOCForm(oc = null, onSave) {
           </div>
         </div>
         <div class="row">
-          <div class="col-md-4">
+          <div class="col-12 col-md-4">
             <div class="form-group">
               <label class="form-label">Moral Alignment</label>
               <input type="text" class="form-control" id="moralAlignment" value="${formOC.moralAlignment || ''}" placeholder="e.g., Lawful Neutral">
             </div>
           </div>
-          <div class="col-md-4">
+          <div class="col-12 col-md-4">
             <div class="form-group">
               <label class="form-label">MBTI</label>
               <input type="text" class="form-control" id="mbti" value="${formOC.mbti || ''}" placeholder="e.g., ESTJ">
             </div>
           </div>
-          <div class="col-md-4">
+          <div class="col-12 col-md-4">
             <div class="form-group">
               <label class="form-label">Enneagram</label>
               <input type="text" class="form-control" id="enneagram" value="${formOC.enneagram || ''}" placeholder="e.g., Type 1 with 5 Wing">
@@ -306,31 +324,31 @@ export function renderOCForm(oc = null, onSave) {
         <!-- Mission Counts -->
         <h3 class="mb-3 mt-4">Mission Counts</h3>
         <div class="row">
-          <div class="col-md-2">
+          <div class="col-6 col-sm-4 col-md-2">
             <div class="form-group">
               <label class="form-label">S-Rank</label>
               <input type="number" class="form-control" id="missionS" value="${formOC.missions?.s || 0}" min="0">
             </div>
           </div>
-          <div class="col-md-2">
+          <div class="col-6 col-sm-4 col-md-2">
             <div class="form-group">
               <label class="form-label">A-Rank</label>
               <input type="number" class="form-control" id="missionA" value="${formOC.missions?.a || 0}" min="0">
             </div>
           </div>
-          <div class="col-md-2">
+          <div class="col-6 col-sm-4 col-md-2">
             <div class="form-group">
               <label class="form-label">B-Rank</label>
               <input type="number" class="form-control" id="missionB" value="${formOC.missions?.b || 0}" min="0">
             </div>
           </div>
-          <div class="col-md-2">
+          <div class="col-6 col-sm-4 col-md-2">
             <div class="form-group">
               <label class="form-label">C-Rank</label>
               <input type="number" class="form-control" id="missionC" value="${formOC.missions?.c || 0}" min="0">
             </div>
           </div>
-          <div class="col-md-2">
+          <div class="col-6 col-sm-4 col-md-2">
             <div class="form-group">
               <label class="form-label">D-Rank</label>
               <input type="number" class="form-control" id="missionD" value="${formOC.missions?.d || 0}" min="0">
@@ -376,19 +394,19 @@ export function renderOCForm(oc = null, onSave) {
         <!-- Identifying Info -->
         <h3 class="mb-3 mt-4">Identifying Information</h3>
         <div class="row">
-          <div class="col-md-4">
+          <div class="col-12 col-md-4">
             <div class="form-group">
               <label class="form-label">Body Type</label>
               <input type="text" class="form-control" id="bodyType" value="${formOC.identifyingInfo?.bodyType || ''}">
             </div>
           </div>
-          <div class="col-md-4">
+          <div class="col-12 col-md-4">
             <div class="form-group">
               <label class="form-label">Height</label>
               <input type="text" class="form-control" id="height" value="${formOC.identifyingInfo?.height || ''}">
             </div>
           </div>
-          <div class="col-md-4">
+          <div class="col-12 col-md-4">
             <div class="form-group">
               <label class="form-label">Weight</label>
               <input type="text" class="form-control" id="weight" value="${formOC.identifyingInfo?.weight || ''}">
@@ -397,13 +415,13 @@ export function renderOCForm(oc = null, onSave) {
         </div>
         
         <div class="row">
-          <div class="col-md-6">
+          <div class="col-12 col-md-6">
             <div class="form-group">
               <label class="form-label">Made Genin</label>
               <input type="text" class="form-control" id="madeGenin" value="${formOC.identifyingInfo?.madeGenin || ''}">
             </div>
           </div>
-          <div class="col-md-6">
+          <div class="col-12 col-md-6">
             <div class="form-group">
               <label class="form-label">Made Chunin</label>
               <input type="text" class="form-control" id="madeChunin" value="${formOC.identifyingInfo?.madeChunin || ''}">
@@ -423,13 +441,13 @@ export function renderOCForm(oc = null, onSave) {
         </div>
         
         <div class="row">
-          <div class="col-md-6">
+          <div class="col-12 col-md-6">
             <div class="form-group">
               <label class="form-label">Field Position</label>
               <input type="text" class="form-control" id="fieldPosition" value="${formOC.battleStrategy?.fieldPosition || ''}">
             </div>
           </div>
-          <div class="col-md-6">
+          <div class="col-12 col-md-6">
             <div class="form-group">
               <label class="form-label">Effective Distance</label>
               <input type="text" class="form-control" id="effectiveDistance" value="${formOC.battleStrategy?.effectiveDistance || ''}">
@@ -500,7 +518,27 @@ export function renderOCForm(oc = null, onSave) {
         const day = document.getElementById('dobDay').value;
         return (month && day) ? `${month}-${day}` : '';
       })(),
-      age: document.getElementById('age').value || '',
+      age: (() => {
+        // Combine ages from all eras for backward compatibility
+        const eras = ['Part I', 'Part II', 'Blank Period', 'Gaiden', 'Boruto'];
+        const ageParts = eras.map(era => {
+          const ageInput = document.getElementById(`age-${era}`);
+          const ageValue = ageInput ? ageInput.value.trim() : '';
+          return ageValue ? `${era}: ${ageValue}` : null;
+        }).filter(age => age !== null);
+        return ageParts.length > 0 ? ageParts.join(', ') : '';
+      })(),
+      ageByEra: (() => {
+        const eras = ['Part I', 'Part II', 'Blank Period', 'Gaiden', 'Boruto'];
+        const ageByEra = {};
+        eras.forEach(era => {
+          const ageInput = document.getElementById(`age-${era}`);
+          if (ageInput && ageInput.value.trim()) {
+            ageByEra[era] = ageInput.value.trim();
+          }
+        });
+        return Object.keys(ageByEra).length > 0 ? ageByEra : undefined;
+      })(),
       bloodType: document.getElementById('bloodType').value,
       gender: document.getElementById('gender').value,
       chakraType: document.getElementById('chakraType').value,

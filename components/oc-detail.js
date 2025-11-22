@@ -519,8 +519,11 @@ function renderIdentifyingInfo(oc) {
   // Combine orientation fields
   const orientation = getOrientation(oc);
   
-  // Parse multi-era data
-  const ageData = parseMultiEraData(oc.age);
+  // Parse multi-era data for age
+  const ageByEra = oc.ageByEra || {};
+  const hasAgeByEra = Object.keys(ageByEra).length > 0 && Object.values(ageByEra).some(age => age && age.trim());
+  
+  // Parse multi-era data for height/weight
   const heightData = parseMultiEraData(info.height);
   const weightData = parseMultiEraData(info.weight);
   
@@ -547,7 +550,23 @@ function renderIdentifyingInfo(oc) {
         })()}
         ${renderInfoRow('Date of Birth', formatDateOfBirth(oc.dob) || 'Unknown')}
         ${oc.zodiac ? renderInfoRow('Zodiac', oc.zodiac) : ''}
-        ${ageData.hasEra ? renderMultiEraRow('Age', ageData) : renderInfoRow('Age', oc.age?.toString() || 'Unknown')}
+        ${(() => {
+          // Render age by era if available, otherwise use old format
+          if (hasAgeByEra) {
+            const ageParts = ['Part I', 'Part II', 'Blank Period', 'Gaiden', 'Boruto']
+              .filter(era => ageByEra[era] && ageByEra[era].trim())
+              .map(era => ({
+                value: ageByEra[era],
+                era: era
+              }));
+            if (ageParts.length > 0) {
+              return renderMultiEraRow('Age', { hasEra: true, parts: ageParts });
+            }
+          }
+          // Fallback to old format
+          const ageData = parseMultiEraData(oc.age);
+          return ageData.hasEra ? renderMultiEraRow('Age', ageData) : renderInfoRow('Age', oc.age?.toString() || 'Unknown');
+        })()}
         ${renderInfoRow('Blood Type', oc.bloodType || 'Unknown')}
         ${renderInfoRow('Gender', oc.gender || 'Unknown')}
         ${orientation ? renderInfoRow('Orientation', orientation) : ''}

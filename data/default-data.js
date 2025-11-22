@@ -11,6 +11,13 @@ export const defaultOC = {
   aliases: [],
   dob: '',
   age: 0,
+  ageByEra: {
+    'Part I': '',
+    'Part II': '',
+    'Blank Period': '',
+    'Gaiden': '',
+    'Boruto': ''
+  },
   bloodType: '',
   gender: '',
   chakraType: '',
