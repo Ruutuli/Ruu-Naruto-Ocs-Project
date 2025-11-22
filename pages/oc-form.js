@@ -554,6 +554,20 @@ export function renderOCForm(oc = null, onSave) {
     onSave(ocData);
   };
   
+  // Initialize stat slider backgrounds after form is inserted into DOM
+  setTimeout(() => {
+    const statSliders = form.querySelectorAll('.stat-slider');
+    statSliders.forEach(slider => {
+      const value = parseInt(slider.value);
+      const percentage = (value / 5) * 100;
+      slider.style.background = `linear-gradient(to right, 
+        var(--color-accent-2) 0%, 
+        var(--color-accent-2) ${percentage}%,
+        var(--color-border-2) ${percentage}%,
+        var(--color-border-2) 100%)`;
+    });
+  }, 0);
+  
   return form;
 }
 
@@ -609,19 +623,5 @@ if (typeof window !== 'undefined') {
         var(--color-border-2) 100%)`;
     }
   };
-  
-  // Initialize slider backgrounds on page load
-  window.addEventListener('DOMContentLoaded', function() {
-    const statSliders = document.querySelectorAll('.stat-slider');
-    statSliders.forEach(slider => {
-      const value = slider.value;
-      const percentage = (value / 5) * 100;
-      slider.style.background = `linear-gradient(to right, 
-        var(--color-accent-2) 0%, 
-        var(--color-accent-2) ${percentage}%,
-        var(--color-border-2) ${percentage}%,
-        var(--color-border-2) 100%)`;
-    });
-  });
 }
 
