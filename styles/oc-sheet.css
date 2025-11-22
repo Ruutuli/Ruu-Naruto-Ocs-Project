@@ -136,6 +136,57 @@
   opacity: 0.3;
 }
 
+/* Stats Era Tabs */
+.stats-era-container {
+  width: 100%;
+}
+
+.stats-era-tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  border-bottom: 2px solid var(--color-border-2);
+  flex-wrap: wrap;
+}
+
+.stat-era-tab {
+  padding: 0.5rem 1rem;
+  background: transparent;
+  border: none;
+  border-bottom: 3px solid transparent;
+  color: var(--color-text-dark-2);
+  font-weight: 600;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.85rem;
+  position: relative;
+  top: 2px;
+}
+
+.stat-era-tab:hover {
+  color: var(--color-accent-2);
+  background: rgba(227, 94, 63, 0.1);
+}
+
+.stat-era-tab.active {
+  color: var(--color-accent-2);
+  border-bottom-color: var(--color-accent-2);
+  background: rgba(227, 94, 63, 0.05);
+}
+
+.stats-era-content {
+  position: relative;
+}
+
+.stat-era-panel {
+  display: none;
+}
+
+.stat-era-panel.active {
+  display: block;
+}
+
 /* Identifying Information */
 .identifying-info {
   text-transform: uppercase;

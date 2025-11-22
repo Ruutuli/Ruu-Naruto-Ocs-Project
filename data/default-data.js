@@ -27,6 +27,63 @@ export const defaultOC = {
     handSeals: 0,
     fuinjutsu: 0
   },
+  statsByEra: {
+    'Part I': {
+      intelligence: 0,
+      stamina: 0,
+      strength: 0,
+      speed: 0,
+      ninjutsu: 0,
+      genjutsu: 0,
+      taijutsu: 0,
+      handSeals: 0,
+      fuinjutsu: 0
+    },
+    'Part II': {
+      intelligence: 0,
+      stamina: 0,
+      strength: 0,
+      speed: 0,
+      ninjutsu: 0,
+      genjutsu: 0,
+      taijutsu: 0,
+      handSeals: 0,
+      fuinjutsu: 0
+    },
+    'Blank Period': {
+      intelligence: 0,
+      stamina: 0,
+      strength: 0,
+      speed: 0,
+      ninjutsu: 0,
+      genjutsu: 0,
+      taijutsu: 0,
+      handSeals: 0,
+      fuinjutsu: 0
+    },
+    'Gaiden': {
+      intelligence: 0,
+      stamina: 0,
+      strength: 0,
+      speed: 0,
+      ninjutsu: 0,
+      genjutsu: 0,
+      taijutsu: 0,
+      handSeals: 0,
+      fuinjutsu: 0
+    },
+    'Boruto': {
+      intelligence: 0,
+      stamina: 0,
+      strength: 0,
+      speed: 0,
+      ninjutsu: 0,
+      genjutsu: 0,
+      taijutsu: 0,
+      handSeals: 0,
+      fuinjutsu: 0
+    }
+  },
   identifyingInfo: {
     bodyType: '',
     height: '',

@@ -50,15 +50,7 @@ export function renderOCDetail(oc) {
         </div>
         
         <div class="oc-stats">
-          ${renderStat('Intelligence', oc.stats.intelligence, 'intelligence')}
-          ${renderStat('Stamina', oc.stats.stamina, 'stamina')}
-          ${renderStat('Strength', oc.stats.strength, 'strength')}
-          ${renderStat('Speed', oc.stats.speed, 'speed')}
-          ${renderStat('Ninjutsu', oc.stats.ninjutsu, 'ninjutsu')}
-          ${renderStat('Genjutsu', oc.stats.genjutsu, 'genjutsu')}
-          ${renderStat('Taijutsu', oc.stats.taijutsu, 'taijutsu')}
-          ${renderStat('Hand Seals', oc.stats.handSeals, 'handSeals')}
-          ${renderStat('Fuinjutsu', oc.stats.fuinjutsu || 0, 'fuinjutsu')}
+          ${renderStatsWithEras(oc)}
         </div>
         </div>
         
@@ -192,6 +184,30 @@ export function renderOCDetail(oc) {
     }
   };
   
+  // Make switchEraTab available globally
+  window.switchEraTab = (era) => {
+    // Update tabs
+    const tabs = container.querySelectorAll('.stat-era-tab');
+    tabs.forEach(tab => {
+      if (tab.dataset.era === era) {
+        tab.classList.add('active');
+      } else {
+        tab.classList.remove('active');
+      }
+    });
+    
+    // Update panels
+    const panels = container.querySelectorAll('.stat-era-panel');
+    const eraId = era.replace(/\s+/g, '-');
+    panels.forEach(panel => {
+      if (panel.id === `era-panel-${eraId}`) {
+        panel.classList.add('active');
+      } else {
+        panel.classList.remove('active');
+      }
+    });
+  };
+  
   // Load clan badge image if clan exists, otherwise show kunai
   import('../data/storage.js').then(module => {
     const badgeContainer = container.querySelector(`#clan-badge-${oc.clanId || 'none'}`);
@@ -310,6 +326,69 @@ function setupGalleryLightbox() {
       window.navigateGallery(galleryId, 1);
     }
   });
+}
+
+function renderStatsWithEras(oc) {
+  const eras = ['Part I', 'Part II', 'Blank Period', 'Gaiden', 'Boruto'];
+  
+  // Check if statsByEra exists and has data
+  const hasEraStats = oc.statsByEra && Object.keys(oc.statsByEra).some(era => {
+    const eraStats = oc.statsByEra[era];
+    return eraStats && Object.values(eraStats).some(val => val > 0);
+  });
+  
+  // If no era stats exist, use default stats
+  if (!hasEraStats) {
+    return `
+      ${renderStat('Intelligence', oc.stats?.intelligence || 0, 'intelligence')}
+      ${renderStat('Stamina', oc.stats?.stamina || 0, 'stamina')}
+      ${renderStat('Strength', oc.stats?.strength || 0, 'strength')}
+      ${renderStat('Speed', oc.stats?.speed || 0, 'speed')}
+      ${renderStat('Ninjutsu', oc.stats?.ninjutsu || 0, 'ninjutsu')}
+      ${renderStat('Genjutsu', oc.stats?.genjutsu || 0, 'genjutsu')}
+      ${renderStat('Taijutsu', oc.stats?.taijutsu || 0, 'taijutsu')}
+      ${renderStat('Hand Seals', oc.stats?.handSeals || 0, 'handSeals')}
+      ${renderStat('Fuinjutsu', oc.stats?.fuinjutsu || 0, 'fuinjutsu')}
+    `;
+  }
+  
+  // Generate era tabs and stat panels
+  const eraTabs = eras.map((era, index) => `
+    <button class="stat-era-tab ${index === 0 ? 'active' : ''}" 
+            onclick="switchEraTab('${era}')" 
+            data-era="${era}">
+      ${era}
+    </button>
+  `).join('');
+  
+  const eraPanels = eras.map((era, index) => {
+    const eraStats = oc.statsByEra?.[era] || oc.stats || {};
+    const isActive = index === 0 ? 'active' : '';
+    return `
+      <div class="stat-era-panel ${isActive}" id="era-panel-${era.replace(/\s+/g, '-')}">
+        ${renderStat('Intelligence', eraStats.intelligence || 0, 'intelligence')}
+        ${renderStat('Stamina', eraStats.stamina || 0, 'stamina')}
+        ${renderStat('Strength', eraStats.strength || 0, 'strength')}
+        ${renderStat('Speed', eraStats.speed || 0, 'speed')}
+        ${renderStat('Ninjutsu', eraStats.ninjutsu || 0, 'ninjutsu')}
+        ${renderStat('Genjutsu', eraStats.genjutsu || 0, 'genjutsu')}
+        ${renderStat('Taijutsu', eraStats.taijutsu || 0, 'taijutsu')}
+        ${renderStat('Hand Seals', eraStats.handSeals || 0, 'handSeals')}
+        ${renderStat('Fuinjutsu', eraStats.fuinjutsu || 0, 'fuinjutsu')}
+      </div>
+    `;
+  }).join('');
+  
+  return `
+    <div class="stats-era-container">
+      <div class="stats-era-tabs">
+        ${eraTabs}
+      </div>
+      <div class="stats-era-content">
+        ${eraPanels}
+      </div>
+    </div>
+  `;
 }
 
 function renderStat(name, value, iconType) {

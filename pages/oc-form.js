@@ -340,16 +340,36 @@ export function renderOCForm(oc = null, onSave) {
         
         <!-- Stats -->
         <h3 class="mb-3 mt-4">Stats (1-5)</h3>
-        <div class="stats-container">
-          <div class="stats-grid">
-            ${renderStatInput('intelligence', formOC.stats?.intelligence || 3)}
-            ${renderStatInput('stamina', formOC.stats?.stamina || 3)}
-            ${renderStatInput('strength', formOC.stats?.strength || 3)}
-            ${renderStatInput('speed', formOC.stats?.speed || 3)}
-            ${renderStatInput('ninjutsu', formOC.stats?.ninjutsu || 3)}
-            ${renderStatInput('genjutsu', formOC.stats?.genjutsu || 3)}
-            ${renderStatInput('taijutsu', formOC.stats?.taijutsu || 3)}
-            ${renderStatInput('handSeals', formOC.stats?.handSeals || 3)}
+        <div class="stats-form-container">
+          <div class="stats-form-tabs">
+            <button type="button" class="stats-form-tab active" onclick="switchStatsEraTab('Part I')" data-era="Part I">Part I</button>
+            <button type="button" class="stats-form-tab" onclick="switchStatsEraTab('Part II')" data-era="Part II">Part II</button>
+            <button type="button" class="stats-form-tab" onclick="switchStatsEraTab('Blank Period')" data-era="Blank Period">Blank Period</button>
+            <button type="button" class="stats-form-tab" onclick="switchStatsEraTab('Gaiden')" data-era="Gaiden">Gaiden</button>
+            <button type="button" class="stats-form-tab" onclick="switchStatsEraTab('Boruto')" data-era="Boruto">Boruto</button>
+          </div>
+          <div class="stats-form-content">
+            ${['Part I', 'Part II', 'Blank Period', 'Gaiden', 'Boruto'].map((era, index) => {
+              const eraStats = formOC.statsByEra?.[era] || formOC.stats || {};
+              const isActive = index === 0 ? 'active' : '';
+              return `
+                <div class="stats-form-panel ${isActive}" id="stats-form-panel-${era.replace(/\s+/g, '-')}">
+                  <div class="stats-container">
+                    <div class="stats-grid">
+                      ${renderStatInput(`intelligence-${era}`, eraStats.intelligence || formOC.stats?.intelligence || 3)}
+                      ${renderStatInput(`stamina-${era}`, eraStats.stamina || formOC.stats?.stamina || 3)}
+                      ${renderStatInput(`strength-${era}`, eraStats.strength || formOC.stats?.strength || 3)}
+                      ${renderStatInput(`speed-${era}`, eraStats.speed || formOC.stats?.speed || 3)}
+                      ${renderStatInput(`ninjutsu-${era}`, eraStats.ninjutsu || formOC.stats?.ninjutsu || 3)}
+                      ${renderStatInput(`genjutsu-${era}`, eraStats.genjutsu || formOC.stats?.genjutsu || 3)}
+                      ${renderStatInput(`taijutsu-${era}`, eraStats.taijutsu || formOC.stats?.taijutsu || 3)}
+                      ${renderStatInput(`handSeals-${era}`, eraStats.handSeals || formOC.stats?.handSeals || 3)}
+                      ${renderStatInput(`fuinjutsu-${era}`, eraStats.fuinjutsu || formOC.stats?.fuinjutsu || 0)}
+                    </div>
+                  </div>
+                </div>
+              `;
+            }).join('')}
           </div>
         </div>
         
@@ -487,16 +507,56 @@ export function renderOCForm(oc = null, onSave) {
       village: document.getElementById('village').value,
       rank: document.getElementById('rank').value,
       clanId: document.getElementById('clanId').value || null,
-      stats: {
-        intelligence: parseInt(document.getElementById('intelligence').value) || 3,
-        stamina: parseInt(document.getElementById('stamina').value) || 3,
-        strength: parseInt(document.getElementById('strength').value) || 3,
-        speed: parseInt(document.getElementById('speed').value) || 3,
-        ninjutsu: parseInt(document.getElementById('ninjutsu').value) || 3,
-        genjutsu: parseInt(document.getElementById('genjutsu').value) || 3,
-        taijutsu: parseInt(document.getElementById('taijutsu').value) || 3,
-        handSeals: parseInt(document.getElementById('handSeals').value) || 3
-      },
+      stats: (() => {
+        // Default stats (use Part I if available, otherwise default values)
+        const eras = ['Part I', 'Part II', 'Blank Period', 'Gaiden', 'Boruto'];
+        const partIStats = {};
+        eras.forEach(era => {
+          const eraId = era.replace(/\s+/g, '-');
+          const eraStats = {};
+          ['intelligence', 'stamina', 'strength', 'speed', 'ninjutsu', 'genjutsu', 'taijutsu', 'handSeals', 'fuinjutsu'].forEach(stat => {
+            const element = document.getElementById(`${stat}-${era}`);
+            if (element) {
+              eraStats[stat] = parseInt(element.value) || 0;
+            }
+          });
+          if (era === 'Part I' && Object.keys(eraStats).length > 0) {
+            Object.assign(partIStats, eraStats);
+          }
+        });
+        return Object.keys(partIStats).length > 0 ? partIStats : {
+          intelligence: 3,
+          stamina: 3,
+          strength: 3,
+          speed: 3,
+          ninjutsu: 3,
+          genjutsu: 3,
+          taijutsu: 3,
+          handSeals: 3,
+          fuinjutsu: 0
+        };
+      })(),
+      statsByEra: (() => {
+        const eras = ['Part I', 'Part II', 'Blank Period', 'Gaiden', 'Boruto'];
+        const statsByEra = {};
+        eras.forEach(era => {
+          const eraId = era.replace(/\s+/g, '-');
+          const eraStats = {};
+          ['intelligence', 'stamina', 'strength', 'speed', 'ninjutsu', 'genjutsu', 'taijutsu', 'handSeals', 'fuinjutsu'].forEach(stat => {
+            const element = document.getElementById(`${stat}-${era}`);
+            if (element) {
+              const value = parseInt(element.value) || 0;
+              if (value > 0) {
+                eraStats[stat] = value;
+              }
+            }
+          });
+          if (Object.keys(eraStats).length > 0) {
+            statsByEra[era] = eraStats;
+          }
+        });
+        return Object.keys(statsByEra).length > 0 ? statsByEra : undefined;
+      })(),
       identifyingInfo: {
         bodyType: document.getElementById('bodyType').value,
         height: document.getElementById('height').value,
@@ -567,6 +627,30 @@ export function renderOCForm(oc = null, onSave) {
         var(--color-border-2) 100%)`;
     });
   }, 0);
+  
+  // Make switchStatsEraTab function available globally
+  window.switchStatsEraTab = function(era) {
+    // Update tabs
+    const tabs = form.querySelectorAll('.stats-form-tab');
+    tabs.forEach(tab => {
+      if (tab.dataset.era === era) {
+        tab.classList.add('active');
+      } else {
+        tab.classList.remove('active');
+      }
+    });
+    
+    // Update panels
+    const panels = form.querySelectorAll('.stats-form-panel');
+    const eraId = era.replace(/\s+/g, '-');
+    panels.forEach(panel => {
+      if (panel.id === `stats-form-panel-${eraId}`) {
+        panel.classList.add('active');
+      } else {
+        panel.classList.remove('active');
+      }
+    });
+  };
   
   return form;
 }
