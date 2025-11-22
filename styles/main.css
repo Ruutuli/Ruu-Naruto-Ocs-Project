@@ -1039,6 +1039,36 @@ body {
   }
 }
 
+/* Interactive Elements - Touch Targets */
+@media (max-width: 768px) {
+  /* Ensure all clickable elements meet touch target requirements */
+  a, button, input[type="button"], input[type="submit"], 
+  input[type="checkbox"], input[type="radio"], select {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Links in content */
+  .markdown-content a {
+    min-height: auto;
+    padding: 0.25rem 0.5rem;
+    display: inline-block;
+  }
+  
+  /* Checkboxes and radios */
+  input[type="checkbox"], input[type="radio"] {
+    width: 20px;
+    height: 20px;
+    min-width: 20px;
+    min-height: 20px;
+  }
+  
+  /* Ensure dropdowns are touch-friendly */
+  select {
+    padding-right: 2.5rem;
+  }
+}
+
 /* Utility Classes */
 .text-uppercase {
   text-transform: uppercase;
@@ -1443,6 +1473,25 @@ body {
   .card-body {
     overflow-x: hidden;
   }
+  
+  /* Prevent zoom on input focus (iOS) */
+  input[type="text"],
+  input[type="number"],
+  input[type="email"],
+  input[type="password"],
+  input[type="search"],
+  input[type="tel"],
+  input[type="url"],
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+  
+  /* Smooth scrolling */
+  html {
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+  }
 }
 
 /* Additional mobile spacing improvements */
@@ -1462,6 +1511,19 @@ body {
   
   .card-body > h3:first-child {
     margin-top: 0 !important;
+  }
+  
+  /* Prevent zoom on input focus (iOS) - override for smaller screens if needed */
+  input[type="text"],
+  input[type="number"],
+  input[type="email"],
+  input[type="password"],
+  input[type="search"],
+  input[type="tel"],
+  input[type="url"],
+  select,
+  textarea {
+    font-size: 16px !important;
   }
 }
 
