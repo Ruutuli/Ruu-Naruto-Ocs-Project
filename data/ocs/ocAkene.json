@@ -2,9 +2,15 @@
   "id": "ocAkene",
   "lastName": "Chigiri",
   "firstName": "Akene",
-  "aliases": [],
-  "dob": "",
-  "age": 0,
+  "nameJapanese": "契り朱根（ちぎり あけね）",
+  "nameMeaning": "契り (Chigiri) — vow; pledge; bond; also a lewd pun about “relations,” which the clan gets teased for. / 朱根 (Akene) — “scarlet / vermilion root,” implying deep lineage, fate, and the “red root” of knowledge.",
+  "aliases": [
+    "Madōsho Vessel",
+    "Walking Scroll",
+    "Fate Reader"
+  ],
+  "dob": "2025-11-22",
+  "age": 13,
   "bloodType": "",
   "gender": "",
   "chakraType": "",
