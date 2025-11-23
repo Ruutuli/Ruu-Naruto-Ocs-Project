@@ -388,20 +388,34 @@ export function renderOCDetail(oc) {
   // Make toggleCollapse available globally
   window.toggleCollapse = (id) => {
     const content = document.getElementById(id);
-    if (content) {
-      const isActive = content.classList.contains('active');
-      content.classList.toggle('active');
-      
-      // Find the associated arrow and rotate it
-      const header = content.previousElementSibling;
-      if (header) {
-        const arrow = header.querySelector('.bounce-arrow');
-        if (arrow) {
-          if (isActive) {
-            arrow.style.transform = 'rotate(0deg)';
-          } else {
-            arrow.style.transform = 'rotate(180deg)';
-          }
+    if (!content) {
+      console.error('[toggleCollapse] Content element not found for id:', id);
+      return;
+    }
+    
+    const isActive = content.classList.contains('active');
+    content.classList.toggle('active');
+    const newActiveState = content.classList.contains('active');
+    
+    // Find the associated arrow and rotate it
+    // Try multiple methods to find the header
+    let header = content.previousElementSibling;
+    
+    if (!header || !header.classList.contains('collapsible-header')) {
+      // Try finding parent and then header
+      const parent = content.parentElement;
+      if (parent) {
+        header = parent.querySelector('.collapsible-header');
+      }
+    }
+    
+    if (header) {
+      const arrow = header.querySelector('.bounce-arrow');
+      if (arrow) {
+        if (newActiveState) {
+          arrow.style.transform = 'rotate(180deg)';
+        } else {
+          arrow.style.transform = 'rotate(0deg)';
         }
       }
     }

@@ -1023,27 +1023,84 @@ export const villages = [
   // Relationship Types with Heart Emojis
   export const relationshipTypes = [
     { value: 'Lovers', label: '❤️‍🔥 Lovers', heartEmoji: '❤️‍🔥' },
+    { value: 'Love', label: '❤️‍🔥 Love', heartEmoji: '❤️‍🔥' },
+    { value: 'LoveInterest', label: '❤️‍🔥 Love Interest', heartEmoji: '❤️‍🔥' },
     { value: 'Crush', label: '💕 Crush', heartEmoji: '💕' },
     { value: 'Close Friend', label: '💚 Close Friend', heartEmoji: '💚' },
     { value: 'Friend', label: '💚 Friend', heartEmoji: '💚' },
     { value: 'Acquaintance', label: '🤍 Acquaintance', heartEmoji: '🤍' },
     { value: 'Dislike', label: '💔 Dislike', heartEmoji: '💔' },
     { value: 'Hate', label: '🖤 Hate', heartEmoji: '🖤' },
+    { value: 'Enemy', label: '🖤 Enemy', heartEmoji: '🖤' },
+    { value: 'Traumatic', label: '🖤 Traumatic', heartEmoji: '🖤' },
     { value: 'Neutral', label: '🤍 Neutral', heartEmoji: '🤍' },
+    { value: 'Distant', label: '🤍 Distant', heartEmoji: '🤍' },
+    { value: 'Limited', label: '🤍 Limited', heartEmoji: '🤍' },
     { value: 'Family', label: '💛 Family', heartEmoji: '💛' },
+    { value: 'Clan', label: '💛 Clan', heartEmoji: '💛' },
     { value: 'Rival', label: '💙 Rival', heartEmoji: '💙' },
     { value: 'Admire', label: '💜 Admire', heartEmoji: '💜' },
-    { value: 'Complicated', label: '🤎 Complicated', heartEmoji: '🤎' }
+    { value: 'Codependent', label: '💜 Codependent', heartEmoji: '💜' },
+    { value: 'Unstable', label: '💜 Unstable', heartEmoji: '💜' },
+    { value: 'Complicated', label: '🤎 Complicated', heartEmoji: '🤎' },
+    { value: 'Gray', label: '🤎 Gray', heartEmoji: '🤎' }
   ];
   
-  // Helper function to get heart emoji by relationship type
+  // Helper function to get heart emoji by relationship type (case-insensitive)
   export function getRelationshipHeartEmoji(relationshipType) {
-    const found = relationshipTypes.find(r => r.value === relationshipType);
-    return found ? found.heartEmoji : '🤍';
+    if (!relationshipType) return '🤍';
+    
+    // Normalize the input: trim, handle common variations
+    const normalized = String(relationshipType).trim();
+    
+    // Try exact match first
+    let found = relationshipTypes.find(r => r.value === normalized);
+    if (found) return found.heartEmoji;
+    
+    // Try case-insensitive match
+    found = relationshipTypes.find(r => r.value.toLowerCase() === normalized.toLowerCase());
+    if (found) return found.heartEmoji;
+    
+    // Handle common variations
+    const variations = {
+      'lovers': 'Lovers',
+      'love': 'Love',
+      'loveinterest': 'LoveInterest',
+      'loveInterest': 'LoveInterest',
+      'crush': 'Crush',
+      'close friend': 'Close Friend',
+      'closefriend': 'Close Friend',
+      'closeFriend': 'Close Friend',
+      'friend': 'Friend',
+      'acquaintance': 'Acquaintance',
+      'dislike': 'Dislike',
+      'hate': 'Hate',
+      'enemy': 'Enemy',
+      'traumatic': 'Traumatic',
+      'neutral': 'Neutral',
+      'distant': 'Distant',
+      'limited': 'Limited',
+      'family': 'Family',
+      'clan': 'Clan',
+      'rival': 'Rival',
+      'admire': 'Admire',
+      'codependent': 'Codependent',
+      'unstable': 'Unstable',
+      'complicated': 'Complicated',
+      'gray': 'Gray'
+    };
+    
+    const normalizedKey = normalized.toLowerCase();
+    if (variations[normalizedKey]) {
+      found = relationshipTypes.find(r => r.value === variations[normalizedKey]);
+      if (found) return found.heartEmoji;
+    }
+    
+    return '🤍';
   }
   
   // Helper function to get heart emoji from multiple relationship types (priority-based)
-  // Priority: Lovers > Crush > Hate > Dislike > Complicated > Admire > Rival > Family > Close Friend > Friend > Acquaintance > Neutral
+  // Priority: Lovers > Love > LoveInterest > Crush > Hate > Enemy > Traumatic > Dislike > Complicated > Gray > Admire > Codependent > Unstable > Rival > Family > Clan > Close Friend > Friend > Acquaintance > Distant > Limited > Neutral
   export function getHeartEmojiFromTypes(types) {
     if (!types || types.length === 0) return '🤍';
     
@@ -1051,13 +1108,18 @@ export const villages = [
     const typeArray = Array.isArray(types) ? types : (types ? [types] : []);
     if (typeArray.length === 0) return '🤍';
     
-    // Priority order (highest to lowest)
-    const priority = ['Lovers', 'Crush', 'Hate', 'Dislike', 'Complicated', 'Admire', 'Rival', 'Family', 'Close Friend', 'Friend', 'Acquaintance', 'Neutral'];
+    // Normalize all types to lowercase for comparison
+    const normalizedArray = typeArray.map(t => String(t).trim().toLowerCase());
     
-    // Find the highest priority type
+    // Priority order (highest to lowest) - normalized to lowercase
+    const priority = ['lovers', 'love', 'loveinterest', 'crush', 'hate', 'enemy', 'traumatic', 'dislike', 'complicated', 'gray', 'admire', 'codependent', 'unstable', 'rival', 'family', 'clan', 'close friend', 'closefriend', 'friend', 'acquaintance', 'distant', 'limited', 'neutral'];
+    
+    // Find the highest priority type (case-insensitive)
     for (const priorityType of priority) {
-      if (typeArray.includes(priorityType)) {
-        return getRelationshipHeartEmoji(priorityType);
+      if (normalizedArray.includes(priorityType)) {
+        // Find the original type from the array to preserve casing
+        const originalIndex = normalizedArray.indexOf(priorityType);
+        return getRelationshipHeartEmoji(typeArray[originalIndex]);
       }
     }
     

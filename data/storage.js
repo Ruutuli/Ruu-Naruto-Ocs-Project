@@ -101,6 +101,16 @@ class Storage {
             { headers }
           );
 
+          if (response.status === 404) {
+            // Directory doesn't exist yet, that's fine - silently handle
+            // This is expected behavior when directories haven't been created in GitHub yet
+            // On localhost, try localStorage as fallback
+            if (this._isLocalhost) {
+              this.loadTypeFromLocalStorage(type);
+            }
+            continue; // Skip to next type
+          }
+
           if (response.ok) {
             const files = await response.json();
             this._cache[type].clear();
@@ -123,13 +133,6 @@ class Storage {
                 }
               }
             }
-          } else if (response.status === 404) {
-            // Directory doesn't exist yet, that's fine - silently handle
-            // This is expected behavior when directories haven't been created in GitHub yet
-            // On localhost, try localStorage as fallback
-            if (this._isLocalhost) {
-              this.loadTypeFromLocalStorage(type);
-            }
           } else if (response.status === 403 && !this._token) {
             // Rate limited or private repo - fallback to static files or localStorage
             if (this._isLocalhost) {
@@ -137,6 +140,13 @@ class Storage {
               this.loadTypeFromLocalStorage(type);
             } else {
               await this.loadFromStaticFiles(type);
+            }
+          } else {
+            // Other errors (not 404, not 403) - log but don't throw
+            console.warn(`Failed to load ${type} from GitHub (status ${response.status})`);
+            // On localhost, try localStorage as fallback
+            if (this._isLocalhost) {
+              this.loadTypeFromLocalStorage(type);
             }
           }
         } catch (e) {

@@ -87,11 +87,14 @@ export function renderOCCard(oc, onClick) {
         const allClanNames = [...clanIds.map(id => 'Loading...'), ...clanNames];
         const clanDisplay = allClanNames.length > 0 ? allClanNames.join(', ') : 'Loading...';
         const clanIdStr = clanIds.length > 0 ? clanIds[0] : (clanNames.length > 0 ? clanNames[0] : 'none');
+        // Ensure we always stringify valid arrays (never null/undefined)
+        const clanIdsJson = JSON.stringify(clanIds || []);
+        const clanNamesJson = JSON.stringify(clanNames || []);
         
         return `
         <div class="oc-card-clan">
           <i class="fas fa-users"></i>
-          <span><strong>Clan:</strong> <span id="clan-name-${clanIdStr}" class="oc-card-clan-name" data-clan-ids="${JSON.stringify(clanIds)}" data-clan-names="${JSON.stringify(clanNames)}">${clanDisplay}</span></span>
+          <span><strong>Clan:</strong> <span id="clan-name-${clanIdStr}" class="oc-card-clan-name" data-clan-ids="${clanIdsJson}" data-clan-names="${clanNamesJson}">${clanDisplay}</span></span>
         </div>
       `;
       })()}
@@ -115,31 +118,59 @@ export function renderOCCard(oc, onClick) {
     let clanNames = [];
     
     try {
-      if (clanIdsAttr && clanIdsAttr.trim()) {
-        clanIds = JSON.parse(clanIdsAttr);
-        if (!Array.isArray(clanIds)) clanIds = [];
+      if (clanIdsAttr && clanIdsAttr.trim() && clanIdsAttr.trim() !== 'null' && clanIdsAttr.trim() !== 'undefined') {
+        const parsed = JSON.parse(clanIdsAttr.trim());
+        clanIds = Array.isArray(parsed) ? parsed : [];
       }
     } catch (e) {
-      console.warn('Failed to parse data-clan-ids:', e);
+      // Silently handle parse errors - attribute may be malformed or empty
       clanIds = [];
     }
     
     try {
-      if (clanNamesAttr && clanNamesAttr.trim()) {
-        clanNames = JSON.parse(clanNamesAttr);
-        if (!Array.isArray(clanNames)) clanNames = [];
+      if (clanNamesAttr && clanNamesAttr.trim() && clanNamesAttr.trim() !== 'null' && clanNamesAttr.trim() !== 'undefined') {
+        const parsed = JSON.parse(clanNamesAttr.trim());
+        clanNames = Array.isArray(parsed) ? parsed : [];
       }
     } catch (e) {
-      console.warn('Failed to parse data-clan-names:', e);
+      // Silently handle parse errors - attribute may be malformed or empty
       clanNames = [];
     }
     
     if (clanIds.length > 0) {
-      import('../data/storage.js').then(module => {
-        const loadedClanNames = clanIds.map(clanId => {
-          const clan = module.default.getClan(clanId);
+      import('../data/storage.js').then(async module => {
+        const storage = module.default;
+        
+        // Load all clans asynchronously
+        const loadPromises = clanIds.map(async (clanId) => {
+          // Check if already in cache
+          let clan = storage.getClan(clanId);
+          if (clan) {
+            return clan.name;
+          }
+          
+          // Try to load it
+          try {
+            // Load the static file directly
+            const response = await fetch(`data/clans/${clanId}.json`);
+            if (response.ok) {
+              const clanData = await response.json();
+              if (clanData && clanData.id) {
+                // Add to cache
+                storage._cache.clans.set(clanData.id, clanData);
+                return clanData.name || 'Unknown';
+              }
+            }
+          } catch (e) {
+            // File doesn't exist or error loading
+          }
+          
+          // Fallback: try getClan again (might have been loaded by another component)
+          clan = storage.getClan(clanId);
           return clan ? clan.name : 'Unknown';
         });
+        
+        const loadedClanNames = await Promise.all(loadPromises);
         const allClanNames = [...loadedClanNames, ...clanNames];
         clanNameEl.textContent = allClanNames.length > 0 ? allClanNames.join(', ') : 'Unknown';
       });
