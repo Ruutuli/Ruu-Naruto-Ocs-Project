@@ -3,10 +3,17 @@
   "lastName": "Chigiri",
   "firstName": "Akene",
   "nameJapanese": "契り朱根（ちぎり あけね）",
-  "lastNameMeaning": "“Vow; pledge; bond.”  ",
-  "firstNameMeaning": "",
-  "nameMeaning": "“Vow; pledge; bond.”  ",
-  "aliases": [],
+
+  "lastNameMeaning": "Vow; pledge; bond.",
+  "firstNameMeaning": "Scarlet root.",
+  "nameMeaning": "The Scarlet Root of the Vow.",
+
+  "aliases": [
+    "Madōsho Vessel",
+    "Walking Scroll",
+    "Fate Reader"
+  ],
+
   "debut": {
     "manga": "",
     "anime": "",
@@ -15,100 +22,120 @@
     "game": ""
   },
   "appearsIn": [],
-  "dob": "",
-  "bloodType": "",
-  "gender": "",
-  "natureType": "",
-  "village": [],
-  "rank": [],
-  "clanId": null,
-  "clanName": null,
+  "dob": "05/04",
+  "bloodType": "O+",
+  "gender": "Female",
+  "natureType": ["Fire Release", "Earth Release"],
+  "village": ["Konohagakure", "Otogakure"],
+  "rank": ["Genin", "Missing-nin"],
+  "clanId": "chigiriClan",
+  "clanName": "Chigiri Clan",
   "stats": {
-    "intelligence": 3,
+    "intelligence": 4,
     "stamina": 3,
-    "strength": 3,
-    "speed": 3,
+    "strength": 2,
+    "speed": 2,
     "ninjutsu": 3,
-    "genjutsu": 3,
-    "taijutsu": 3,
+    "genjutsu": 1,
+    "taijutsu": 2,
     "handSeals": 3,
     "fuinjutsu": 1
   },
+
   "statsByEra": {
     "Part I": {
       "intelligence": 3,
       "stamina": 3,
-      "strength": 3,
-      "speed": 3,
+      "strength": 2,
+      "speed": 2,
       "ninjutsu": 3,
-      "genjutsu": 3,
-      "taijutsu": 3,
+      "genjutsu": 1,
+      "taijutsu": 2,
       "handSeals": 3,
       "fuinjutsu": 1
     },
     "Part II": {
-      "intelligence": 3,
-      "stamina": 3,
-      "strength": 3,
-      "speed": 3,
+      "intelligence": 4,
+      "stamina": 4,
+      "strength": 2,
+      "speed": 2,
       "ninjutsu": 3,
-      "genjutsu": 3,
+      "genjutsu": 2,
       "taijutsu": 3,
-      "handSeals": 3,
+      "handSeals": 4,
       "fuinjutsu": 1
     },
     "Blank Period": {
-      "intelligence": 3,
-      "stamina": 3,
-      "strength": 3,
-      "speed": 3,
+      "intelligence": 4,
+      "stamina": 4,
+      "strength": 2,
+      "speed": 2,
       "ninjutsu": 3,
-      "genjutsu": 3,
+      "genjutsu": 2,
       "taijutsu": 3,
-      "handSeals": 3,
+      "handSeals": 4,
       "fuinjutsu": 1
     },
     "Gaiden": {
-      "intelligence": 3,
-      "stamina": 3,
-      "strength": 3,
-      "speed": 3,
+      "intelligence": 4,
+      "stamina": 4,
+      "strength": 2,
+      "speed": 2,
       "ninjutsu": 3,
-      "genjutsu": 3,
+      "genjutsu": 2,
       "taijutsu": 3,
-      "handSeals": 3,
+      "handSeals": 4,
       "fuinjutsu": 1
     },
     "Boruto": {
-      "intelligence": 3,
-      "stamina": 3,
-      "strength": 3,
-      "speed": 3,
+      "intelligence": 4,
+      "stamina": 4,
+      "strength": 2,
+      "speed": 2,
       "ninjutsu": 3,
-      "genjutsu": 3,
+      "genjutsu": 2,
       "taijutsu": 3,
-      "handSeals": 3,
+      "handSeals": 4,
       "fuinjutsu": 1
     }
   },
-  "identifyingInfo": {
-    "bodyType": ""
+"identifyingInfo": {
+    "bodyType": "Lean athletic hourglass"
   },
-  "eyeColor": "",
-  "hairColor": "",
-  "distinguishingFeatures": [],
-  "teamNumber": "",
-  "teammates": [],
-  "sensei": "",
-  "madeGenin": "",
-  "madeChunin": "",
+
+  "eyeColor": "Pink",
+  "hairColor": "Silver / White",
+
+  "distinguishingFeatures": [
+    "Long silver hair",
+    "Pink irises",
+    "Soft rounded Chigiri brows",
+    "Long legs",
+    "Small hoop earrings (Part I)",
+    "Maroon hair ornament (Part I)",
+    "Weighted gloves (Part II)"
+  ],
+
+  "teamNumber": "Team 4",
+
+  "teammates": [
+    "Amagawa Oniji",
+    "Toraneko Akisu"
+  ],
+
+  "sensei": "Suishou Teruo",
+
+  "madeGenin": "Age 11",
+  "madeChunin": "N/A",
+
   "battleStrategy": {
-    "inTeam": "",
-    "alone": "",
-    "fieldPosition": "",
-    "effectiveDistance": "",
-    "specialty": "",
-    "notableAbilities": ""
+    "inTeam": "Acts as intel and support. Uses deception, terrain manipulation, and kusarigama control to create openings for teammates. Often positions herself as bait to allow stronger allies to land finishing blows.",
+    "alone": "Stealth-focused hit-and-run tactics. Relies on concealment, earth-style cover, and strategic repositioning rather than direct confrontation.",
+    "fieldPosition": "Mid–backline support, rotating into close-range when chaining or binding an opponent.",
+    "effectiveDistance": "Short–Mid range",
+    "specialty": "Intel gathering, tactical analysis, kusarigamajutsu, chakra concealment, earth-style defensive setups, and functioning as the Madōsho’s living archive.",
+    "notableAbilities": "Kusarigamajutsu, Earth Release concealment and barriers, Fire Release pressure applications, advanced chakra suppression, and involuntary Madōsho Mode knowledge output."
+
   },
   "personality": {
     "likes": [],

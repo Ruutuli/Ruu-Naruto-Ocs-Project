@@ -22,6 +22,7 @@ class Storage {
     this._githubBase = `https://api.github.com/repos/${githubConfig.owner}/${githubConfig.repo}`;
     this._token = null;
     this._isLocalhost = this.isLocalhost();
+    this._saveQueue = new Map(); // Track ongoing saves to prevent concurrent saves
     this.init();
   }
 
@@ -282,8 +283,43 @@ class Storage {
     return false;
   }
 
-  // Save a file to GitHub
+  // Save a file to GitHub with queue management and backup
   async saveFile(type, id, data, retryCount = 0) {
+    const fileKey = `${type}/${id}`;
+    
+    // Check if there's already a save in progress for this file
+    if (this._saveQueue.has(fileKey)) {
+      console.log(`Save already in progress for ${fileKey}, waiting...`);
+      // Wait for the existing save to complete
+      try {
+        await this._saveQueue.get(fileKey);
+        // If the previous save succeeded, check if we still need to save
+        const currentData = this._cache[type].get(id);
+        if (currentData && JSON.stringify(currentData) === JSON.stringify(data)) {
+          console.log(`Data unchanged for ${fileKey}, skipping save`);
+          return true;
+        }
+      } catch (e) {
+        // Previous save failed, continue with this one
+        console.log(`Previous save failed for ${fileKey}, retrying...`);
+      }
+    }
+
+    // Create a promise for this save operation
+    const savePromise = this._performSave(type, id, data, retryCount);
+    this._saveQueue.set(fileKey, savePromise);
+    
+    try {
+      const result = await savePromise;
+      return result;
+    } finally {
+      // Remove from queue when done
+      this._saveQueue.delete(fileKey);
+    }
+  }
+
+  // Perform the actual save operation
+  async _performSave(type, id, data, retryCount = 0) {
     if (!this._token) {
       this._token = await getGitHubToken();
     }
@@ -302,9 +338,39 @@ class Storage {
       data.id = id;
     }
 
+    const path = `data/${type}/${id}.json`;
+    const content = JSON.stringify(data, null, 2);
+    
+    // Always save to localStorage first as backup
+    this.saveToLocalStorage(type, id, data);
+    
+    // Also save to a temporary backup location
     try {
-      const path = `data/${type}/${id}.json`;
-      const content = JSON.stringify(data, null, 2);
+      const backupKey = `naruto_oc_backup_${type}_${id}_${Date.now()}`;
+      localStorage.setItem(backupKey, content);
+      // Keep only last 5 backups
+      const backupKeys = Object.keys(localStorage)
+        .filter(k => k.startsWith(`naruto_oc_backup_${type}_${id}_`))
+        .sort()
+        .reverse();
+      if (backupKeys.length > 5) {
+        backupKeys.slice(5).forEach(k => localStorage.removeItem(k));
+      }
+    } catch (e) {
+      console.warn('Could not create backup:', e);
+    }
+
+    try {
+      // Check if content actually changed by comparing with current cache
+      const currentData = this._cache[type].get(id);
+      if (currentData) {
+        const currentContent = JSON.stringify(currentData, null, 2);
+        if (currentContent === content) {
+          console.log(`No changes detected for ${path}, skipping GitHub save`);
+          return true;
+        }
+      }
+
       const encodedContent = btoa(unescape(encodeURIComponent(content)));
       
       // Get existing file SHA if it exists (always fetch fresh SHA)
@@ -341,19 +407,61 @@ class Storage {
       } else {
         const error = await response.json();
         
-        // Handle 409 Conflict - file was modified, retry with fresh SHA
-        if (response.status === 409 && retryCount < 2) {
-          console.log(`409 Conflict detected for ${path}, retrying with fresh SHA...`);
-          // Wait a bit before retrying to avoid race conditions
-          await new Promise(resolve => setTimeout(resolve, 500));
+        // Handle 409 Conflict - file was modified, try to merge or retry
+        if (response.status === 409 && retryCount < 3) {
+          console.log(`409 Conflict detected for ${path}, attempt ${retryCount + 1}/3`);
+          
+          // Exponential backoff: 500ms, 1000ms, 2000ms
+          const delay = Math.min(500 * Math.pow(2, retryCount), 2000);
+          await new Promise(resolve => setTimeout(resolve, delay));
+          
+          // Try to get the current file content and check if we should merge
+          try {
+            const currentFileResponse = await fetch(
+              `${this._githubBase}/contents/${path}?ref=${githubConfig.branch}`,
+              {
+                headers: {
+                  'Authorization': `token ${this._token}`,
+                  'Accept': 'application/vnd.github.v3+json'
+                }
+              }
+            );
+            
+            if (currentFileResponse.ok) {
+              const currentFile = await currentFileResponse.json();
+              const currentContent = atob(currentFile.content.replace(/\s/g, ''));
+              const currentData = JSON.parse(currentContent);
+              
+              // If the remote file is identical to what we're trying to save, consider it success
+              if (JSON.stringify(currentData, null, 2) === content) {
+                console.log(`Remote file already has our changes, considering save successful`);
+                this._cache[type].set(id, data);
+                return true;
+              }
+              
+              // If remote file is newer (has more recent timestamp or different content),
+              // we'll use our version (the user's current edits take priority)
+              console.log(`Remote file differs, using local version (user edits take priority)`);
+            }
+          } catch (e) {
+            console.warn('Could not fetch current file for comparison:', e);
+          }
+          
           // Retry with fresh SHA
-          return this.saveFile(type, id, data, retryCount + 1);
+          return this._performSave(type, id, data, retryCount + 1);
         }
         
         throw new Error(error.message || 'Failed to save file');
       }
     } catch (e) {
       console.error(`Error saving ${type}/${id}.json:`, e);
+      
+      // Data is already saved to localStorage as backup, so it's safe
+      this.showNotification(
+        `Saved to local backup. GitHub save failed: ${e.message}. Your data is safe locally.`,
+        'error'
+      );
+      
       let errorMessage = e.message;
       
       if (e.message.includes('Bad credentials') || e.message.includes('401')) {
@@ -363,10 +471,12 @@ class Storage {
       } else if (e.message.includes('404')) {
         errorMessage = 'Repository not found. Please check your GitHub config in data/github-config.js';
       } else if (e.message.includes('does not match') || e.message.includes('409')) {
-        errorMessage = 'File was modified by another process. Please refresh and try again.';
+        errorMessage = 'File conflict detected. Data saved to local backup. Please refresh and try again.';
       }
       
-      this.showNotification(`Error saving: ${errorMessage}`, 'error');
+      // Still update cache since we saved to localStorage
+      this._cache[type].set(id, data);
+      
       return false;
     }
   }
