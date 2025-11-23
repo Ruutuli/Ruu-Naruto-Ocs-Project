@@ -945,6 +945,22 @@ export function renderOCForm(oc = null, onSave) {
         <!-- Personality -->
         <h3 class="mb-3 mt-4">Personality</h3>
         <div class="form-group">
+          <label class="form-label">Overview</label>
+          <textarea class="form-control" id="personalityOverview" rows="4" placeholder="Overall personality description...">${formOC.personality?.overview || ''}</textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Positive Traits (one per line)</label>
+          <textarea class="form-control" id="positiveTraits" rows="4">${(formOC.personality?.positiveTraits || []).join('\n')}</textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Negative Traits (one per line)</label>
+          <textarea class="form-control" id="negativeTraits" rows="4">${(formOC.personality?.negativeTraits || []).join('\n')}</textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Neutral Traits (one per line)</label>
+          <textarea class="form-control" id="neutralTraits" rows="4">${(formOC.personality?.neutralTraits || []).join('\n')}</textarea>
+        </div>
+        <div class="form-group">
           <label class="form-label">Likes (one per line)</label>
           <textarea class="form-control" id="likes" rows="4">${(formOC.personality?.likes || []).join('\n')}</textarea>
         </div>
@@ -1364,6 +1380,10 @@ export function renderOCForm(oc = null, onSave) {
         notableAbilities: document.getElementById('notableAbilities').value
       },
       personality: {
+        overview: document.getElementById('personalityOverview')?.value.trim() || '',
+        positiveTraits: document.getElementById('positiveTraits')?.value.split('\n').filter(t => t.trim()) || [],
+        negativeTraits: document.getElementById('negativeTraits')?.value.split('\n').filter(t => t.trim()) || [],
+        neutralTraits: document.getElementById('neutralTraits')?.value.split('\n').filter(t => t.trim()) || [],
         likes: document.getElementById('likes').value.split('\n').filter(l => l.trim()),
         dislikes: document.getElementById('dislikes').value.split('\n').filter(d => d.trim()),
         demeanor: formOC.personality?.demeanor || {
@@ -1657,23 +1677,37 @@ export function renderOCForm(oc = null, onSave) {
 }
 
 function renderStatInput(name, value) {
+  // Clamp value to valid range (2-5) and round to nearest 0.5
+  const rawValue = value || 2;
+  const clampedValue = Math.max(2, Math.min(5, rawValue));
+  const roundedValue = Math.round(clampedValue * 2) / 2; // Round to nearest 0.5
+  
+  // Format display value (show as integer if whole number, otherwise show decimal)
+  const formatValue = (val) => {
+    const num = parseFloat(val);
+    return num % 1 === 0 ? num.toString() : num.toFixed(1);
+  };
+  
   const displayName = name.charAt(0).toUpperCase() + name.slice(1).replace(/([A-Z])/g, ' $1').trim();
   return `
     <div class="stat-input-wrapper">
       <div class="stat-header">
         <label class="stat-label">${displayName}</label>
         <div class="stat-value-display">
-          <span class="stat-number" id="${name}-value">${value}</span>
+          <span class="stat-number" id="${name}-value">${formatValue(roundedValue)}</span>
           <span class="stat-max">/5</span>
         </div>
       </div>
       <div class="stat-control-wrapper">
-        <input type="range" class="stat-slider" id="${name}" min="1" max="5" value="${value}" 
-               oninput="document.getElementById('${name}-value').textContent = this.value; updateStatVisual('${name}', this.value)">
+        <input type="range" class="stat-slider" id="${name}" min="2" max="5" step="0.5" value="${roundedValue}" 
+               oninput="const val = parseFloat(this.value); document.getElementById('${name}-value').textContent = val % 1 === 0 ? val.toString() : val.toFixed(1); updateStatVisual('${name}', val)">
         <div class="stat-dots" id="${name}-dots">
-          ${Array.from({length: 5}, (_, i) => 
-            `<span class="stat-dot ${i < value ? 'active' : ''}" data-value="${i + 1}"></span>`
-          ).join('')}
+          ${Array.from({length: 7}, (_, i) => {
+            const dotValue = 2 + (i * 0.5); // Dots represent values 2, 2.5, 3, 3.5, 4, 4.5, 5
+            const isHalf = dotValue % 1 !== 0;
+            const isActive = dotValue <= roundedValue;
+            return `<span class="stat-dot ${isActive ? 'active' : ''} ${isHalf ? 'half-dot' : ''}" data-value="${dotValue}"></span>`;
+          }).join('')}
         </div>
       </div>
     </div>
@@ -1990,12 +2024,14 @@ if (typeof window !== 'undefined') {
   window.updateStatVisual = function(name, value) {
     const dots = document.getElementById(`${name}-dots`);
     const slider = document.getElementById(name);
+    const numValue = parseFloat(value);
     
-    // Update dots
+    // Update dots (dots represent values 2, 2.5, 3, 3.5, 4, 4.5, 5)
     if (dots) {
       const dotElements = dots.querySelectorAll('.stat-dot');
-      dotElements.forEach((dot, index) => {
-        if (index < value) {
+      dotElements.forEach((dot) => {
+        const dotValue = parseFloat(dot.getAttribute('data-value'));
+        if (dotValue <= numValue) {
           dot.classList.add('active');
         } else {
           dot.classList.remove('active');
@@ -2005,7 +2041,7 @@ if (typeof window !== 'undefined') {
     
     // Update slider background
     if (slider) {
-      const percentage = (value / 5) * 100;
+      const percentage = (numValue / 5) * 100;
       slider.style.background = `linear-gradient(to right, 
         var(--color-accent-2) 0%, 
         var(--color-accent-2) ${percentage}%,

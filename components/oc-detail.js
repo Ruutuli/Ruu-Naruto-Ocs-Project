@@ -888,13 +888,13 @@ function renderIdentifyingInfo(oc) {
         ${renderInfoRow('Sexual Orientation', oc.sexualOrientation || 'Not specified')}
         ${renderInfoRow('Romantic Orientation', oc.romanticOrientation || 'Not specified')}
         ${oc.natureType ? renderNatureTypeRow(oc.natureType) : renderInfoRow('Nature Type', 'Not specified')}
-        ${oc.kekkeiGenkai ? renderInfoRow('Kekkei Genkai', oc.kekkeiGenkai) : renderInfoRow('Kekkei Genkai', 'None')}
-        ${renderInfoRow('Debut (Manga)', oc.debut?.manga || 'Not specified')}
-        ${renderInfoRow('Debut (Anime)', oc.debut?.anime || 'Not specified')}
-        ${renderInfoRow('Debut (Novel)', oc.debut?.novel || 'Not specified')}
-        ${renderInfoRow('Debut (Movie)', oc.debut?.movie || 'Not specified')}
-        ${renderInfoRow('Debut (Game)', oc.debut?.game || 'Not specified')}
-        ${oc.appearsIn && oc.appearsIn.length > 0 ? renderInfoRow('Appears In', oc.appearsIn.join(', ')) : renderInfoRow('Appears In', 'Not specified')}
+        ${oc.kekkeiGenkai && oc.kekkeiGenkai.trim() && oc.kekkeiGenkai.toLowerCase() !== 'none' ? renderInfoRow('Kekkei Genkai', oc.kekkeiGenkai) : ''}
+        ${oc.debut?.manga && oc.debut.manga.trim() && oc.debut.manga.toLowerCase() !== 'not specified' ? renderInfoRow('Debut (Manga)', oc.debut.manga) : ''}
+        ${oc.debut?.anime && oc.debut.anime.trim() && oc.debut.anime.toLowerCase() !== 'not specified' ? renderInfoRow('Debut (Anime)', oc.debut.anime) : ''}
+        ${oc.debut?.novel && oc.debut.novel.trim() && oc.debut.novel.toLowerCase() !== 'not specified' ? renderInfoRow('Debut (Novel)', oc.debut.novel) : ''}
+        ${oc.debut?.movie && oc.debut.movie.trim() && oc.debut.movie.toLowerCase() !== 'not specified' ? renderInfoRow('Debut (Movie)', oc.debut.movie) : ''}
+        ${oc.debut?.game && oc.debut.game.trim() && oc.debut.game.toLowerCase() !== 'not specified' ? renderInfoRow('Debut (Game)', oc.debut.game) : ''}
+        ${oc.appearsIn && oc.appearsIn.length > 0 ? renderInfoRow('Appears In', oc.appearsIn.join(', ')) : ''}
         ${(() => {
           // Render height by era if available, otherwise use old format
           if (hasHeightByEra) {
@@ -1037,12 +1037,16 @@ function renderMultiEraRow(label, data) {
   }
   
   // Format like the screenshot: each era on a new line with "Part I: value" format
-  // For age, align values to the right
+  // For age, align values to the right; for height/weight, align values to the left
   const isAge = label.toLowerCase() === 'age';
+  const isHeightOrWeight = label.toLowerCase() === 'height' || label.toLowerCase() === 'weight';
   const eraItems = data.parts.map(part => {
     const eraLabel = part.era ? `${part.era}:` : '';
     if (isAge) {
       return `<div class="era-item-line"><span class="era-label-text">${eraLabel}</span> <span class="age-value">${part.value}</span></div>`;
+    }
+    if (isHeightOrWeight) {
+      return `<div class="era-item-line"><span class="era-label-text">${eraLabel}</span> <span class="era-value-left">${part.value}</span></div>`;
     }
     return `<div class="era-item-line">${eraLabel} ${part.value}</div>`;
   }).join('');
@@ -1106,27 +1110,72 @@ function renderBattleStrategy(oc) {
 
 function renderKnownBehavior(oc) {
   const personality = oc.personality || {};
+  const hasOverview = personality.overview && personality.overview.trim();
+  const hasPositiveTraits = personality.positiveTraits && personality.positiveTraits.length > 0;
+  const hasNegativeTraits = personality.negativeTraits && personality.negativeTraits.length > 0;
+  const hasNeutralTraits = personality.neutralTraits && personality.neutralTraits.length > 0;
+  const hasLikes = personality.likes && personality.likes.length > 0;
+  const hasDislikes = personality.dislikes && personality.dislikes.length > 0;
   
   return `
     <div class="known-behavior">
+      ${hasOverview ? `
+        <div class="behavior-section">
+          <h4>Overview <i class="japanese-header">概要</i></h4>
+          <p class="personality-overview">${personality.overview}</p>
+        </div>
+      ` : ''}
+      
+      <div class="behavior-section">
+        <h4>Positive Traits <i class="japanese-header">肯定的な特徴</i></h4>
+        <ul class="behavior-list positive-traits">
+          ${hasPositiveTraits
+            ? personality.positiveTraits.map(trait => `<li>${trait}</li>`).join('')
+            : '<li>Not specified</li>'
+          }
+        </ul>
+      </div>
+      
+      <div class="behavior-section">
+        <h4>Negative Traits <i class="japanese-header">否定的な特徴</i></h4>
+        <ul class="behavior-list negative-traits">
+          ${hasNegativeTraits
+            ? personality.negativeTraits.map(trait => `<li>${trait}</li>`).join('')
+            : '<li>Not specified</li>'
+          }
+        </ul>
+      </div>
+      
+      <div class="behavior-section">
+        <h4>Neutral Traits <i class="japanese-header">中立的な特徴</i></h4>
+        <ul class="behavior-list neutral-traits">
+          ${hasNeutralTraits
+            ? personality.neutralTraits.map(trait => `<li>${trait}</li>`).join('')
+            : '<li>Not specified</li>'
+          }
+        </ul>
+      </div>
+      
       <div class="behavior-section">
         <h4>Likes <i class="japanese-header">好き</i></h4>
         <ul class="behavior-list likes">
-          ${(personality.likes || []).length > 0 
+          ${hasLikes
             ? personality.likes.map(like => `<li>${like}</li>`).join('')
-            : '<li>Content</li>'
+            : '<li>Not specified</li>'
           }
         </ul>
       </div>
+      
       <div class="behavior-section">
         <h4>Dislikes <i class="japanese-header">嫌い</i></h4>
         <ul class="behavior-list dislikes">
-          ${(personality.dislikes || []).length > 0
+          ${hasDislikes
             ? personality.dislikes.map(dislike => `<li>${dislike}</li>`).join('')
-            : '<li>Content</li>'
+            : '<li>Not specified</li>'
           }
         </ul>
       </div>
+      
       <div class="behavior-section">
         <h4>Fears / Core Wounds <i class="japanese-header">恐怖・核心的傷</i></h4>
         <ul class="behavior-list fears">
@@ -1136,6 +1185,7 @@ function renderKnownBehavior(oc) {
           }
         </ul>
       </div>
+      
       <div class="behavior-section">
         <h4>Personality Profile <i class="japanese-header">性格プロフィール</i></h4>
         <div class="personality-profile">

@@ -391,7 +391,25 @@
   flex: 0 0 auto;
 }
 
-.era-label {
+/* Height/Weight row alignment - align values to the left */
+.multi-era-row:not(.age-row) .era-item-line {
+  display: flex;
+  align-items: center;
+}
+
+.multi-era-row:not(.age-row) .era-item-line .era-label-text {
+  flex: 0 0 auto;
+  margin-right: 0.5rem;
+}
+
+.multi-era-row:not(.age-row) .era-item-line .era-value-left {
+  text-align: left;
+  flex: 0 0 auto;
+}
+
+
+
+i.era-label {
   font-size: 0.7rem;
   color: var(--color-dark-1);
   font-style: italic;
@@ -700,6 +718,34 @@
 .fears li:before {
   content: "⚠ ";
   color: var(--color-accent-2);
+}
+
+.positive-traits li:before {
+  content: "+ ";
+  color: #4CAF50;
+  font-weight: bold;
+}
+
+.negative-traits li:before {
+  content: "− ";
+  color: #f44336;
+  font-weight: bold;
+}
+
+.neutral-traits li:before {
+  content: "○ ";
+  color: #9E9E9E;
+  font-weight: bold;
+}
+
+.personality-overview {
+  padding: 1rem;
+  color: var(--color-text-dark);
+  line-height: 1.6;
+  font-style: italic;
+  background-color: var(--color-bg-2);
+  border-left: 3px solid var(--color-accent-2);
+  margin: 0;
 }
 
 .personality-profile {

@@ -1007,6 +1007,16 @@ select.form-control {
   box-shadow: 0 2px 4px rgba(227, 94, 63, 0.3);
 }
 
+.stat-dot.half-dot {
+  width: 8px;
+  height: 8px;
+  margin: 0 0.25rem;
+}
+
+.stat-dot.half-dot.active {
+  transform: scale(1.1);
+}
+
 .stat-dot:hover {
   transform: scale(1.3);
   border-color: var(--color-accent-2);

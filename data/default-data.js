@@ -235,6 +235,10 @@ export const defaultOC = {
   personality: {
     likes: [],
     dislikes: [],
+    positiveTraits: [],
+    negativeTraits: [],
+    neutralTraits: [],
+    overview: '',
     demeanor: {
       charisma: 0,
       extraversion: 0,
