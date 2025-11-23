@@ -3,6 +3,7 @@
 import { defaultOC, generateId } from '../data/default-data.js';
 import storage from '../data/storage.js';
 import { natureReleases, getAllNatureReleaseNames, getAllClanNames, getClanSymbol } from '../data/options.js';
+import { convertImageUrl } from '../utils/imageUtils.js';
 import { 
   villages, 
   ranks, 
@@ -185,7 +186,7 @@ export function renderOCForm(oc = null, onSave) {
                            placeholder="Enter image URL for ${era}">
                     ${eraImage ? `
                       <div style="margin-top: 0.5rem;">
-                        <img src="${eraImage}" alt="${era} image" 
+                        <img src="${convertImageUrl(eraImage)}" alt="${era} image" 
                              style="max-width: 200px; max-height: 200px; border: 1px solid var(--color-border-2); border-radius: 4px; object-fit: contain;"
                              onerror="this.style.display='none'">
                       </div>
@@ -1168,7 +1169,7 @@ export function renderOCForm(oc = null, onSave) {
             ${formOC.appearance?.image ? (
               formOC.appearance.image.startsWith('fa-') || formOC.appearance.image.startsWith('fas ') || formOC.appearance.image.startsWith('far ') || formOC.appearance.image.startsWith('fab ') ?
                 `<div style="font-size: 3rem; color: var(--color-accent-2);"><i class="${formOC.appearance.image}"></i></div>` :
-                `<img src="${formOC.appearance.image}" alt="Preview" style="max-width: 200px; max-height: 200px; border: 1px solid var(--color-border-2); border-radius: 4px;">`
+                `<img src="${convertImageUrl(formOC.appearance.image)}" alt="Preview" style="max-width: 200px; max-height: 200px; border: 1px solid var(--color-border-2); border-radius: 4px;">`
             ) : ''}
           </div>
         </div>
@@ -2197,7 +2198,8 @@ export function renderOCForm(oc = null, onSave) {
     if (value.startsWith('fa-') || value.startsWith('fas ') || value.startsWith('far ') || value.startsWith('fab ')) {
       preview.innerHTML = `<div style="font-size: 3rem; color: var(--color-accent-2);"><i class="${value}"></i></div>`;
     } else if (value.startsWith('data:') || value.startsWith('http')) {
-      preview.innerHTML = `<img src="${value}" alt="Preview" style="max-width: 200px; max-height: 200px; border: 1px solid var(--color-border-2); border-radius: 4px;">`;
+      const convertedUrl = convertImageUrl(value);
+      preview.innerHTML = `<img src="${convertedUrl}" alt="Preview" style="max-width: 200px; max-height: 200px; border: 1px solid var(--color-border-2); border-radius: 4px;">`;
     } else {
       preview.innerHTML = '';
     }
@@ -2681,7 +2683,8 @@ if (typeof window !== 'undefined') {
     if (value.startsWith('fa-') || value.startsWith('fas ') || value.startsWith('far ') || value.startsWith('fab ')) {
       preview.innerHTML = `<div style="font-size: 2rem; color: var(--color-accent-2);"><i class="${value}"></i></div>`;
     } else if (value.startsWith('data:') || value.startsWith('http')) {
-      preview.innerHTML = `<img src="${value}" alt="Preview" style="max-width: 100px; max-height: 100px; border: 1px solid var(--color-border-2); border-radius: 4px;">`;
+      const convertedUrl = convertImageUrl(value);
+      preview.innerHTML = `<img src="${convertedUrl}" alt="Preview" style="max-width: 100px; max-height: 100px; border: 1px solid var(--color-border-2); border-radius: 4px;">`;
     } else {
       preview.innerHTML = '';
     }
@@ -2821,7 +2824,7 @@ if (typeof window !== 'undefined') {
             const preview = panel.querySelector('img');
             const value = this.value.trim();
             if (value && preview) {
-              preview.src = value;
+              preview.src = convertImageUrl(value);
               preview.style.display = '';
             } else if (preview) {
               preview.style.display = 'none';
@@ -2833,7 +2836,8 @@ if (typeof window !== 'undefined') {
                 if (!existingPreview) {
                   const previewDiv = document.createElement('div');
                   previewDiv.style.marginTop = '0.5rem';
-                  previewDiv.innerHTML = `<img src="${value}" alt="${era} image" 
+                  const convertedUrl = convertImageUrl(value);
+                  previewDiv.innerHTML = `<img src="${convertedUrl}" alt="${era} image" 
                        style="max-width: 200px; max-height: 200px; border: 1px solid var(--color-border-2); border-radius: 4px; object-fit: contain;"
                        onerror="this.style.display='none'">`;
                   previewContainer.appendChild(previewDiv);

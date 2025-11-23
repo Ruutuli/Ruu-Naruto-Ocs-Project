@@ -1,5 +1,7 @@
 // OC Card Component - Preview card for OC listing
 
+import { convertImageUrl } from '../utils/imageUtils.js';
+
 export function renderOCCard(oc, onClick) {
   const card = document.createElement('div');
   card.className = 'card-naruto oc-card fade-in';
@@ -12,10 +14,12 @@ export function renderOCCard(oc, onClick) {
   const rankClass = ranks.length > 0 ? `rank-${ranks[0].toLowerCase().replace('-', '-')}` : '';
   const villageDisplay = villages.length > 0 ? villages.join(', ') : 'Unknown';
   
+  const profileImageUrl = oc.profileImage ? convertImageUrl(oc.profileImage) : null;
+  
   card.innerHTML = `
     <div class="oc-card-image-wrapper">
-      ${oc.profileImage ? 
-        `<img src="${oc.profileImage}" alt="${oc.firstName} ${oc.lastName}" class="oc-card-image">` 
+      ${profileImageUrl ? 
+        `<img src="${profileImageUrl}" alt="${oc.firstName} ${oc.lastName}" class="oc-card-image">` 
         : `<div class="oc-card-placeholder">
             <i class="fas fa-user-ninja"></i>
             <span>No Image</span>

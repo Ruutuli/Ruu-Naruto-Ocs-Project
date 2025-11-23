@@ -2,6 +2,7 @@
 
 import storage from '../data/storage.js';
 import { renderMarkdown } from '../utils/markdown.js';
+import { convertImageUrl } from '../utils/imageUtils.js';
 
 export function renderStoryDetail(story) {
   const container = document.createElement('div');
@@ -96,14 +97,17 @@ export function renderStoryDetail(story) {
         <div class="story-characters-section">
           <h3><i class="fas fa-users" style="margin-right: 0.5rem; color: var(--color-accent-2);"></i>Characters</h3>
           <div class="story-characters-grid">
-            ${characters.map(oc => `
+            ${characters.map(oc => {
+              const profileImageUrl = oc.profileImage ? convertImageUrl(oc.profileImage) : null;
+              return `
               <div class="story-character-card" onclick="window.location.hash = 'ocs/${oc.id}'">
-                ${oc.profileImage ? `<img src="${oc.profileImage}" style="width: 100%; max-height: 120px; object-fit: cover; margin-bottom: 0.5rem; border-radius: 4px;">` : ''}
+                ${profileImageUrl ? `<img src="${profileImageUrl}" style="width: 100%; max-height: 120px; object-fit: cover; margin-bottom: 0.5rem; border-radius: 4px;">` : ''}
                 <div style="font-weight: 600; color: var(--color-dark-2); text-transform: uppercase; margin-bottom: 0.5rem;">${oc.firstName} ${oc.lastName}</div>
                 <div style="color: var(--color-text-dark); font-size: 0.9rem;">${oc.rank || 'Unknown Rank'}</div>
                 ${oc.village ? `<div style="color: var(--color-text-dark); font-size: 0.85rem; margin-top: 0.25rem; opacity: 0.8;">${oc.village}</div>` : ''}
               </div>
-            `).join('')}
+            `;
+            }).join('')}
           </div>
         </div>
       ` : ''}

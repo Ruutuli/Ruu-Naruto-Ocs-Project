@@ -3,6 +3,7 @@
 import { natureReleases, getNatureRelease, getClanSymbol, getTechniqueTypeLabel, allTechniqueTypes } from '../data/options.js';
 import storage from '../data/storage.js';
 import { renderMarkdown } from '../utils/markdown.js';
+import { convertImageUrl } from '../utils/imageUtils.js';
 
 export function renderOCDetail(oc) {
   const container = document.createElement('div');
@@ -153,7 +154,7 @@ export function renderOCDetail(oc) {
       ${oc.appearance?.image ? (
         oc.appearance.image.startsWith('fa-') || oc.appearance.image.startsWith('fas ') || oc.appearance.image.startsWith('far ') || oc.appearance.image.startsWith('fab ') ?
           `<div class="appearance-image-container"><div class="appearance-icon"><i class="${oc.appearance.image}"></i></div></div>` :
-          `<div class="appearance-image-container"><img src="${oc.appearance.image}" alt="Appearance" class="appearance-image"></div>`
+          `<div class="appearance-image-container"><img src="${convertImageUrl(oc.appearance.image)}" alt="Appearance" class="appearance-image"></div>`
       ) : ''}
       ${oc.appearance?.colors && oc.appearance.colors.length > 0 ? `
         <div class="color-palette-container">
@@ -443,7 +444,8 @@ function setupGalleryLightbox() {
     if (!gallery || !gallery[index]) return;
     
     const item = gallery[index];
-    const imageUrl = typeof item === 'string' ? item : (item.url || item.image || '');
+    const rawImageUrl = typeof item === 'string' ? item : (item.url || item.image || '');
+    const imageUrl = convertImageUrl(rawImageUrl);
     const caption = typeof item === 'object' && item.caption ? item.caption : '';
     const title = typeof item === 'object' && item.title ? item.title : '';
     
@@ -1299,10 +1301,11 @@ function renderRelationships(oc) {
         const fullName = rel.fullName || name;
         const typeLabel = rel.relationshipType || rel.type || 'Unknown Relationship';
         
+        const convertedImageUrl = image ? convertImageUrl(image) : null;
         return `
           <div class="relationship-card">
             <div class="relationship-header">
-              ${image ? `<img src="${image}" alt="${fullName}" class="relationship-icon">` : `<div class="relationship-icon-placeholder">${heartChart}</div>`}
+              ${convertedImageUrl ? `<img src="${convertedImageUrl}" alt="${fullName}" class="relationship-icon">` : `<div class="relationship-icon-placeholder">${heartChart}</div>`}
               <div class="relationship-info">
                 <h4 class="relationship-name">${fullName}</h4>
                 <div class="relationship-type">
@@ -1417,13 +1420,16 @@ function renderKnownAssociates(oc) {
   return `
     <div>
       <h3>Known Associates <i class="japanese-header">既知の関係者</i></h3>
-      ${associates.map(assoc => `
+      ${associates.map(assoc => {
+        const convertedImageUrl = assoc.image ? convertImageUrl(assoc.image) : null;
+        return `
         <div style="margin-bottom: 1rem; padding: 1rem; background-color: var(--color-bg-1); border: 1px solid var(--color-dark-3);">
-          ${assoc.image ? `<img src="${assoc.image}" style="width: 100px; height: 100px; float: left; margin-right: 1rem; border: 2px solid var(--color-dark-3);">` : ''}
+          ${convertedImageUrl ? `<img src="${convertedImageUrl}" style="width: 100px; height: 100px; float: left; margin-right: 1rem; border: 2px solid var(--color-dark-3);">` : ''}
           <strong>${assoc.name || 'Unknown'}</strong>
           <p>${assoc.description || ''}</p>
         </div>
-      `).join('')}
+      `;
+      }).join('')}
     </div>
   `;
 }
@@ -1605,7 +1611,8 @@ function renderGallery(oc) {
   
   const galleryHtml = gallery.map((item, index) => {
     // Support both string (image URL) and object (image URL + caption/title)
-    const imageUrl = typeof item === 'string' ? item : (item.url || item.image || '');
+    const rawImageUrl = typeof item === 'string' ? item : (item.url || item.image || '');
+    const imageUrl = convertImageUrl(rawImageUrl);
     const caption = typeof item === 'object' && item.caption ? item.caption : '';
     const title = typeof item === 'object' && item.title ? item.title : '';
     
@@ -1830,9 +1837,8 @@ function renderProfileImageWithEras(oc) {
   
   // If no era images, use default profile image
   if (!hasEraImages) {
-    return oc.profileImage ? 
-      `<img src="${oc.profileImage}" alt="${oc.firstName} ${oc.lastName}" class="oc-profile-image">` 
-      : `<img src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png" alt="Profile" class="oc-profile-image">`;
+    const profileImageUrl = oc.profileImage ? convertImageUrl(oc.profileImage) : 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png';
+    return `<img src="${profileImageUrl}" alt="${oc.firstName} ${oc.lastName}" class="oc-profile-image">`;
   }
   
   // Generate era tabs
@@ -1851,8 +1857,8 @@ function renderProfileImageWithEras(oc) {
   // Generate image panels
   const imagePanels = eras.map((era, index) => {
     const imageUrl = imagesByEra[era] && imagesByEra[era].trim() 
-      ? imagesByEra[era].trim() 
-      : (oc.profileImage || 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png');
+      ? convertImageUrl(imagesByEra[era].trim())
+      : convertImageUrl(oc.profileImage || 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png');
     const isActive = index === 0 ? 'active' : '';
     return `
       <div class="profile-image-era-panel ${isActive}" id="profile-image-era-panel-${era.replace(/\s+/g, '-')}">
