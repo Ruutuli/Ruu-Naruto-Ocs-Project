@@ -43,7 +43,7 @@ window.adminAuthenticated = false;
 
 // ------------------- Page Refresh ------------------
 // Refresh current page after data operations
-function refreshCurrentPage() {
+async function refreshCurrentPage() {
   const pageLoaders = {
     'home': loadHomePage,
     'ocs': loadOCsPage,
@@ -53,7 +53,13 @@ function refreshCurrentPage() {
   };
   
   const loader = pageLoaders[currentPage];
-  if (loader) loader();
+  if (loader) {
+    try {
+      await loader();
+    } catch (error) {
+      console.error('[app.js]❌ Error refreshing page:', error);
+    }
+  }
 }
 
 // ------------------- Clear Data Utilities ------------------
@@ -539,7 +545,8 @@ function setupNavigation() {
 // ============================================================================
 
 // ------------------- OC Detail/Form Functions ------------------
-window.showOCDetail = function(id) {
+window.showOCDetail = async function(id) {
+  await storage.ready();
   const oc = storage.getOC(id);
   if (!oc) {
     navigateTo('ocs');
@@ -564,7 +571,8 @@ window.showOCDetail = function(id) {
   container.appendChild(detail);
 };
 
-window.showOCForm = function(id = null) {
+window.showOCForm = async function(id = null) {
+  await storage.ready();
   editingOC = id ? storage.getOC(id) : null;
   const formPage = document.getElementById('oc-form-page');
   const currentActive = document.querySelector('.page-section.active');
@@ -601,7 +609,8 @@ window.showOCForm = function(id = null) {
 };
 
 // ------------------- Clan Detail/Form Functions ------------------
-window.showClanDetail = function(id) {
+window.showClanDetail = async function(id) {
+  await storage.ready();
   // Import and render clan detail dynamically
   import('./pages/clan-detail.js').then(module => {
     const clan = storage.getClan(id);
@@ -629,7 +638,8 @@ window.showClanDetail = function(id) {
   });
 };
 
-window.showClanForm = function(id = null) {
+window.showClanForm = async function(id = null) {
+  await storage.ready();
   editingClan = id ? storage.getClan(id) : null;
   loadClanForm();
   
@@ -669,7 +679,8 @@ window.showClanForm = function(id = null) {
 };
 
 // ------------------- Story Detail/Form Functions ------------------
-window.showStoryDetail = function(id) {
+window.showStoryDetail = async function(id) {
+  await storage.ready();
   import('./pages/story-detail.js').then(module => {
     const story = storage.getStory(id);
     if (!story) {
@@ -703,7 +714,8 @@ window.showStoryDetail = function(id) {
   });
 };
 
-window.showStoryForm = function(id = null) {
+window.showStoryForm = async function(id = null) {
+  await storage.ready();
   editingStory = id ? storage.getStory(id) : null;
   const formPage = document.getElementById('story-form-page');
   const currentActive = document.querySelector('.page-section.active');
@@ -743,7 +755,8 @@ window.showStoryForm = function(id = null) {
 };
 
 // ------------------- Lore Detail/Form Functions ------------------
-window.showLoreDetail = function(id) {
+window.showLoreDetail = async function(id) {
+  await storage.ready();
   import('./pages/lore-detail.js').then(module => {
     const lore = storage.getLore(id);
     if (!lore) {
@@ -770,7 +783,8 @@ window.showLoreDetail = function(id) {
   });
 };
 
-window.showLoreForm = function(id = null) {
+window.showLoreForm = async function(id = null) {
+  await storage.ready();
   editingLore = id ? storage.getLore(id) : null;
   const formPage = document.getElementById('lore-form-page');
   const currentActive = document.querySelector('.page-section.active');
@@ -815,12 +829,12 @@ function setupRouting() {
 
 // ------------------- App Initialization ------------------
 // Initialize app
-function initializeApp() {
+async function initializeApp() {
   setupNavigation();
   setupRouting();
   loadUserInfo();
-  loadHomePage();
-  updateCounts();
+  await loadHomePage();
+  await updateCounts();
   updatePageTitle('home');
 }
 
@@ -1014,10 +1028,16 @@ function getPageLoader(page) {
 
 // ------------------- Navigation Function ------------------
 // Main navigation function used throughout the app
-function navigateTo(page, skipHashUpdate = false) {
+async function navigateTo(page, skipHashUpdate = false) {
   if (currentPage === page && !skipHashUpdate) {
     const loader = getPageLoader(page);
-    if (loader) loader();
+    if (loader) {
+      try {
+        await loader();
+      } catch (error) {
+        console.error('[app.js]❌ Error loading page:', page, error);
+      }
+    }
     if (window.location.hash !== `#${page}`) {
       window.location.hash = page;
     }
@@ -1056,7 +1076,7 @@ function navigateTo(page, skipHashUpdate = false) {
   const loader = getPageLoader(page);
   if (loader) {
     try {
-      loader();
+      await loader();
     } catch (error) {
       console.error('[app.js]❌ Error loading page:', page, error);
     }
@@ -1080,7 +1100,10 @@ window.handleNavBack = function() {
 
 // ------------------- Count Updater ------------------
 // Update counts on home page
-function updateCounts() {
+async function updateCounts() {
+  // Wait for storage to be ready before getting counts
+  await storage.ready();
+  
   const ocs = storage.getAllOCs();
   const clans = storage.getAllClans();
   const stories = storage.getAllStories();
@@ -1104,7 +1127,10 @@ function updateCounts() {
 
 // ------------------- Recent Additions Loader ------------------
 // Load recent additions (all types)
-function loadRecentAdditions() {
+async function loadRecentAdditions() {
+  // Wait for storage to be ready before loading recent additions
+  await storage.ready();
+  
   const container = document.getElementById('recent-additions');
   
   if (!container) return;
@@ -1160,9 +1186,9 @@ function loadRecentAdditions() {
 
 // ------------------- Home Page Loader ------------------
 // Load home page
-function loadHomePage() {
-  updateCounts();
-  loadRecentAdditions();
+async function loadHomePage() {
+  await updateCounts();
+  await loadRecentAdditions();
 }
 
 // ============================================================================

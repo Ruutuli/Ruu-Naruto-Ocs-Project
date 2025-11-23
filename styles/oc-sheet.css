@@ -301,6 +301,18 @@
   overflow-wrap: break-word;
 }
 
+/* Allow block-level children to display properly */
+.info-content > div[style*="display: block"] {
+  width: 100%;
+  display: block;
+}
+
+.info-content:has(> div[style*="display: block"]) {
+  align-items: flex-start;
+  padding-top: 0.6rem;
+  padding-bottom: 0.6rem;
+}
+
 .info-label {
   flex: 0 0 180px;
   padding: 0.4rem 0.5rem;

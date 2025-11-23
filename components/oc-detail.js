@@ -743,18 +743,20 @@ function renderIdentifyingInfo(oc) {
       <div class="info-grid">
         ${renderInfoRow('Aliases', oc.aliases?.join(', ') || 'None')}
         ${(() => {
-          // Show separate meanings if available, otherwise show combined
+          // Show all name meanings on separate lines
           const lastNameMeaning = oc.lastNameMeaning;
           const firstNameMeaning = oc.firstNameMeaning;
-          const combinedMeaning = oc.nameMeaning;
+          const fullNameMeaning = oc.nameMeaning;
           
-          if (lastNameMeaning || firstNameMeaning) {
-            const meanings = [];
-            if (lastNameMeaning) meanings.push(`<strong>Last:</strong> ${lastNameMeaning}`);
-            if (firstNameMeaning) meanings.push(`<strong>First:</strong> ${firstNameMeaning}`);
-            return renderInfoRow('Name Meaning', meanings.join('<br>'));
-          } else if (combinedMeaning) {
-            return renderInfoRow('Name Meaning', combinedMeaning);
+          const meanings = [];
+          if (lastNameMeaning) meanings.push(`<strong>Last:</strong> ${lastNameMeaning}`);
+          if (firstNameMeaning) meanings.push(`<strong>First:</strong> ${firstNameMeaning}`);
+          if (fullNameMeaning) meanings.push(`<strong>Full Name:</strong> ${fullNameMeaning}`);
+          
+          if (meanings.length > 0) {
+            // Use divs instead of br for proper line breaks in flexbox
+            const meaningsHtml = meanings.map(m => `<div style="margin-bottom: 0.25rem;">${m}</div>`).join('');
+            return renderInfoRow('Name Meaning', `<div style="display: block;">${meaningsHtml}</div>`);
           }
           return '';
         })()}
