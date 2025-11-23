@@ -2867,6 +2867,16 @@ if (typeof window !== 'undefined') {
     updateRelationshipIndices();
   };
   
+  window.updateRelationshipHeart = function(index) {
+    const typeSelect = document.getElementById(`relationship-type-${index}`);
+    const heartInput = document.getElementById(`relationship-heartChart-${index}`);
+    if (typeSelect && heartInput) {
+      const selectedType = typeSelect.value;
+      const heartEmoji = getRelationshipHeartEmoji(selectedType);
+      heartInput.value = heartEmoji;
+    }
+  };
+  
   window.addGalleryItem = function() {
     const container = document.getElementById('gallery-container');
     const items = container.querySelectorAll('.gallery-editor-item');
@@ -3049,8 +3059,17 @@ if (typeof window !== 'undefined') {
     const container = document.getElementById('relationships-container');
     container.querySelectorAll('.relationship-editor-item').forEach((item, index) => {
       item.setAttribute('data-index', index);
-      item.querySelectorAll('input, textarea').forEach(input => {
+      item.querySelectorAll('input, textarea, select').forEach(input => {
+        const oldName = input.name;
         input.name = input.name.replace(/-\d+$/, `-${index}`);
+        // Update IDs for select and heart input
+        if (input.id) {
+          input.id = input.id.replace(/-\d+$/, `-${index}`);
+        }
+        // Update onchange handler for relationship type select
+        if (input.classList.contains('relationship-type-select')) {
+          input.setAttribute('onchange', `updateRelationshipHeart(${index})`);
+        }
       });
       item.querySelector('button').setAttribute('onclick', `removeRelationship(${index})`);
     });

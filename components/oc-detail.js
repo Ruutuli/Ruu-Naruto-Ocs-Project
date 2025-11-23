@@ -1594,15 +1594,25 @@ function renderRelationships(oc) {
   }
   
   const relationshipIcons = {
+    'lovers': '❤️‍🔥',
     'love': '❤️‍🔥',
     'loveInterest': '❤️‍🔥',
-    'codependent': '💜',
-    'unstable': '💜',
+    'loveinterest': '❤️‍🔥',
+    'crush': '💕',
+    'close friend': '💚',
+    'closefriend': '💚',
     'closeFriend': '💚',
     'friend': '💚',
-    'rival': '💙',
+    'acquaintance': '🤍',
+    'dislike': '💔',
+    'hate': '🖤',
+    'neutral': '🤍',
     'family': '💛',
     'clan': '💛',
+    'rival': '💙',
+    'admire': '💜',
+    'codependent': '💜',
+    'unstable': '💜',
     'enemy': '🖤',
     'traumatic': '🖤',
     'complicated': '🤎',
@@ -1615,7 +1625,9 @@ function renderRelationships(oc) {
     <div class="relationships-grid">
       ${relationships.map(rel => {
         const relationshipType = (rel.relationshipType || rel.type || 'friend').toLowerCase();
-        const heartEmoji = relationshipIcons[relationshipType] || relationshipIcons[rel.heartChart] || (rel.heartChart || '🤍');
+        // Try exact match, then normalized (no spaces), then fallback
+        const normalizedType = relationshipType.replace(/\s+/g, '');
+        const heartEmoji = relationshipIcons[relationshipType] || relationshipIcons[normalizedType] || relationshipIcons[rel.heartChart] || (rel.heartChart || '🤍');
         const heartChart = rel.heartChart || heartEmoji;
         const name = rel.name || rel.character || 'Unknown';
         const description = rel.description || '';
