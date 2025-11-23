@@ -1,6 +1,6 @@
 {
   "id": "ocAkene",
-  "lastName": "",
+  "lastName": "Chigiri",
   "firstName": "Akene",
   "nameJapanese": "",
   "lastNameMeaning": "",
@@ -199,6 +199,13 @@
     "analyticalAbility": "",
     "combatStrategy": "",
     "leadershipSkill": ""
+  },
+  "dojutsu": {
+    "name": "",
+    "type": "",
+    "development": "",
+    "stages": [],
+    "specialAbilities": []
   },
   "themeSong": "",
   "themeSongLink": "",
