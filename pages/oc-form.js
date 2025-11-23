@@ -628,35 +628,6 @@ export function renderOCForm(oc = null, onSave) {
           </div>
         </div>
         
-        <!-- Dōjutsu -->
-        <h4 class="mb-3 mt-4">Dōjutsu <i class="japanese-header">瞳術</i></h4>
-        <div class="row">
-          <div class="col-12 col-md-6">
-            <div class="form-group">
-              <label class="form-label">Dōjutsu Name</label>
-              <input type="text" class="form-control" id="dojutsuName" value="${formOC.dojutsu?.name || ''}" placeholder="e.g., Sharingan">
-            </div>
-          </div>
-          <div class="col-12 col-md-6">
-            <div class="form-group">
-              <label class="form-label">Dōjutsu Type</label>
-              <input type="text" class="form-control" id="dojutsuType" value="${formOC.dojutsu?.type || ''}" placeholder="e.g., Eye Technique">
-            </div>
-          </div>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Development</label>
-          <textarea class="form-control" id="dojutsuDevelopment" rows="3" placeholder="How the dōjutsu was developed or awakened...">${formOC.dojutsu?.development || ''}</textarea>
-        </div>
-        <div id="dojutsu-stages-editor" class="mb-3">
-          <label class="form-label mb-2">Stages (one per line)</label>
-          <textarea class="form-control" id="dojutsuStages" rows="4" placeholder="e.g., 1 Tomoe&#10;2 Tomoe&#10;3 Tomoe&#10;Mangekyō Sharingan">${(formOC.dojutsu?.stages || []).join('\n')}</textarea>
-        </div>
-        <div id="dojutsu-abilities-editor" class="mb-3">
-          <label class="form-label mb-2">Special Abilities (one per line)</label>
-          <textarea class="form-control" id="dojutsuSpecialAbilities" rows="4" placeholder="e.g., Genjutsu casting&#10;Chakra sight&#10;Predicting movement">${(formOC.dojutsu?.specialAbilities || []).join('\n')}</textarea>
-        </div>
-        
         <div id="abilities-editor" class="mt-3 mb-3">
           <label class="form-label mb-2">Abilities & Techniques</label>
           <div class="card-naruto" style="padding: 1rem; margin-bottom: 1rem;">
@@ -1576,13 +1547,6 @@ export function renderOCForm(oc = null, onSave) {
         analyticalAbility: document.getElementById('analyticalAbility').value,
         combatStrategy: document.getElementById('combatStrategy').value,
         leadershipSkill: document.getElementById('leadershipSkill').value
-      },
-      dojutsu: {
-        name: document.getElementById('dojutsuName').value,
-        type: document.getElementById('dojutsuType').value,
-        development: document.getElementById('dojutsuDevelopment').value,
-        stages: document.getElementById('dojutsuStages').value.split('\n').filter(s => s.trim()),
-        specialAbilities: document.getElementById('dojutsuSpecialAbilities').value.split('\n').filter(a => a.trim())
       },
       themeSong: document.getElementById('themeSong').value,
       themeSongLink: document.getElementById('themeSongLink').value,

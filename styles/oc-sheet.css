@@ -374,6 +374,23 @@
   line-height: 1.6;
 }
 
+/* Age row alignment - align values to the right */
+.age-row .era-item-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.age-row .era-item-line .era-label-text {
+  flex: 0 0 auto;
+}
+
+.age-row .era-item-line .age-value {
+  margin-left: auto;
+  text-align: right;
+  flex: 0 0 auto;
+}
+
 .era-label {
   font-size: 0.7rem;
   color: var(--color-dark-1);

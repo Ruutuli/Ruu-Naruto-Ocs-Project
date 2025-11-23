@@ -5,19 +5,19 @@
 - [x] `lastName` - Displayed in name card (line 31)
 - [x] `firstName` - Displayed in name card (line 39)
 - [x] `nameJapanese` - Displayed in name card (line 42-45)
-- [x] `lastNameMeaning` - Displayed in identifying info (line 747-754) ✅ FIXED
-- [x] `firstNameMeaning` - Displayed in identifying info (line 747-754) ✅ FIXED
-- [x] `nameMeaning` - Displayed in identifying info (line 747-754) ✅ FIXED (was missing)
+- [x] `lastNameMeaning` - Displayed in identifying info (line ~816) ✅ FIXED - Always shows, "Not specified" if empty
+- [x] `firstNameMeaning` - Displayed in identifying info (line ~817) ✅ FIXED - Always shows, "Not specified" if empty
+- [x] `nameMeaning` - Displayed in identifying info (line ~818) ✅ FIXED - Always shows, "Not specified" if empty
 - [x] `aliases` - Displayed in identifying info (line 744)
 - [x] `profileImage` - Displayed as profile image (line 49-51)
 
-## ✅ Debut Information
-- [x] `debut.manga` - Displayed in identifying info (line 798)
-- [x] `debut.anime` - Displayed in identifying info (line 799)
-- [x] `debut.novel` - Displayed in identifying info (line 800)
-- [x] `debut.movie` - Displayed in identifying info (line 801)
-- [x] `debut.game` - Displayed in identifying info (line 802)
-- [x] `appearsIn` - Displayed in identifying info (line 805)
+## ✅ Debut Information - ALWAYS VISIBLE
+- [x] `debut.manga` - Displayed in identifying info (line ~853) - Always shows, "Not specified" if empty
+- [x] `debut.anime` - Displayed in identifying info (line ~854) - Always shows, "Not specified" if empty
+- [x] `debut.novel` - Displayed in identifying info (line ~855) - Always shows, "Not specified" if empty
+- [x] `debut.movie` - Displayed in identifying info (line ~856) - Always shows, "Not specified" if empty
+- [x] `debut.game` - Displayed in identifying info (line ~857) - Always shows, "Not specified" if empty
+- [x] `appearsIn` - Displayed in identifying info (line ~860) - Always shows, "Not specified" if empty
 
 ## ✅ Personal Information
 - [x] `dob` - Displayed in identifying info (line 763)
@@ -29,56 +29,56 @@
   - [x] `ageByEra['Boruto']` - Displayed
 - [x] `bloodType` - Displayed in identifying info (line 782)
 - [x] `gender` - Displayed in identifying info (line 783)
-- [x] `sexualOrientation` - Displayed as combined orientation (line 875-888)
-- [x] `romanticOrientation` - Displayed as combined orientation (line 875-888)
+- [x] `sexualOrientation` - Displayed as combined orientation (line ~848) - Always shows, "Not specified" if empty
+- [x] `romanticOrientation` - Displayed as combined orientation (line ~848) - Always shows, "Not specified" if empty
 - [x] `zodiac` - Displayed in identifying info (line 764)
 
-## ✅ Family Information
-- [x] `family.father` - Displayed in identifying info (line 808)
-- [x] `family.mother` - Displayed in identifying info (line 809)
-- [x] `family.siblings` - Displayed in identifying info (line 810)
-- [x] `family.otherRelatives` - Displayed in identifying info (line 811)
+## ✅ Family Information - NOW IN DEDICATED SECTION
+- [x] `family.father` - Displayed in Family section (renderFamily function, line ~1179)
+- [x] `family.mother` - Displayed in Family section (renderFamily function, line ~1180)
+- [x] `family.siblings` - Displayed in Family section (renderFamily function, line ~1181-1184)
+- [x] `family.otherRelatives` - Displayed in Family section (renderFamily function, line ~1185-1188)
 
-## ✅ Physical Appearance
-- [x] `identifyingInfo.bodyType` - Displayed in identifying info (line 814)
-- [x] `heightByEra` - Displayed in identifying info (line 730-836)
+## ✅ Physical Appearance - NOW ORGANIZED INTO SECTIONS
+- [x] `identifyingInfo.bodyType` - Displayed in Physical Appearance section (renderPhysicalAppearance, line ~1205)
+- [x] `heightByEra` - Displayed in identifying info (line ~862-890) - KEPT IN IDENTIFYING INFO
   - [x] `heightByEra['Part I']` - Displayed
   - [x] `heightByEra['Part II']` - Displayed
   - [x] `heightByEra['Blank Period']` - Displayed
   - [x] `heightByEra['Gaiden']` - Displayed
   - [x] `heightByEra['Boruto']` - Displayed
-- [x] `weightByEra` - Displayed in identifying info (line 733-855)
+- [x] `weightByEra` - Displayed in identifying info (line ~891-919) - KEPT IN IDENTIFYING INFO
   - [x] `weightByEra['Part I']` - Displayed
   - [x] `weightByEra['Part II']` - Displayed
   - [x] `weightByEra['Blank Period']` - Displayed
   - [x] `weightByEra['Gaiden']` - Displayed
   - [x] `weightByEra['Boruto']` - Displayed
-- [x] `eyeColor` - Displayed in identifying info (line 815)
-- [x] `hairColor` - Displayed in identifying info (line 816)
-- [x] `distinguishingFeatures` - Displayed in identifying info (line 817)
-- [x] `appearance.image` - Displayed in appearance section (line 124)
-- [x] `appearance.colors` - Displayed in appearance section (line 125-128)
-- [x] `appearance.gear` - Displayed in appearance section (line 130-140)
-- [x] `appearanceByEra` - Displayed in appearance section (line 141-167)
+- [x] `eyeColor` - Displayed in Physical Appearance section (renderPhysicalAppearance, line ~1206)
+- [x] `hairColor` - Displayed in Physical Appearance section (renderPhysicalAppearance, line ~1207)
+- [x] `distinguishingFeatures` - Displayed in Physical Appearance section (renderPhysicalAppearance, line ~1208-1212)
+- [x] `appearance.image` - Displayed in Appearance & Gear section (line ~124)
+- [x] `appearance.colors` - Displayed in Appearance & Gear section (line ~125-128)
+- [x] `appearance.gear` - Displayed in Appearance & Gear section (line ~130-140)
+- [x] `appearanceByEra` - NOW IN DEDICATED SECTION (renderAppearanceByEra function, line ~1217-1247)
   - [x] `appearanceByEra['Part I']` - Displayed (description, clothing, accessories, visualMotifs)
   - [x] `appearanceByEra['Part II']` - Displayed (description, clothing, accessories, visualMotifs)
   - [x] `appearanceByEra['Blank Period']` - Displayed (description, clothing, accessories, visualMotifs)
   - [x] `appearanceByEra['Gaiden']` - Displayed (description, clothing, accessories, visualMotifs)
   - [x] `appearanceByEra['Boruto']` - Displayed (description, clothing, accessories, visualMotifs)
 
-## ✅ Affiliations
-- [x] `village` - Displayed as badges (line 55, 608-648)
-- [x] `clanId` - Displayed as badges (line 56, 651-667)
-- [x] `clanName` - Displayed as badges (line 56, 651-667)
-- [x] `rank` - Displayed as badges and in identifying info (line 58, 579-605, 790)
-- [x] `classification` - Displayed in identifying info (line 789)
-- [x] `ninjaRegistrationNumber` - Displayed in identifying info (line 787)
-- [x] `teamNumber` - Displayed in identifying info (line 791)
-- [x] `teammates` - Displayed in identifying info (line 792)
-- [x] `sensei` - Displayed in identifying info (line 793)
-- [x] `academyGraduationAge` - Displayed in identifying info (line 788)
-- [x] `madeGenin` - Displayed in identifying info (line 794)
-- [x] `madeChunin` - Displayed in identifying info (line 795)
+## ✅ Affiliations - NOW IN DEDICATED SECTION
+- [x] `village` - Displayed as badges (line ~55) AND in Affiliations section (renderAffiliations, line ~1268)
+- [x] `clanId` - Displayed as badges (line ~56) AND in Affiliations section (renderAffiliations, line ~1269-1273)
+- [x] `clanName` - Displayed as badges (line ~56) AND in Affiliations section (renderAffiliations, line ~1269-1273)
+- [x] `rank` - Displayed as badges (line ~58) AND in Affiliations section (renderAffiliations, line ~1274)
+- [x] `classification` - Displayed in Affiliations section (renderAffiliations, line ~1275)
+- [x] `ninjaRegistrationNumber` - Displayed in Affiliations section (renderAffiliations, line ~1276)
+- [x] `teamNumber` - Displayed in Affiliations section (renderAffiliations, line ~1277)
+- [x] `teammates` - Displayed in Affiliations section (renderAffiliations, line ~1278) - with character links
+- [x] `sensei` - Displayed in Affiliations section (renderAffiliations, line ~1279) - with character links
+- [x] `academyGraduationAge` - Displayed in Affiliations section (renderAffiliations, line ~1280)
+- [x] `madeGenin` - Displayed in Affiliations section (renderAffiliations, line ~1281)
+- [x] `madeChunin` - Displayed in Affiliations section (renderAffiliations, line ~1282)
 
 ## ✅ Abilities & Powers
 - [x] `natureType` - Displayed in identifying info (line 785, 1429-1511)
@@ -165,18 +165,18 @@
   - [x] `recordHistory.adolescence` - Displayed (line 118)
   - [x] `recordHistory.adulthood` - Displayed (line 119)
 - [x] `relationships` - Displayed in relationships section (line 75-83, 1067-1123)
-- [x] `storyArcs` - Displayed in story arcs section (line 170-191)
-  - [x] `storyArcs[].name` - Displayed (line 179)
-  - [x] `storyArcs[].summary` - Displayed (line 180)
-  - [x] `storyArcs[].keyEvents` - Displayed (line 181-185)
+- [x] `storyArcs` - Displayed in story arcs section (line ~170-191) - Always shows, "No story arcs recorded" if empty ✅ FIXED
+  - [x] `storyArcs[].name` - Displayed (line ~179)
+  - [x] `storyArcs[].summary` - Displayed (line ~180)
+  - [x] `storyArcs[].keyEvents` - Displayed (line ~181-185)
 
-## ✅ Other Media
-- [x] `otherMedia` - Displayed in other media section (line 193-249)
-  - [x] `otherMedia.novel` - Displayed (line 206-212)
-  - [x] `otherMedia.game` - Displayed (line 214-220)
-  - [x] `otherMedia.ova` - Displayed (line 222-228)
-  - [x] `otherMedia.movies` - Displayed (line 230-236)
-  - [x] `otherMedia.nonCanon` - Displayed (line 238-244)
+## ✅ Other Media - ALWAYS VISIBLE
+- [x] `otherMedia` - Displayed in other media section (line ~193-249) - Always shows, "No other media appearances recorded" if empty ✅ FIXED
+  - [x] `otherMedia.novel` - Displayed (line ~206-212)
+  - [x] `otherMedia.game` - Displayed (line ~214-220)
+  - [x] `otherMedia.ova` - Displayed (line ~222-228)
+  - [x] `otherMedia.movies` - Displayed (line ~230-236)
+  - [x] `otherMedia.nonCanon` - Displayed (line ~238-244)
 
 ## ✅ Miscellaneous
 - [x] `themeSong` - Displayed in miscellaneous section (line 253-257)
@@ -186,13 +186,39 @@
   - [x] `voiceActors.english` - Displayed (line 263)
 - [x] `quotes` - Displayed in miscellaneous section (line 266-272)
 - [x] `trivia` - Displayed in miscellaneous section (line 274-278)
-- [x] `gallery` - Displayed in gallery section (line 282-291, 1327-1381)
+- [x] `gallery` - Displayed in gallery section (line ~282-291, ~1488-1543) - Always shows, "No images in gallery" if empty ✅ FIXED
 
 ---
 
 ## Summary
 **Total Fields Checked: 100+**
 **All Fields Present: ✅ YES**
+**All Sections Always Visible: ✅ YES**
 
-All fields from `defaultOC` are displayed in the OC detail view. The only issue that was fixed was the `nameMeaning` (Full Name Meaning) field which was not showing when `lastNameMeaning` and `firstNameMeaning` existed. This has been corrected to show all three meanings on separate lines.
+All fields from `defaultOC` are displayed in the OC detail view. Major improvements made:
+
+1. **New Dedicated Sections Created:**
+   - Family section (collapsible) - shows father, mother, siblings, otherRelatives
+   - Physical Appearance section (collapsible) - shows bodyType, eyeColor, hairColor, distinguishingFeatures
+   - Appearance by Era section (collapsible) - extracted from appearance section
+   - Affiliations section (collapsible) - shows all affiliation details
+
+2. **Conditional Rendering Fixed:**
+   - Name meaning always shows (shows "Not specified" if empty)
+   - Orientation always shows (shows "Not specified" if empty)
+   - Nature type always shows (shows "Not specified" if empty)
+   - Kekkei genkai always shows (shows "None" if empty)
+   - Debut always shows (shows "Not specified" if empty)
+   - AppearsIn always shows (shows "Not specified" if empty)
+   - Story Arcs section always shows (shows placeholder if empty)
+   - Other Media section always shows (shows placeholder if empty)
+   - Gallery section always shows (shows placeholder if empty)
+
+3. **Fields Reorganized:**
+   - Family fields moved from info-grid to Family section
+   - Physical appearance fields moved from info-grid to Physical Appearance section
+   - Affiliation fields moved from info-grid to Affiliations section
+   - Appearance by Era extracted to its own section
+
+All sections are now easily discoverable and always visible, even when empty.
 

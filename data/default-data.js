@@ -139,13 +139,6 @@ export const defaultOC = {
     taijutsuSkill: '',
     trainingInfluences: ''
   },
-  dojutsu: {
-    name: '',
-    type: '',
-    development: '',
-    stages: [],
-    specialAbilities: []
-  },
   intelligence: {
     academicPerformance: '',
     analyticalAbility: '',

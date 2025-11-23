@@ -53,10 +53,7 @@ export function renderOCDetail(oc) {
         }
         
         <div class="oc-badges" id="oc-badges-container">
-          ${renderVillageBadges(oc.village)}
-          ${renderClanBadges(oc.clanId, oc.clanName)}
-          ${renderLandBadges(oc.village)}
-          ${renderRankBadges(oc.rank)}
+          ${renderAllBadges(oc)}
         </div>
         
         <div class="oc-stats">
@@ -153,13 +150,6 @@ export function renderOCDetail(oc) {
       </div>
     </div>
     
-    <div class="record-history">
-      <h1>Record History <i class="japanese-header">記録履歴</i></h1>
-      ${renderHistoryEntry('Childhood', oc.recordHistory?.childhood || '')}
-      ${renderHistoryEntry('Adolescence', oc.recordHistory?.adolescence || '')}
-      ${renderHistoryEntry('Adulthood', oc.recordHistory?.adulthood || '')}
-    </div>
-    
     <div class="appearance-section">
       <h1>Appearance & Gear <i class="japanese-header">外見と装備</i></h1>
       ${oc.appearance?.image ? `<div class="appearance-image-container"><img src="${oc.appearance.image}" alt="Appearance" class="appearance-image"></div>` : ''}
@@ -181,24 +171,13 @@ export function renderOCDetail(oc) {
       ` : (!oc.appearance?.gear || oc.appearance.gear.length === 0 ? '<p style="color: var(--color-text-dark-2); font-style: italic; padding: 1rem;">No gear items recorded.</p>' : '')}
     </div>
     
-      <div id="story-arcs-collapse" class="collapsible-section">
-        <div class="collapsible-header" onclick="toggleCollapse('story-arcs-content')">
-          Story Arcs / Timeline <i class="japanese-header">ストーリーアーク/タイムライン</i>
+      <div id="record-history-collapse" class="collapsible-section">
+        <div class="collapsible-header" onclick="toggleCollapse('record-history-content')">
+          Record History <i class="japanese-header">記録履歴</i>
           <i class="fas fa-chevron-down bounce-arrow"></i>
         </div>
-        <div id="story-arcs-content" class="collapsible-content">
-          ${oc.storyArcs && oc.storyArcs.length > 0 ? oc.storyArcs.map(arc => `
-            <div class="story-arc-entry" style="margin-bottom: 2rem; padding-bottom: 2rem; border-bottom: 1px solid var(--color-border-2);">
-              <h3 style="color: var(--color-accent-2); margin-bottom: 0.5rem;">${arc.name || 'Unnamed Arc'}</h3>
-              ${arc.summary ? `<p style="margin-bottom: 1rem;">${arc.summary}</p>` : ''}
-              ${arc.keyEvents && arc.keyEvents.length > 0 ? `
-                <h4 style="margin-bottom: 0.5rem;">Key Events:</h4>
-                <ul style="list-style-type: disc; padding-left: 1.5rem;">
-                  ${arc.keyEvents.map(event => `<li style="margin-bottom: 0.25rem;">${event}</li>`).join('')}
-                </ul>
-              ` : ''}
-            </div>
-          `).join('') : '<div class="relationships-empty"><p>No story arcs recorded.</p></div>'}
+        <div id="record-history-content" class="collapsible-content">
+          ${renderRecordHistory(oc)}
         </div>
       </div>
       
@@ -209,57 +188,54 @@ export function renderOCDetail(oc) {
         </div>
         <div id="other-media-content" class="collapsible-content">
           ${(() => {
-            const hasOtherMedia = oc.otherMedia && (
-              (oc.otherMedia.novel && oc.otherMedia.novel.length > 0) ||
-              (oc.otherMedia.game && oc.otherMedia.game.length > 0) ||
-              (oc.otherMedia.ova && oc.otherMedia.ova.length > 0) ||
-              (oc.otherMedia.movies && oc.otherMedia.movies.length > 0) ||
-              (oc.otherMedia.nonCanon && oc.otherMedia.nonCanon.length > 0)
-            );
-            if (!hasOtherMedia) {
-              return '<div class="relationships-empty"><p>No other media appearances recorded.</p></div>';
-            }
+            const otherMedia = oc.otherMedia || {};
+            const novels = otherMedia.novel || [];
+            const games = otherMedia.game || [];
+            const ovas = otherMedia.ova || [];
+            const movies = otherMedia.movies || [];
+            const nonCanon = otherMedia.nonCanon || [];
+            
             return `
-              ${oc.otherMedia.novel && oc.otherMedia.novel.length > 0 ? `
-                <div style="margin-bottom: 1rem;">
-                  <h4>Novel Appearances</h4>
+              <div style="margin-bottom: 1rem;">
+                <h4>Novel Appearances</h4>
+                ${novels.length > 0 ? `
                   <ul style="list-style-type: disc; padding-left: 1.5rem;">
-                    ${oc.otherMedia.novel.map(novel => `<li>${novel}</li>`).join('')}
+                    ${novels.map(novel => `<li>${novel}</li>`).join('')}
                   </ul>
-                </div>
-              ` : ''}
-              ${oc.otherMedia.game && oc.otherMedia.game.length > 0 ? `
-                <div style="margin-bottom: 1rem;">
-                  <h4>Game Appearances</h4>
+                ` : '<p style="color: var(--color-text-dark-2); font-style: italic; padding-left: 1.5rem;">Not specified</p>'}
+              </div>
+              <div style="margin-bottom: 1rem;">
+                <h4>Game Appearances</h4>
+                ${games.length > 0 ? `
                   <ul style="list-style-type: disc; padding-left: 1.5rem;">
-                    ${oc.otherMedia.game.map(game => `<li>${game}</li>`).join('')}
+                    ${games.map(game => `<li>${game}</li>`).join('')}
                   </ul>
-                </div>
-              ` : ''}
-              ${oc.otherMedia.ova && oc.otherMedia.ova.length > 0 ? `
-                <div style="margin-bottom: 1rem;">
-                  <h4>OVA Appearances</h4>
+                ` : '<p style="color: var(--color-text-dark-2); font-style: italic; padding-left: 1.5rem;">Not specified</p>'}
+              </div>
+              <div style="margin-bottom: 1rem;">
+                <h4>OVA Appearances</h4>
+                ${ovas.length > 0 ? `
                   <ul style="list-style-type: disc; padding-left: 1.5rem;">
-                    ${oc.otherMedia.ova.map(ova => `<li>${ova}</li>`).join('')}
+                    ${ovas.map(ova => `<li>${ova}</li>`).join('')}
                   </ul>
-                </div>
-              ` : ''}
-              ${oc.otherMedia.movies && oc.otherMedia.movies.length > 0 ? `
-                <div style="margin-bottom: 1rem;">
-                  <h4>Movie Appearances</h4>
+                ` : '<p style="color: var(--color-text-dark-2); font-style: italic; padding-left: 1.5rem;">Not specified</p>'}
+              </div>
+              <div style="margin-bottom: 1rem;">
+                <h4>Movie Appearances</h4>
+                ${movies.length > 0 ? `
                   <ul style="list-style-type: disc; padding-left: 1.5rem;">
-                    ${oc.otherMedia.movies.map(movie => `<li>${movie}</li>`).join('')}
+                    ${movies.map(movie => `<li>${movie}</li>`).join('')}
                   </ul>
-                </div>
-              ` : ''}
-              ${oc.otherMedia.nonCanon && oc.otherMedia.nonCanon.length > 0 ? `
-                <div style="margin-bottom: 1rem;">
-                  <h4>Non-Canon Events</h4>
+                ` : '<p style="color: var(--color-text-dark-2); font-style: italic; padding-left: 1.5rem;">Not specified</p>'}
+              </div>
+              <div style="margin-bottom: 1rem;">
+                <h4>Non-Canon Events</h4>
+                ${nonCanon.length > 0 ? `
                   <ul style="list-style-type: disc; padding-left: 1.5rem;">
-                    ${oc.otherMedia.nonCanon.map(nonCanon => `<li>${nonCanon}</li>`).join('')}
+                    ${nonCanon.map(nonCanonItem => `<li>${nonCanonItem}</li>`).join('')}
                   </ul>
-                </div>
-              ` : ''}
+                ` : '<p style="color: var(--color-text-dark-2); font-style: italic; padding-left: 1.5rem;">Not specified</p>'}
+              </div>
             `;
           })()}
         </div>
@@ -591,33 +567,100 @@ function renderStat(name, value, iconType) {
   `;
 }
 
-function renderRankBadges(rank) {
-  // Handle backward compatibility: convert string to array
-  const ranks = Array.isArray(rank) ? rank : (rank ? [rank] : []);
+function renderAllBadges(oc) {
+  // Collect all badges (excluding rank)
+  const allBadges = [];
   
-  if (ranks.length === 0) {
-    return '';
-  }
-  
-  const rankLetters = {
-    'Genin': 'G',
-    'Chunin': 'C',
-    'Jonin': 'J',
-    'S-Rank': 'S',
-    'Kage': 'K',
-    'Anbu': 'A',
-    'Medical Ninja': 'M',
-    'Academy Student': 'AS'
+  // Get village badges
+  const villages = Array.isArray(oc.village) ? oc.village : (oc.village ? [oc.village] : []);
+  const villageMap = {
+    'Konohagakure': 'konoha.png', 'Konoha': 'konoha.png',
+    'Sunagakure': 'suna.png', 'Suna': 'suna.png',
+    'Kirigakure': 'kiri.png', 'Kiri': 'kiri.png',
+    'Kumogakure': 'kumo.png', 'Kumo': 'kumo.png',
+    'Iwagakure': 'iwa.png', 'Iwa': 'iwa.png',
+    'Amegakure': 'ame.png', 'Ame': 'ame.png',
+    'Otogakure': 'oto.png', 'Oto': 'oto.png',
+    'Takigakure': 'taki.png', 'Taki': 'taki.png',
+    'Yugagakure': 'yuga.png', 'Yuga': 'yuga.png',
+    'Kusagakure': 'kusa.png', 'Kusa': 'kusa.png',
+    'Uzushiogakure': 'uzu.png', 'Uzushio': 'uzu.png'
   };
   
-  return ranks.map(r => {
-    const letter = rankLetters[r] || r.charAt(0).toUpperCase();
-    return `
-      <div class="oc-badge rank-badge-display" title="Rank: ${r}">
-        <span style="font-weight: bold; font-size: 1.2rem;">${letter}</span>
-      </div>
-    `;
-  }).join('');
+  villages.forEach(v => {
+    const img = villageMap[v] ? `images/assets/${villageMap[v]}` : null;
+    if (img && allBadges.length < 5) {
+      allBadges.push({
+        type: 'village',
+        html: `<div class="oc-badge" title="Village: ${v}"><img src="${img}" alt="${v}"></div>`
+      });
+    }
+  });
+  
+  // Get clan badges (limited to remaining slots)
+  const clanIds = Array.isArray(oc.clanId) ? oc.clanId : (oc.clanId ? [oc.clanId] : []);
+  const clanNames = Array.isArray(oc.clanName) ? oc.clanName : (oc.clanName ? [oc.clanName] : []);
+  const allClans = [...clanIds.map(id => ({ type: 'id', value: id })), ...clanNames.map(name => ({ type: 'name', value: name }))];
+  
+  let clanBadgeIndex = 0;
+  allClans.forEach((clan) => {
+    if (allBadges.length >= 5) return;
+    const identifier = clan.value || 'none';
+    const uniqueId = `${identifier}-${clanBadgeIndex}`;
+    allBadges.push({
+      type: 'clan',
+      html: `<div class="oc-badge" id="clan-badge-${uniqueId}" title="Clan" data-clan-id="${clan.type === 'id' ? clan.value : ''}" data-clan-name="${clan.type === 'name' ? clan.value : ''}"></div>`
+    });
+    clanBadgeIndex++;
+  });
+  
+  // Get land badges (limited to remaining slots)
+  const villageToLand = {
+    'Konohagakure': { name: 'Land of Fire', kanji: '火の国', bgColor: '#DC143C', textColor: '#FFFFFF' },
+    'Konoha': { name: 'Land of Fire', kanji: '火の国', bgColor: '#DC143C', textColor: '#FFFFFF' },
+    'Sunagakure': { name: 'Land of Wind', kanji: '風の国', bgColor: '#F0E68C', textColor: '#000000' },
+    'Suna': { name: 'Land of Wind', kanji: '風の国', bgColor: '#F0E68C', textColor: '#000000' },
+    'Kirigakure': { name: 'Land of Water', kanji: '水の国', bgColor: '#1E90FF', textColor: '#FFFFFF' },
+    'Kiri': { name: 'Land of Water', kanji: '水の国', bgColor: '#1E90FF', textColor: '#FFFFFF' },
+    'Kumogakure': { name: 'Land of Lightning', kanji: '雷の国', bgColor: '#FFD700', textColor: '#000000' },
+    'Kumo': { name: 'Land of Lightning', kanji: '雷の国', bgColor: '#FFD700', textColor: '#000000' },
+    'Iwagakure': { name: 'Land of Earth', kanji: '土の国', bgColor: '#8B4513', textColor: '#FFFFFF' },
+    'Iwa': { name: 'Land of Earth', kanji: '土の国', bgColor: '#8B4513', textColor: '#FFFFFF' },
+    'Amegakure': { name: 'Land of Rain', kanji: '雨の国', bgColor: '#708090', textColor: '#FFFFFF' },
+    'Ame': { name: 'Land of Rain', kanji: '雨の国', bgColor: '#708090', textColor: '#FFFFFF' },
+    'Otogakure': { name: 'Land of Sound', kanji: '音の国', bgColor: '#9370DB', textColor: '#FFFFFF' },
+    'Oto': { name: 'Land of Sound', kanji: '音の国', bgColor: '#9370DB', textColor: '#FFFFFF' },
+    'Takigakure': { name: 'Land of Waterfalls', kanji: '滝の国', bgColor: '#87CEEB', textColor: '#000000' },
+    'Taki': { name: 'Land of Waterfalls', kanji: '滝の国', bgColor: '#87CEEB', textColor: '#000000' },
+    'Yugagakure': { name: 'Land of Hot Water', kanji: '湯の国', bgColor: '#FF6347', textColor: '#FFFFFF' },
+    'Yuga': { name: 'Land of Hot Water', kanji: '湯の国', bgColor: '#FF6347', textColor: '#FFFFFF' },
+    'Kusagakure': { name: 'Land of Grass', kanji: '草の国', bgColor: '#9ACD32', textColor: '#000000' },
+    'Kusa': { name: 'Land of Grass', kanji: '草の国', bgColor: '#9ACD32', textColor: '#000000' },
+    'Uzushiogakure': { name: 'Land of Whirlpools', kanji: '渦の国', bgColor: '#191970', textColor: '#FFFFFF' },
+    'Uzushio': { name: 'Land of Whirlpools', kanji: '渦の国', bgColor: '#191970', textColor: '#FFFFFF' }
+  };
+  
+  const seenLands = new Set();
+  villages.forEach(v => {
+    if (allBadges.length >= 5) return;
+    const land = villageToLand[v];
+    if (land && !seenLands.has(land.name)) {
+      seenLands.add(land.name);
+      const elementKanji = land.kanji.charAt(0);
+      allBadges.push({
+        type: 'land',
+        html: `<div class="oc-badge land-badge" title="${land.name}" style="background-color: ${land.bgColor};"><span class="land-kanji" style="color: ${land.textColor};">${elementKanji}</span></div>`
+      });
+    }
+  });
+  
+  // Limit to 5 badges and pad with empty badges if needed
+  const limitedBadges = allBadges.slice(0, 5);
+  const badgesHtml = limitedBadges.map(b => b.html).join('');
+  const emptyBadgesNeeded = Math.max(0, 5 - limitedBadges.length);
+  const emptyBadges = '<div class="oc-badge"></div>'.repeat(emptyBadgesNeeded);
+  
+  return badgesHtml + emptyBadges;
 }
 
 function renderVillageBadges(village) {
@@ -783,9 +826,6 @@ function renderCharacterLinks(names, isArray = false) {
 function renderIdentifyingInfo(oc) {
   const info = oc.identifyingInfo || {};
   
-  // Combine orientation fields
-  const orientation = getOrientation(oc);
-  
   // Parse multi-era data for age
   const ageByEra = oc.ageByEra || {};
   const hasAgeByEra = Object.keys(ageByEra).length > 0 && Object.values(ageByEra).some(age => age && age.trim());
@@ -825,7 +865,7 @@ function renderIdentifyingInfo(oc) {
           return renderInfoRow('Name Meaning', 'Not specified');
         })()}
         ${renderInfoRow('Date of Birth', formatDateOfBirth(oc.dob) || 'Unknown')}
-        ${oc.zodiac ? renderInfoRow('Zodiac', oc.zodiac) : ''}
+        ${renderInfoRow('Zodiac', oc.zodiac || 'Not specified')}
         ${(() => {
           // Render age by era if available, otherwise use old format
           if (hasAgeByEra) {
@@ -845,18 +885,15 @@ function renderIdentifyingInfo(oc) {
         })()}
         ${renderInfoRow('Blood Type', oc.bloodType || 'Unknown')}
         ${renderInfoRow('Gender', oc.gender || 'Unknown')}
-        ${orientation ? renderInfoRow('Orientation', orientation) : renderInfoRow('Orientation', 'Not specified')}
+        ${renderInfoRow('Sexual Orientation', oc.sexualOrientation || 'Not specified')}
+        ${renderInfoRow('Romantic Orientation', oc.romanticOrientation || 'Not specified')}
         ${oc.natureType ? renderNatureTypeRow(oc.natureType) : renderInfoRow('Nature Type', 'Not specified')}
         ${oc.kekkeiGenkai ? renderInfoRow('Kekkei Genkai', oc.kekkeiGenkai) : renderInfoRow('Kekkei Genkai', 'None')}
-        ${(() => {
-          const debuts = [];
-          if (oc.debut?.manga) debuts.push(`Manga: ${oc.debut.manga}`);
-          if (oc.debut?.anime) debuts.push(`Anime: ${oc.debut.anime}`);
-          if (oc.debut?.novel) debuts.push(`Novel: ${oc.debut.novel}`);
-          if (oc.debut?.movie) debuts.push(`Movie: ${oc.debut.movie}`);
-          if (oc.debut?.game) debuts.push(`Game: ${oc.debut.game}`);
-          return debuts.length > 0 ? renderInfoRow('Debut', debuts.join('<br>')) : renderInfoRow('Debut', 'Not specified');
-        })()}
+        ${renderInfoRow('Debut (Manga)', oc.debut?.manga || 'Not specified')}
+        ${renderInfoRow('Debut (Anime)', oc.debut?.anime || 'Not specified')}
+        ${renderInfoRow('Debut (Novel)', oc.debut?.novel || 'Not specified')}
+        ${renderInfoRow('Debut (Movie)', oc.debut?.movie || 'Not specified')}
+        ${renderInfoRow('Debut (Game)', oc.debut?.game || 'Not specified')}
         ${oc.appearsIn && oc.appearsIn.length > 0 ? renderInfoRow('Appears In', oc.appearsIn.join(', ')) : renderInfoRow('Appears In', 'Not specified')}
         ${(() => {
           // Render height by era if available, otherwise use old format
@@ -1000,13 +1037,18 @@ function renderMultiEraRow(label, data) {
   }
   
   // Format like the screenshot: each era on a new line with "Part I: value" format
+  // For age, align values to the right
+  const isAge = label.toLowerCase() === 'age';
   const eraItems = data.parts.map(part => {
     const eraLabel = part.era ? `${part.era}:` : '';
+    if (isAge) {
+      return `<div class="era-item-line"><span class="era-label-text">${eraLabel}</span> <span class="age-value">${part.value}</span></div>`;
+    }
     return `<div class="era-item-line">${eraLabel} ${part.value}</div>`;
   }).join('');
   
   return `
-    <div class="info-row multi-era-row">
+    <div class="info-row multi-era-row ${isAge ? 'age-row' : ''}">
       <div class="info-content multi-era-content">${eraItems}</div>
       <div class="info-label"><small>${label.toLowerCase()}</small></div>
     </div>
@@ -1085,24 +1127,23 @@ function renderKnownBehavior(oc) {
           }
         </ul>
       </div>
-      ${oc.fears && oc.fears.length > 0 ? `
       <div class="behavior-section">
         <h4>Fears / Core Wounds <i class="japanese-header">恐怖・核心的傷</i></h4>
         <ul class="behavior-list fears">
-          ${oc.fears.map(fear => `<li>${fear}</li>`).join('')}
+          ${(oc.fears && oc.fears.length > 0) 
+            ? oc.fears.map(fear => `<li>${fear}</li>`).join('')
+            : '<li>Not specified</li>'
+          }
         </ul>
       </div>
-      ` : ''}
-      ${oc.moralAlignment || oc.mbti || oc.enneagram ? `
       <div class="behavior-section">
         <h4>Personality Profile <i class="japanese-header">性格プロフィール</i></h4>
         <div class="personality-profile">
-          ${oc.moralAlignment ? `<p><strong>Moral Alignment:</strong> ${oc.moralAlignment}</p>` : ''}
-          ${oc.mbti ? `<p><strong>MBTI:</strong> ${oc.mbti}</p>` : ''}
-          ${oc.enneagram ? `<p><strong>Enneagram:</strong> ${oc.enneagram}</p>` : ''}
+          <p><strong>Moral Alignment:</strong> ${oc.moralAlignment || 'Not specified'}</p>
+          <p><strong>MBTI:</strong> ${oc.mbti || 'Not specified'}</p>
+          <p><strong>Enneagram:</strong> ${oc.enneagram || 'Not specified'}</p>
         </div>
       </div>
-      ` : ''}
     </div>
   `;
 }
@@ -1168,80 +1209,54 @@ function renderRelationships(oc) {
 
 function renderFamily(oc) {
   const family = oc.family || {};
-  const hasFamily = family.father || family.mother || (family.siblings && family.siblings.length > 0) || (family.otherRelatives && family.otherRelatives.length > 0);
-  
-  if (!hasFamily) {
-    return '<div class="relationships-empty"><p>No family information recorded.</p></div>';
-  }
   
   return `
     <div class="family-info">
-      ${family.father ? `<div class="family-member"><strong>Father:</strong> ${family.father}</div>` : ''}
-      ${family.mother ? `<div class="family-member"><strong>Mother:</strong> ${family.mother}</div>` : ''}
-      ${family.siblings && family.siblings.length > 0 ? `
-        <div class="family-member">
-          <strong>Siblings:</strong> ${family.siblings.join(', ')}
-        </div>
-      ` : ''}
-      ${family.otherRelatives && family.otherRelatives.length > 0 ? `
-        <div class="family-member">
-          <strong>Other Relatives:</strong> ${family.otherRelatives.join(', ')}
-        </div>
-      ` : ''}
+      <div class="family-member"><strong>Father:</strong> ${family.father || 'Not specified'}</div>
+      <div class="family-member"><strong>Mother:</strong> ${family.mother || 'Not specified'}</div>
+      <div class="family-member">
+        <strong>Siblings:</strong> ${(family.siblings && family.siblings.length > 0) ? family.siblings.join(', ') : 'Not specified'}
+      </div>
+      <div class="family-member">
+        <strong>Other Relatives:</strong> ${(family.otherRelatives && family.otherRelatives.length > 0) ? family.otherRelatives.join(', ') : 'Not specified'}
+      </div>
     </div>
   `;
 }
 
 function renderPhysicalAppearance(oc) {
   const info = oc.identifyingInfo || {};
-  const hasAppearance = info.bodyType || oc.eyeColor || oc.hairColor || (oc.distinguishingFeatures && oc.distinguishingFeatures.length > 0);
-  
-  if (!hasAppearance) {
-    return '<div class="relationships-empty"><p>No physical appearance information recorded.</p></div>';
-  }
   
   return `
     <div class="physical-appearance-info">
-      ${info.bodyType ? `<div class="appearance-item"><strong>Body Type:</strong> ${info.bodyType}</div>` : ''}
-      ${oc.eyeColor ? `<div class="appearance-item"><strong>Eye Color:</strong> ${oc.eyeColor}</div>` : ''}
-      ${oc.hairColor ? `<div class="appearance-item"><strong>Hair Color:</strong> ${oc.hairColor}</div>` : ''}
-      ${oc.distinguishingFeatures && oc.distinguishingFeatures.length > 0 ? `
-        <div class="appearance-item">
-          <strong>Distinguishing Features:</strong> ${oc.distinguishingFeatures.join(', ')}
-        </div>
-      ` : ''}
+      <div class="appearance-item"><strong>Body Type:</strong> ${info.bodyType || 'Not specified'}</div>
+      <div class="appearance-item"><strong>Eye Color:</strong> ${oc.eyeColor || 'Not specified'}</div>
+      <div class="appearance-item"><strong>Hair Color:</strong> ${oc.hairColor || 'Not specified'}</div>
+      <div class="appearance-item">
+        <strong>Distinguishing Features:</strong> ${(oc.distinguishingFeatures && oc.distinguishingFeatures.length > 0) ? oc.distinguishingFeatures.join(', ') : 'Not specified'}
+      </div>
     </div>
   `;
 }
 
 function renderAppearanceByEra(oc) {
   const eras = ['Part I', 'Part II', 'Blank Period', 'Gaiden', 'Boruto'];
-  const hasAppearanceByEra = oc.appearanceByEra && eras.some(era => {
-    const eraApp = oc.appearanceByEra[era];
-    return eraApp && (eraApp.description || eraApp.clothing || eraApp.accessories || eraApp.visualMotifs);
-  });
-  
-  if (!hasAppearanceByEra) {
-    return '<div class="relationships-empty"><p>No appearance data by era recorded.</p></div>';
-  }
+  const appearanceByEra = oc.appearanceByEra || {};
   
   return `
     <div class="appearance-by-era">
       ${eras.map(era => {
-        const eraApp = oc.appearanceByEra?.[era];
-        if (!eraApp || (!eraApp.description && !eraApp.clothing && !eraApp.accessories && !eraApp.visualMotifs)) {
-          return '';
-        }
+        const eraApp = appearanceByEra[era] || {};
         return `
           <div style="margin-bottom: 2rem; padding: 1rem; border: 1px solid var(--color-border-2); border-radius: 4px;">
             <h4 style="color: var(--color-accent-2); margin-bottom: 1rem;">${era}</h4>
-            ${eraApp.description ? `<p><strong>Description:</strong> ${eraApp.description}</p>` : ''}
-            ${eraApp.clothing ? `<p><strong>Signature Clothing:</strong> ${eraApp.clothing}</p>` : ''}
-            ${eraApp.accessories ? `<p><strong>Accessories:</strong> ${eraApp.accessories}</p>` : ''}
-            ${eraApp.visualMotifs ? `<p><strong>Visual Motifs:</strong> ${eraApp.visualMotifs}</p>` : ''}
+            <p><strong>Description:</strong> ${eraApp.description || 'Not specified'}</p>
+            <p><strong>Signature Clothing:</strong> ${eraApp.clothing || 'Not specified'}</p>
+            <p><strong>Accessories:</strong> ${eraApp.accessories || 'Not specified'}</p>
+            <p><strong>Visual Motifs:</strong> ${eraApp.visualMotifs || 'Not specified'}</p>
           </div>
         `;
-      }).filter(html => html).join('')}
+      }).join('')}
     </div>
   `;
 }
@@ -1254,32 +1269,26 @@ function renderAffiliations(oc) {
   const ranks = Array.isArray(oc.rank) ? oc.rank : (oc.rank ? [oc.rank] : []);
   const classifications = Array.isArray(oc.classification) ? oc.classification : (oc.classification ? [oc.classification] : []);
   
-  const hasAffiliations = villages.length > 0 || clanIds.length > 0 || clanNames.length > 0 || ranks.length > 0 || 
-                         classifications.length > 0 || oc.ninjaRegistrationNumber || oc.teamNumber || 
-                         (oc.teammates && oc.teammates.length > 0) || oc.sensei || oc.academyGraduationAge || 
-                         oc.madeGenin || oc.madeChunin;
-  
-  if (!hasAffiliations) {
-    return '<div class="relationships-empty"><p>No affiliation information recorded.</p></div>';
-  }
+  // Resolve clan names from clanIds
+  const resolvedClanNames = clanIds.map(clanId => {
+    const clan = storage.getClan(clanId);
+    return clan ? clan.name : clanId;
+  });
+  const allClanNames = [...resolvedClanNames, ...clanNames].filter(Boolean);
   
   return `
     <div class="affiliations-info">
-      ${villages.length > 0 ? `<div class="affiliation-item"><strong>Village(s):</strong> ${villages.join(', ')}</div>` : ''}
-      ${clanIds.length > 0 || clanNames.length > 0 ? `
-        <div class="affiliation-item">
-          <strong>Clan(s):</strong> ${[...clanIds, ...clanNames].filter(Boolean).join(', ')}
-        </div>
-      ` : ''}
-      ${ranks.length > 0 ? `<div class="affiliation-item"><strong>Rank(s):</strong> ${ranks.join(', ')}</div>` : ''}
-      ${classifications.length > 0 ? `<div class="affiliation-item"><strong>Classification(s):</strong> ${classifications.join(', ')}</div>` : ''}
-      ${oc.ninjaRegistrationNumber ? `<div class="affiliation-item"><strong>Ninja Registration Number:</strong> ${oc.ninjaRegistrationNumber}</div>` : ''}
-      ${oc.teamNumber ? `<div class="affiliation-item"><strong>Team Number:</strong> ${oc.teamNumber}</div>` : ''}
-      ${oc.teammates && oc.teammates.length > 0 ? `<div class="affiliation-item"><strong>Teammates:</strong> ${renderCharacterLinks(oc.teammates, true)}</div>` : ''}
-      ${oc.sensei ? `<div class="affiliation-item"><strong>Sensei:</strong> ${renderCharacterLinks(oc.sensei, false)}</div>` : ''}
-      ${oc.academyGraduationAge ? `<div class="affiliation-item"><strong>Academy Graduation Age:</strong> ${oc.academyGraduationAge}</div>` : ''}
-      ${oc.madeGenin ? `<div class="affiliation-item"><strong>Made Genin:</strong> ${oc.madeGenin}</div>` : ''}
-      ${oc.madeChunin ? `<div class="affiliation-item"><strong>Made Chunin:</strong> ${oc.madeChunin}</div>` : ''}
+      <div class="affiliation-item"><strong>Village(s):</strong> ${villages.length > 0 ? villages.join(', ') : 'Not specified'}</div>
+      <div class="affiliation-item"><strong>Clan(s):</strong> ${allClanNames.length > 0 ? allClanNames.join(', ') : 'Not specified'}</div>
+      <div class="affiliation-item"><strong>Rank(s):</strong> ${ranks.length > 0 ? ranks.join(', ') : 'Not specified'}</div>
+      <div class="affiliation-item"><strong>Classification(s):</strong> ${classifications.length > 0 ? classifications.join(', ') : 'Not specified'}</div>
+      <div class="affiliation-item"><strong>Ninja Registration Number:</strong> ${oc.ninjaRegistrationNumber || 'Not specified'}</div>
+      <div class="affiliation-item"><strong>Team Number:</strong> ${oc.teamNumber || 'Not specified'}</div>
+      <div class="affiliation-item"><strong>Teammates:</strong> ${(oc.teammates && oc.teammates.length > 0) ? renderCharacterLinks(oc.teammates, true) : 'Not specified'}</div>
+      <div class="affiliation-item"><strong>Sensei:</strong> ${oc.sensei ? renderCharacterLinks(oc.sensei, false) : 'Not specified'}</div>
+      <div class="affiliation-item"><strong>Academy Graduation Age:</strong> ${oc.academyGraduationAge || 'Not specified'}</div>
+      <div class="affiliation-item"><strong>Made Genin:</strong> ${oc.madeGenin || 'Not specified'}</div>
+      <div class="affiliation-item"><strong>Made Chunin:</strong> ${oc.madeChunin || 'Not specified'}</div>
     </div>
   `;
 }
@@ -1342,14 +1351,6 @@ function renderAbilities(oc) {
     oc.chakraPhysicalProwess.trainingInfluences
   );
   
-  const hasDojutsu = oc.dojutsu && (
-    oc.dojutsu.name || 
-    oc.dojutsu.type || 
-    oc.dojutsu.development || 
-    (oc.dojutsu.stages && oc.dojutsu.stages.length > 0) || 
-    (oc.dojutsu.specialAbilities && oc.dojutsu.specialAbilities.length > 0)
-  );
-  
   const hasIntelligence = oc.intelligence && (
     oc.intelligence.academicPerformance || 
     oc.intelligence.analyticalAbility || 
@@ -1367,31 +1368,6 @@ function renderAbilities(oc) {
       ${oc.chakraPhysicalProwess.speedFeats ? `<p><strong>Speed Feats:</strong> ${oc.chakraPhysicalProwess.speedFeats}</p>` : ''}
       ${oc.chakraPhysicalProwess.taijutsuSkill ? `<p><strong>Taijutsu Skill:</strong> ${oc.chakraPhysicalProwess.taijutsuSkill}</p>` : ''}
       ${oc.chakraPhysicalProwess.trainingInfluences ? `<p><strong>Training Influences:</strong> ${oc.chakraPhysicalProwess.trainingInfluences}</p>` : ''}
-    </div>
-    ` : ''}
-    
-    ${hasDojutsu ? `
-    <div class="ability-category" style="margin-bottom: 2rem;">
-      <h3>Dōjutsu <i class="japanese-header">瞳術</i></h3>
-      ${oc.dojutsu.name ? `<p><strong>Name:</strong> ${oc.dojutsu.name}</p>` : ''}
-      ${oc.dojutsu.type ? `<p><strong>Type:</strong> ${oc.dojutsu.type}</p>` : ''}
-      ${oc.dojutsu.development ? `<p><strong>Development:</strong> ${oc.dojutsu.development}</p>` : ''}
-      ${oc.dojutsu.stages && oc.dojutsu.stages.length > 0 ? `
-        <div style="margin-top: 1rem;">
-          <h4>Stages</h4>
-          <ul style="list-style-type: disc; padding-left: 1.5rem;">
-            ${oc.dojutsu.stages.map(stage => `<li>${stage}</li>`).join('')}
-          </ul>
-        </div>
-      ` : ''}
-      ${oc.dojutsu.specialAbilities && oc.dojutsu.specialAbilities.length > 0 ? `
-        <div style="margin-top: 1rem;">
-          <h4>Special Abilities</h4>
-          <ul style="list-style-type: disc; padding-left: 1.5rem;">
-            ${oc.dojutsu.specialAbilities.map(ability => `<li>${ability}</li>`).join('')}
-          </ul>
-        </div>
-      ` : ''}
     </div>
     ` : ''}
     
@@ -1548,19 +1524,63 @@ function renderRatingStars(value) {
   ).join('');
 }
 
-function renderHistoryEntry(title, content) {
-  const id = title.toLowerCase().replace(' ', '-');
-  return `
-    <div class="history-entry">
-      <div class="history-entry-header" onclick="toggleCollapse('history-${id}')">
-        ${title}
-        <i class="fas fa-chevron-down bounce-arrow"></i>
+function renderRecordHistory(oc) {
+  const entries = [];
+  
+  // Add life stages if they have content
+  const childhood = oc.recordHistory?.childhood?.trim();
+  const adolescence = oc.recordHistory?.adolescence?.trim();
+  const adulthood = oc.recordHistory?.adulthood?.trim();
+  
+  if (childhood) {
+    entries.push({ title: 'Childhood', content: childhood });
+  }
+  if (adolescence) {
+    entries.push({ title: 'Adolescence', content: adolescence });
+  }
+  if (adulthood) {
+    entries.push({ title: 'Adulthood', content: adulthood });
+  }
+  
+  // Add story arcs
+  if (oc.storyArcs && oc.storyArcs.length > 0) {
+    oc.storyArcs.forEach(arc => {
+      let content = '';
+      if (arc.summary) {
+        content += `<p>${arc.summary}</p>`;
+      }
+      if (arc.keyEvents && arc.keyEvents.length > 0) {
+        content += `<h4 style="margin-bottom: 0.5rem; margin-top: 1rem;">Key Events:</h4>`;
+        content += `<ul style="list-style-type: disc; padding-left: 1.5rem;">`;
+        content += arc.keyEvents.map(event => `<li style="margin-bottom: 0.25rem;">${event}</li>`).join('');
+        content += `</ul>`;
+      }
+      if (content) {
+        entries.push({ title: arc.name || 'Unnamed Arc', content: content });
+      }
+    });
+  }
+  
+  // If no entries, show empty message
+  if (entries.length === 0) {
+    return '<div class="relationships-empty"><p>No history recorded.</p></div>';
+  }
+  
+  // Render all entries in the same format
+  return entries.map((entry, index) => {
+    const id = `history-${entry.title.toLowerCase().replace(/\s+/g, '-')}-${index}`;
+    return `
+      <div class="history-entry" style="margin-bottom: ${index < entries.length - 1 ? '1.5rem' : '0'};">
+        <div class="history-entry-header" onclick="toggleCollapse('${id}')">
+          ${entry.title}
+          <i class="fas fa-chevron-down bounce-arrow"></i>
+        </div>
+        <div id="${id}" class="history-entry-content">
+          ${entry.content}
+        </div>
       </div>
-      <div id="history-${id}" class="history-entry-content">
-        <p>${content || 'Content not available.'}</p>
-      </div>
-    </div>
-  `;
+    `;
+  }).join('');
 }
 
 function renderGearItem(gear) {
