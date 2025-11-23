@@ -240,17 +240,18 @@
   "appearance": {
     "image": "",
     "colors": [
-      "#C8A2C8   (Chigiri lavender-purple)",
-      "#6A0F1A   (maroon collar / obi accents)",
-      "#3B1F2B   (dark purple / rope obi)",
-      "#000000   (leotards, gloves, boots)",
-      "#C0C0C0   (silver hair)",
-      "#FF8FB4   (pink eyes)"
+      "#C8A2C8",
+      "#6A0F1A",
+      "#3B1F2B",
+      "#000000",
+      "#C0C0C0",
+      "#FF8FB4"
     ],
     "gear": [
       {
         "name": "Bone Chain Sickle (Kusarigama)",
-        "category": "Item"
+        "category": "Item",
+        "icon": "https://i.pinimg.com/736x/12/53/d8/1253d86d15350b5238e1727bc26985a4.jpg"
       },
       {
         "name": "Kunai",
