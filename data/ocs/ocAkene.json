@@ -41,27 +41,27 @@
   "clanId": null,
   "clanName": null,
   "stats": {
-    "intelligence": 2.5,
-    "stamina": 3,
-    "strength": 3,
-    "speed": 3,
+    "intelligence": 3.5,
+    "stamina": 2.5,
+    "strength": 2,
+    "speed": 2.5,
     "ninjutsu": 3,
-    "genjutsu": 3,
-    "taijutsu": 3,
-    "handSeals": 3,
-    "fuinjutsu": 2
+    "genjutsu": 1.5,
+    "taijutsu": 2.5,
+    "handSeals": 3.5,
+    "fuinjutsu": 1
   },
   "statsByEra": {
     "Part I": {
-      "intelligence": 2.5,
-      "stamina": 3,
-      "strength": 3,
-      "speed": 3,
+      "intelligence": 3.5,
+      "stamina": 2.5,
+      "strength": 2,
+      "speed": 2.5,
       "ninjutsu": 3,
-      "genjutsu": 3,
-      "taijutsu": 3,
-      "handSeals": 3,
-      "fuinjutsu": 2
+      "genjutsu": 1.5,
+      "taijutsu": 2.5,
+      "handSeals": 3.5,
+      "fuinjutsu": 1
     },
     "Part II": {
       "intelligence": 3,
@@ -250,8 +250,7 @@
     "gear": [
       {
         "name": "Bone Chain Sickle (Kusarigama)",
-        "category": "Item",
-        "icon": "https://i.pinimg.com/736x/c0/5e/fc/c05efc1ae0cb42ff083700707fed7ba6.jpg"
+        "category": "Item"
       },
       {
         "name": "Kunai",
