@@ -10,6 +10,14 @@
   "status": "Active",
   "village": "Land of Iron",
   "symbol": "https://drive.google.com/file/d/1bkGalqbn5aylG9hFetu1rxKDpjVMYaqo/view?usp=sharing",
+  "debut": {
+    "manga": "",
+    "anime": "",
+    "novel": "",
+    "movie": "",
+    "game": ""
+  },
+  "appearsIn": [],
   "overview": {
     "origins": "The Chigiri Clan originates from Rei, the first human turned into a living madousho after triggering one of Kaguya’s forbidden seals. Her son, Taro, formed the beginnings of the bloodline, attempting to protect their descendants from the spiritual consequences of Rei’s transformation. Through Taro’s arranged union between his daughter Eikene and the Ōtsutsuki descendant Higure, the lineage fused human fate with celestial power, establishing a family defined by spiritual burden, destiny, and inherited knowledge.\n",
     "knownFor": "The clan is best known for Divine Release and Tengenjutsu—abilities that allow them to read fate, analyze destiny threads, and interpret emotional and spiritual trajectories. Their members excel as archivists, diviners, analysts, and advisors, with unmatched insight into long-term risk, critical turning points, and interpersonal dynamics.\n",
@@ -82,6 +90,12 @@
     "territory": "",
     "reputation": ""
   },
+  "geography": {
+    "primaryLocation": "",
+    "branches": [],
+    "territory": "",
+    "reputation": ""
+  },
   "appearancePhysicalTraits": "",
   "abilities": {
     "signatureJutsu": [],
@@ -101,6 +115,9 @@
     "heirs": ""
   },
   "notableMembers": [],
+  "knownMembers": [
+    "ocAkene"
+  ],
   "ocCreationAllowed": "Ask",
   "clanHistory": {
     "ancientEra": "",
