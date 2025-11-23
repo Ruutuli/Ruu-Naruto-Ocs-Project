@@ -217,17 +217,17 @@ export function renderClanForm(clan = null, onSave) {
           </div>
         </div>
         
-        <!-- Kekkei Genkai / Hiden (Collapsible) -->
+        <!-- Kekkei Genkai (Collapsible) -->
         <div class="collapsible-section">
           <div class="collapsible-header" onclick="toggleFormCollapse('kekkei-genkai-content')">
-            <i class="fas fa-eye" style="margin-right: 0.5rem;"></i> Kekkei Genkai / Hiden Techniques <i class="japanese-header">血継限界・秘伝</i>
+            <i class="fas fa-eye" style="margin-right: 0.5rem;"></i> Kekkei Genkai <i class="japanese-header">血継限界</i>
             <i class="fas fa-chevron-down bounce-arrow"></i>
           </div>
           <div id="kekkei-genkai-content" class="collapsible-content">
         
         <div class="form-group">
           <label class="form-label">Name</label>
-          <input type="text" class="form-control" id="kekkeiGenkai-name" value="${getValue('kekkeiGenkai.name')}" placeholder="Name of the Kekkei Genkai or Hiden">
+          <input type="text" class="form-control" id="kekkeiGenkai-name" value="${getValue('kekkeiGenkai.name')}" placeholder="Name of the Kekkei Genkai">
         </div>
         
         <div class="row">
@@ -285,6 +285,78 @@ export function renderClanForm(clan = null, onSave) {
               <label class="form-label">Notable Bloodline Jutsu (one per line, format: Jutsu Name — Rank, Type, Description)</label>
               <textarea class="form-control" id="kekkeiGenkai-notableJutsu" rows="4" placeholder="Jutsu Name — Rank, Type, Description&#10;Jutsu Name — Rank, Type, Description">${getArrayValue('kekkeiGenkai.notableJutsu').join('\n')}</textarea>
               <small class="form-text text-muted">These are jutsu exclusive to the bloodline ability, not shared clan techniques.</small>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Hiden Techniques (Collapsible) -->
+        <div class="collapsible-section">
+          <div class="collapsible-header" onclick="toggleFormCollapse('hiden-content')">
+            <i class="fas fa-scroll" style="margin-right: 0.5rem;"></i> Hiden Techniques <i class="japanese-header">秘伝</i>
+            <i class="fas fa-chevron-down bounce-arrow"></i>
+          </div>
+          <div id="hiden-content" class="collapsible-content">
+        
+        <div class="form-group">
+          <label class="form-label">Name</label>
+          <input type="text" class="form-control" id="hiden-name" value="${getValue('hiden.name')}" placeholder="Name of the Hiden Technique">
+        </div>
+        
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="form-label">Type</label>
+              <select class="form-control" id="hiden-type">
+                <option value="">Select Type</option>
+                ${generateOptions(kekkeiGenkaiTypes, getValue('hiden.type'))}
+              </select>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="form-label">Classification</label>
+              <select class="form-control" id="hiden-classification">
+                <option value="">Select Classification</option>
+                ${generateOptions(kekkeiGenkaiClassifications, getValue('hiden.classification'))}
+              </select>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="form-label">Chakra Nature</label>
+              <input type="text" class="form-control" id="hiden-chakraNature" value="${getValue('hiden.chakraNature')}" placeholder="Yin, Yang, Yin–Yang, Fire, Wind, etc.">
+            </div>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">Description</label>
+          <textarea class="form-control" id="hiden-description" rows="6" placeholder="Detailed explanation of the technique's 'fantasy logic.' Include: sensory/mind/body impacts, range, activation conditions, weaknesses, side effects, training requirements.">${getValue('hiden.description')}</textarea>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">Activation</label>
+          <textarea class="form-control" id="hiden-activation" rows="3" placeholder="How is it triggered? Chakra type? Hand seals? Ritual? Training required?">${getValue('hiden.activation')}</textarea>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">Mechanics (one per line)</label>
+          <textarea class="form-control" id="hiden-mechanics" rows="4" placeholder="List the mechanics of the technique, one per line.">${getArrayValue('hiden.mechanics').join('\n')}</textarea>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">Strengths (one per line)</label>
+          <textarea class="form-control" id="hiden-strengths" rows="3" placeholder="List the strengths, one per line.">${getArrayValue('hiden.strengths').join('\n')}</textarea>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">Weaknesses / Costs (one per line)</label>
+          <textarea class="form-control" id="hiden-weaknesses" rows="3" placeholder="List the weaknesses/costs, one per line (exhaustion, chakra drain, training requirements, etc.).">${getArrayValue('hiden.weaknesses').join('\n')}</textarea>
+        </div>
+            <div class="form-group">
+              <label class="form-label">Notable Hiden Jutsu (one per line, format: Jutsu Name — Rank, Type, Description)</label>
+              <textarea class="form-control" id="hiden-notableJutsu" rows="4" placeholder="Jutsu Name — Rank, Type, Description&#10;Jutsu Name — Rank, Type, Description">${getArrayValue('hiden.notableJutsu').join('\n')}</textarea>
+              <small class="form-text text-muted">These are jutsu exclusive to the hiden technique, not shared clan techniques.</small>
             </div>
           </div>
         </div>
@@ -776,6 +848,19 @@ export function renderClanForm(clan = null, onSave) {
     const notableJutsuText = getElementValue('kekkeiGenkai-notableJutsu');
     const notableJutsu = notableJutsuText ? notableJutsuText.split('\n').filter(j => j.trim()) : [];
     
+    // Parse hiden fields
+    const hidenMechanicsText = getElementValue('hiden-mechanics');
+    const hidenMechanics = hidenMechanicsText ? hidenMechanicsText.split('\n').filter(m => m.trim()) : [];
+    
+    const hidenStrengthsText = getElementValue('hiden-strengths');
+    const hidenStrengths = hidenStrengthsText ? hidenStrengthsText.split('\n').filter(s => s.trim()) : [];
+    
+    const hidenWeaknessesText = getElementValue('hiden-weaknesses');
+    const hidenWeaknesses = hidenWeaknessesText ? hidenWeaknessesText.split('\n').filter(w => w.trim()) : [];
+    
+    const hidenNotableJutsuText = getElementValue('hiden-notableJutsu');
+    const hidenNotableJutsu = hidenNotableJutsuText ? hidenNotableJutsuText.split('\n').filter(j => j.trim()) : [];
+    
     const branchesText = getElementValue('villagesLands-branches');
     const branches = branchesText ? branchesText.split('\n').filter(b => b.trim()) : [];
     
@@ -862,6 +947,18 @@ export function renderClanForm(clan = null, onSave) {
         strengths: kekkeiStrengths,
         weaknesses: kekkeiWeaknesses,
         notableJutsu: notableJutsu
+      },
+      hiden: {
+        name: getElementValue('hiden-name'),
+        type: getElementValue('hiden-type'),
+        classification: getElementValue('hiden-classification'),
+        chakraNature: getElementValue('hiden-chakraNature'),
+        description: getElementValue('hiden-description'),
+        activation: getElementValue('hiden-activation'),
+        mechanics: hidenMechanics,
+        strengths: hidenStrengths,
+        weaknesses: hidenWeaknesses,
+        notableJutsu: hidenNotableJutsu
       },
       clanStructure: {
         clanHead: getElementValue('clanStructure-clanHead'),
