@@ -229,7 +229,15 @@
       }
     ]
   },
-  "relationships": [],
+  "relationships": [
+    {
+      "name": "Sasuke Uchiha",
+      "relationshipType": "",
+      "image": "",
+      "heartChart": "",
+      "description": "oof"
+    }
+  ],
   "storyArcs": [
     {
       "name": "📜 Pre-Academy",
