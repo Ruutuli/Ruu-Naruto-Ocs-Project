@@ -59,24 +59,65 @@ export function renderClanDetail(clan) {
   
   // Ensure toggleCollapse function is available globally
   window.toggleCollapse = function(id) {
+    console.log('[toggleCollapse] ===== Called with id:', id);
     const content = document.getElementById(id);
-    if (content) {
-      const isActive = content.classList.contains('active');
-      content.classList.toggle('active');
-      
-      // Find the associated arrow and rotate it
-      const header = content.previousElementSibling;
-      if (header) {
-        const arrow = header.querySelector('.bounce-arrow');
-        if (arrow) {
-          if (isActive) {
-            arrow.style.transform = 'rotate(0deg)';
-          } else {
-            arrow.style.transform = 'rotate(180deg)';
-          }
-        }
+    console.log('[toggleCollapse] Found content element:', content);
+    console.log('[toggleCollapse] Content classes:', content ? Array.from(content.classList) : 'N/A');
+    
+    if (!content) {
+      console.error('[toggleCollapse] ERROR: Content element not found for id:', id);
+      const allCollapsibleContent = document.querySelectorAll('.collapsible-content');
+      console.log('[toggleCollapse] Available collapsible-content elements:', allCollapsibleContent.length);
+      allCollapsibleContent.forEach((el, idx) => {
+        console.log(`  [${idx}] id="${el.id}", classes="${el.className}"`);
+      });
+      return;
+    }
+    
+    const isActive = content.classList.contains('active');
+    console.log('[toggleCollapse] Current active state:', isActive);
+    console.log('[toggleCollapse] Content computed display before toggle:', window.getComputedStyle(content).display);
+    
+    content.classList.toggle('active');
+    const newActiveState = content.classList.contains('active');
+    console.log('[toggleCollapse] New active state:', newActiveState);
+    console.log('[toggleCollapse] Content computed display after toggle:', window.getComputedStyle(content).display);
+    
+    // Find the associated arrow and rotate it
+    // Try multiple methods to find the header
+    let header = content.previousElementSibling;
+    console.log('[toggleCollapse] previousElementSibling:', header);
+    
+    if (!header || !header.classList.contains('collapsible-header')) {
+      // Try finding parent and then header
+      const parent = content.parentElement;
+      console.log('[toggleCollapse] Parent element:', parent);
+      if (parent) {
+        header = parent.querySelector('.collapsible-header');
+        console.log('[toggleCollapse] Found header via parent querySelector:', header);
       }
     }
+    
+    if (header) {
+      console.log('[toggleCollapse] Header classes:', Array.from(header.classList));
+      const arrow = header.querySelector('.bounce-arrow');
+      console.log('[toggleCollapse] Found arrow:', arrow);
+      if (arrow) {
+        if (newActiveState) {
+          arrow.style.transform = 'rotate(180deg)';
+          console.log('[toggleCollapse] Rotated arrow to 180deg (opened)');
+        } else {
+          arrow.style.transform = 'rotate(0deg)';
+          console.log('[toggleCollapse] Rotated arrow to 0deg (closed)');
+        }
+      } else {
+        console.warn('[toggleCollapse] No arrow found in header. Header HTML:', header.innerHTML.substring(0, 100));
+      }
+    } else {
+      console.warn('[toggleCollapse] No header found. Content parent:', content.parentElement);
+      console.warn('[toggleCollapse] Content siblings:', Array.from(content.parentElement?.children || []));
+    }
+    console.log('[toggleCollapse] ===== End');
   };
   
   container.innerHTML = `
