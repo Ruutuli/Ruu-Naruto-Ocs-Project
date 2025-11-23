@@ -409,6 +409,17 @@ export function renderOCDetail(oc) {
   
   // Make switchEraTab available globally
   window.switchEraTab = (era) => {
+    // Store current view state (radar or list) before switching
+    const previousPanel = container.querySelector('.stat-era-panel.active');
+    let isRadarView = false;
+    if (previousPanel) {
+      const prevRadarContainer = previousPanel.querySelector('.radar-chart-container');
+      const prevStatsList = previousPanel.querySelector('.stats-list-container');
+      if (prevRadarContainer && prevRadarContainer.style.display !== 'none') {
+        isRadarView = true;
+      }
+    }
+    
     // Update tabs
     const tabs = container.querySelectorAll('.stat-era-tab');
     tabs.forEach(tab => {
@@ -429,6 +440,189 @@ export function renderOCDetail(oc) {
         panel.classList.remove('active');
       }
     });
+    
+    // If radar chart is visible, update it with new era data
+    const radarContainer = document.getElementById('detail-radar-chart-container');
+    if (radarContainer && radarContainer.style.display !== 'none') {
+      window.renderDetailRadarChart(eraId);
+    }
+  };
+  
+  // Radar chart functions for detail view
+  window.toggleDetailStatsView = function() {
+    const radarContainer = document.getElementById('detail-radar-chart-container');
+    if (!radarContainer) return;
+    
+    // Get current era
+    const statsContainer = document.querySelector('.oc-stats');
+    let eraId = 'default';
+    
+    if (statsContainer) {
+      const statsEraContainer = statsContainer.querySelector('.stats-era-container');
+      if (statsEraContainer) {
+        const activePanel = statsContainer.querySelector('.stat-era-panel.active');
+        if (activePanel) {
+          eraId = activePanel.id.replace('era-panel-', '');
+        }
+      }
+    }
+    
+    const toggleIcon = document.getElementById('detail-stats-view-icon');
+    const toggleText = document.getElementById('detail-stats-view-text');
+    
+    const isRadarVisible = radarContainer.style.display !== 'none';
+    
+    if (isRadarVisible) {
+      // Hide radar chart
+      radarContainer.style.display = 'none';
+      toggleIcon.className = 'fas fa-chart-line';
+      toggleText.textContent = 'Show Radar Chart';
+    } else {
+      // Show radar chart
+      radarContainer.style.display = 'block';
+      toggleIcon.className = 'fas fa-list';
+      toggleText.textContent = 'Hide Radar Chart';
+      
+      // Render the radar chart
+      window.renderDetailRadarChart(eraId);
+    }
+  };
+  
+  window.renderDetailRadarChart = function(eraId) {
+    const canvas = document.getElementById('detail-radar-canvas');
+    if (!canvas) return;
+    
+    const oc = window.currentOC || {};
+    let stats;
+    
+    if (eraId === 'default') {
+      // Default stats (no eras)
+      stats = oc.stats || {};
+    } else {
+      // Era-based stats - convert eraId back to era name
+      const eraName = eraId.replace(/-/g, ' ');
+      stats = oc.statsByEra?.[eraName] || oc.stats || {};
+    }
+    
+    // Set responsive size - ensure labels have plenty of room
+    const parentContainer = canvas.parentElement;
+    const containerWidth = parentContainer ? parentContainer.clientWidth : 800;
+    // Use very conservative sizing with lots of padding to ensure labels never cut off
+    const maxSize = Math.min(500, Math.max(350, containerWidth - 200)); // Much more padding (200px)
+    canvas.width = maxSize;
+    canvas.height = maxSize;
+    canvas.style.width = maxSize + 'px';
+    canvas.style.height = maxSize + 'px';
+    
+    const ctx = canvas.getContext('2d');
+    const size = Math.min(canvas.width, canvas.height);
+    const centerX = canvas.width / 2;
+    const centerY = canvas.height / 2;
+    // Increase radius slightly since labels will be closer
+    const radius = size * 0.32;
+    
+    // Clear canvas
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    // Stat labels
+    const statLabels = {
+      intelligence: 'Intelligence',
+      stamina: 'Stamina',
+      strength: 'Strength',
+      speed: 'Speed',
+      ninjutsu: 'Ninjutsu',
+      genjutsu: 'Genjutsu',
+      taijutsu: 'Taijutsu',
+      handSeals: 'Hand Seals',
+      fuinjutsu: 'Fuinjutsu'
+    };
+    
+    const STAT_NAMES = ['intelligence', 'stamina', 'strength', 'speed', 'ninjutsu', 'genjutsu', 'taijutsu', 'handSeals', 'fuinjutsu'];
+    const numStats = STAT_NAMES.length;
+    const angleStep = (2 * Math.PI) / numStats;
+    
+    // Draw polygonal grid - green background with straight lines
+    // Fill background with green
+    ctx.fillStyle = '#506D63'; // Green background
+    ctx.beginPath();
+    // Draw outer polygon
+    for (let i = 0; i < numStats; i++) {
+      const angle = (i * angleStep) - (Math.PI / 2);
+      const x = centerX + Math.cos(angle) * radius;
+      const y = centerY + Math.sin(angle) * radius;
+      if (i === 0) {
+        ctx.moveTo(x, y);
+      } else {
+        ctx.lineTo(x, y);
+      }
+    }
+    ctx.closePath();
+    ctx.fill();
+    
+    // Draw inner grid levels (polygonal shapes) - lighter green lines for contrast
+    ctx.strokeStyle = '#6B8E7A'; // Lighter green for grid lines
+    ctx.lineWidth = 1.5;
+    for (let level = 1; level <= 5; level++) {
+      const levelRadius = (radius * level) / 5;
+      ctx.beginPath();
+      for (let i = 0; i < numStats; i++) {
+        const angle = (i * angleStep) - (Math.PI / 2);
+        const x = centerX + Math.cos(angle) * levelRadius;
+        const y = centerY + Math.sin(angle) * levelRadius;
+        if (i === 0) {
+          ctx.moveTo(x, y);
+        } else {
+          ctx.lineTo(x, y);
+        }
+      }
+      ctx.closePath();
+      ctx.stroke();
+    }
+    
+    // Draw stat labels - white color with dark stroke for better readability
+    ctx.fillStyle = '#ffffff';
+    ctx.strokeStyle = '#1a1a1a'; // Dark stroke for better contrast
+    ctx.lineWidth = 4; // Thicker stroke for better readability
+    const fontSize = Math.max(14, Math.min(20, size / 25)); // Larger font size
+    ctx.font = `bold ${fontSize}px Arial, sans-serif`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    
+    STAT_NAMES.forEach((statName, i) => {
+      const angle = (i * angleStep) - (Math.PI / 2);
+      // Position labels much closer to the chart edge
+      const labelRadius = radius + (size * 0.06);
+      const x = centerX + Math.cos(angle) * labelRadius;
+      const y = centerY + Math.sin(angle) * labelRadius;
+      // Draw text with dark stroke first, then white fill for better readability
+      ctx.strokeText(statLabels[statName] || statName, x, y);
+      ctx.fillText(statLabels[statName] || statName, x, y);
+    });
+    
+    // Draw stat area - slightly transparent red
+    ctx.fillStyle = 'rgba(220, 38, 38, 0.85)'; // Slightly transparent red fill
+    ctx.strokeStyle = '#dc2626'; // Red border
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    
+    STAT_NAMES.forEach((statName, i) => {
+      const value = stats[statName] || 0;
+      const normalizedValue = value / 5; // Normalize to 0-1
+      const angle = (i * angleStep) - (Math.PI / 2);
+      const r = radius * normalizedValue;
+      const x = centerX + Math.cos(angle) * r;
+      const y = centerY + Math.sin(angle) * r;
+      
+      if (i === 0) {
+        ctx.moveTo(x, y);
+      } else {
+        ctx.lineTo(x, y);
+      }
+    });
+    
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
   };
   
   // Make switchProfileImageEraTab available globally
@@ -504,6 +698,9 @@ export function renderOCDetail(oc) {
   
   // Setup gallery lightbox functions
   setupGalleryLightbox();
+  
+  // Store current OC for radar chart access
+  window.currentOC = oc;
   
   return container;
 }
@@ -612,16 +809,19 @@ function renderStatsWithEras(oc) {
   
   // If no era stats exist, use default stats
   if (!hasEraStats) {
+    const defaultStats = oc.stats || {};
     return `
-      ${renderStat('Intelligence', oc.stats?.intelligence || 0, 'intelligence')}
-      ${renderStat('Stamina', oc.stats?.stamina || 0, 'stamina')}
-      ${renderStat('Strength', oc.stats?.strength || 0, 'strength')}
-      ${renderStat('Speed', oc.stats?.speed || 0, 'speed')}
-      ${renderStat('Ninjutsu', oc.stats?.ninjutsu || 0, 'ninjutsu')}
-      ${renderStat('Genjutsu', oc.stats?.genjutsu || 0, 'genjutsu')}
-      ${renderStat('Taijutsu', oc.stats?.taijutsu || 0, 'taijutsu')}
-      ${renderStat('Hand Seals', oc.stats?.handSeals || 0, 'handSeals')}
-      ${renderStat('Fuinjutsu', oc.stats?.fuinjutsu || 0, 'fuinjutsu')}
+      <div class="stats-list-container" id="detail-stats-list-container">
+        ${renderStat('Intelligence', defaultStats.intelligence || 0, 'intelligence')}
+        ${renderStat('Stamina', defaultStats.stamina || 0, 'stamina')}
+        ${renderStat('Strength', defaultStats.strength || 0, 'strength')}
+        ${renderStat('Speed', defaultStats.speed || 0, 'speed')}
+        ${renderStat('Ninjutsu', defaultStats.ninjutsu || 0, 'ninjutsu')}
+        ${renderStat('Genjutsu', defaultStats.genjutsu || 0, 'genjutsu')}
+        ${renderStat('Taijutsu', defaultStats.taijutsu || 0, 'taijutsu')}
+        ${renderStat('Hand Seals', defaultStats.handSeals || 0, 'handSeals')}
+        ${renderStat('Fuinjutsu', defaultStats.fuinjutsu || 0, 'fuinjutsu')}
+      </div>
     `;
   }
   
@@ -637,17 +837,20 @@ function renderStatsWithEras(oc) {
   const eraPanels = eras.map((era, index) => {
     const eraStats = oc.statsByEra?.[era] || oc.stats || {};
     const isActive = index === 0 ? 'active' : '';
+    const eraId = era.replace(/\s+/g, '-');
     return `
-      <div class="stat-era-panel ${isActive}" id="era-panel-${era.replace(/\s+/g, '-')}">
-        ${renderStat('Intelligence', eraStats.intelligence || 0, 'intelligence')}
-        ${renderStat('Stamina', eraStats.stamina || 0, 'stamina')}
-        ${renderStat('Strength', eraStats.strength || 0, 'strength')}
-        ${renderStat('Speed', eraStats.speed || 0, 'speed')}
-        ${renderStat('Ninjutsu', eraStats.ninjutsu || 0, 'ninjutsu')}
-        ${renderStat('Genjutsu', eraStats.genjutsu || 0, 'genjutsu')}
-        ${renderStat('Taijutsu', eraStats.taijutsu || 0, 'taijutsu')}
-        ${renderStat('Hand Seals', eraStats.handSeals || 0, 'handSeals')}
-        ${renderStat('Fuinjutsu', eraStats.fuinjutsu || 0, 'fuinjutsu')}
+      <div class="stat-era-panel ${isActive}" id="era-panel-${eraId}">
+        <div class="stats-list-container" id="detail-stats-list-${eraId}">
+          ${renderStat('Intelligence', eraStats.intelligence || 0, 'intelligence')}
+          ${renderStat('Stamina', eraStats.stamina || 0, 'stamina')}
+          ${renderStat('Strength', eraStats.strength || 0, 'strength')}
+          ${renderStat('Speed', eraStats.speed || 0, 'speed')}
+          ${renderStat('Ninjutsu', eraStats.ninjutsu || 0, 'ninjutsu')}
+          ${renderStat('Genjutsu', eraStats.genjutsu || 0, 'genjutsu')}
+          ${renderStat('Taijutsu', eraStats.taijutsu || 0, 'taijutsu')}
+          ${renderStat('Hand Seals', eraStats.handSeals || 0, 'handSeals')}
+          ${renderStat('Fuinjutsu', eraStats.fuinjutsu || 0, 'fuinjutsu')}
+        </div>
       </div>
     `;
   }).join('');
@@ -1093,6 +1296,15 @@ function renderIdentifyingInfo(oc) {
               </div>
             `;
           }).join('')}
+        </div>
+        <div style="display: flex; justify-content: center; margin-top: 1.5rem;">
+          <button type="button" class="btn-naruto btn-naruto-secondary" id="detail-stats-view-toggle" onclick="toggleDetailStatsView()" style="padding: 0.5rem 1rem; font-size: 0.9rem;">
+            <i class="fas fa-chart-line" id="detail-stats-view-icon"></i>
+            <span id="detail-stats-view-text">Show Radar Chart</span>
+          </button>
+        </div>
+        <div class="radar-chart-container" id="detail-radar-chart-container" style="display: none; margin-top: 1.5rem;">
+          <canvas id="detail-radar-canvas"></canvas>
         </div>
       </div>
     </div>

@@ -162,9 +162,15 @@ export function renderOCForm(oc = null, onSave) {
             <i class="fas fa-times"></i> Cancel
           </button>
         </div>
+        
         <!-- Basic Info -->
-        <h3 class="mb-3">Basic Information</h3>
-        <div class="row">
+        <div class="collapsible-section">
+          <div class="collapsible-header" onclick="toggleFormCollapse('basic-info-content')">
+            <i class="fas fa-info-circle" style="margin-right: 0.5rem;"></i> Basic Information
+            <i class="fas fa-chevron-down bounce-arrow"></i>
+          </div>
+          <div id="basic-info-content" class="collapsible-content active">
+            <div class="row">
           <div class="col-12 col-md-6">
             <div class="form-group">
               <label class="form-label">Last Name 名字 <small style="font-weight: normal; color: var(--color-text-dark-2);">(e.g., Chigiri)</small></label>
@@ -224,9 +230,16 @@ export function renderOCForm(oc = null, onSave) {
           <input type="text" class="form-control" id="displayImage" value="${formOC.displayImage || ''}" placeholder="Enter image URL">
           <small class="form-text text-muted">Separate display image (different from profile image)</small>
         </div>
+          </div>
+        </div>
         
         <!-- Images by Era -->
-        <h3 class="mb-3 mt-4">Images by Era <i class="japanese-header">時代別の画像</i></h3>
+        <div class="collapsible-section">
+          <div class="collapsible-header" onclick="toggleFormCollapse('images-era-content')">
+            <i class="fas fa-images" style="margin-right: 0.5rem;"></i> Images by Era <i class="japanese-header">時代別の画像</i>
+            <i class="fas fa-chevron-down bounce-arrow"></i>
+          </div>
+          <div id="images-era-content" class="collapsible-content active">
         <div class="mb-4">
           <p class="text-muted" style="margin-bottom: 1rem;">Add images for different eras. These will be displayed with tabs in the detail view.</p>
           <div class="image-era-tabs" style="display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap;">
@@ -263,10 +276,16 @@ export function renderOCForm(oc = null, onSave) {
               `;
             }).join('')}
           </div>
+          </div>
         </div>
         
         <!-- Debut Information -->
-        <h3 class="mb-3 mt-4">Debut Information</h3>
+        <div class="collapsible-section">
+          <div class="collapsible-header" onclick="toggleFormCollapse('debut-info-content')">
+            <i class="fas fa-book-open" style="margin-right: 0.5rem;"></i> Debut Information
+            <i class="fas fa-chevron-down bounce-arrow"></i>
+          </div>
+          <div id="debut-info-content" class="collapsible-content active">
         <div class="row">
           <div class="col-12 col-md-6">
             <div class="form-group">
@@ -317,10 +336,16 @@ export function renderOCForm(oc = null, onSave) {
               </div>
             </div>
           </div>
+          </div>
         </div>
         
         <!-- Personal Information -->
-        <h3 class="mb-3 mt-4">Personal Information <i class="japanese-header">個人情報</i></h3>
+        <div class="collapsible-section">
+          <div class="collapsible-header" onclick="toggleFormCollapse('personal-info-content')">
+            <i class="fas fa-user" style="margin-right: 0.5rem;"></i> Personal Information <i class="japanese-header">個人情報</i>
+            <i class="fas fa-chevron-down bounce-arrow"></i>
+          </div>
+          <div id="personal-info-content" class="collapsible-content active">
         <div class="row">
           <div class="col-12 col-md-4">
             <div class="form-group">
@@ -434,10 +459,16 @@ export function renderOCForm(oc = null, onSave) {
               </select>
             </div>
           </div>
+          </div>
         </div>
         
         <!-- Family Information -->
-        <h3 class="mb-3 mt-4">Family Information</h3>
+        <div class="collapsible-section">
+          <div class="collapsible-header" onclick="toggleFormCollapse('family-info-content')">
+            <i class="fas fa-home" style="margin-right: 0.5rem;"></i> Family Information
+            <i class="fas fa-chevron-down bounce-arrow"></i>
+          </div>
+          <div id="family-info-content" class="collapsible-content active">
         <div class="row">
           <div class="col-12 col-md-6">
             <div class="form-group">
@@ -465,10 +496,16 @@ export function renderOCForm(oc = null, onSave) {
               <textarea class="form-control" id="familyOtherRelatives" rows="4" placeholder="e.g., Uncle&#10;Aunt&#10;Cousin">${(formOC.family?.otherRelatives || []).join('\n')}</textarea>
             </div>
           </div>
+          </div>
         </div>
         
         <!-- Physical Appearance -->
-        <h3 class="mb-3 mt-4">Physical Appearance <i class="japanese-header">外見</i></h3>
+        <div class="collapsible-section">
+          <div class="collapsible-header" onclick="toggleFormCollapse('physical-appearance-content')">
+            <i class="fas fa-user" style="margin-right: 0.5rem;"></i> Physical Appearance <i class="japanese-header">外見</i>
+            <i class="fas fa-chevron-down bounce-arrow"></i>
+          </div>
+          <div id="physical-appearance-content" class="collapsible-content active">
         <div class="row">
           <div class="col-12 col-md-4">
             <div class="form-group">
@@ -627,10 +664,16 @@ export function renderOCForm(oc = null, onSave) {
               <input type="text" class="form-control" id="madeChunin" value="${formOC.madeChunin || formOC.identifyingInfo?.madeChunin || ''}" placeholder="e.g., Age 15">
             </div>
           </div>
+          </div>
         </div>
         
         <!-- Abilities & Powers -->
-        <h3 class="mb-3 mt-4">Abilities & Powers <i class="japanese-header">能力と力</i></h3>
+        <div class="collapsible-section">
+          <div class="collapsible-header" onclick="toggleFormCollapse('abilities-powers-content')">
+            <i class="fas fa-fire" style="margin-right: 0.5rem;"></i> Abilities & Powers <i class="japanese-header">能力と力</i>
+            <i class="fas fa-chevron-down bounce-arrow"></i>
+          </div>
+          <div id="abilities-powers-content" class="collapsible-content active">
         <div class="row">
           <div class="col-12 col-md-6">
             <div class="form-group">
@@ -674,7 +717,12 @@ export function renderOCForm(oc = null, onSave) {
         </div>
         
         <!-- Chakra & Physical Prowess -->
-        <h4 class="mb-3 mt-4">Chakra & Physical Prowess</h4>
+        <div class="collapsible-section">
+          <div class="collapsible-header" onclick="toggleFormCollapse('chakra-physical-content')">
+            <i class="fas fa-dumbbell" style="margin-right: 0.5rem;"></i> Chakra & Physical Prowess <i class="japanese-header">チャクラと体力</i>
+            <i class="fas fa-chevron-down bounce-arrow"></i>
+          </div>
+          <div id="chakra-physical-content" class="collapsible-content active">
         <div class="row">
           <div class="col-12 col-md-6">
             <div class="form-group">
@@ -716,10 +764,16 @@ export function renderOCForm(oc = null, onSave) {
               <textarea class="form-control" id="trainingInfluences" rows="2">${formOC.chakraPhysicalProwess?.trainingInfluences || ''}</textarea>
             </div>
           </div>
+          </div>
         </div>
         
         <!-- Intelligence -->
-        <h4 class="mb-3 mt-4">Intelligence</h4>
+        <div class="collapsible-section">
+          <div class="collapsible-header" onclick="toggleFormCollapse('intelligence-content')">
+            <i class="fas fa-brain" style="margin-right: 0.5rem;"></i> Intelligence
+            <i class="fas fa-chevron-down bounce-arrow"></i>
+          </div>
+          <div id="intelligence-content" class="collapsible-content active">
         <div class="row">
           <div class="col-12 col-md-6">
             <div class="form-group">
@@ -746,6 +800,7 @@ export function renderOCForm(oc = null, onSave) {
               <label class="form-label">Leadership Skill</label>
               <textarea class="form-control" id="leadershipSkill" rows="2">${formOC.intelligence?.leadershipSkill || ''}</textarea>
             </div>
+          </div>
           </div>
         </div>
         
@@ -790,6 +845,7 @@ export function renderOCForm(oc = null, onSave) {
                 return `<button type="button" class="btn-naruto btn-naruto-secondary" onclick="addAbility('${key}')">+ Add ${label}</button>`;
               }).join('')}
             </div>
+          </div>
           </div>
         </div>
         <div class="row">
@@ -855,7 +911,12 @@ export function renderOCForm(oc = null, onSave) {
         </div>
         
         <!-- Mission Counts -->
-        <h3 class="mb-3 mt-4">Mission Counts</h3>
+        <div class="collapsible-section">
+          <div class="collapsible-header" onclick="toggleFormCollapse('mission-counts-content')">
+            <i class="fas fa-tasks" style="margin-right: 0.5rem;"></i> Mission Counts
+            <i class="fas fa-chevron-down bounce-arrow"></i>
+          </div>
+          <div id="mission-counts-content" class="collapsible-content active">
         <div class="row">
           <div class="col-6 col-sm-4 col-md-2">
             <div class="form-group">
@@ -888,61 +949,60 @@ export function renderOCForm(oc = null, onSave) {
             </div>
           </div>
         </div>
+          </div>
+        </div>
         
         <!-- Stats -->
-        <h3 class="mb-3 mt-4">Stats (1-5)</h3>
-        <div class="stats-form-container">
-          <div class="stats-form-tabs">
-            ${ERAS.map((era, index) => `
-              <button type="button" class="stats-form-tab ${index === 0 ? 'active' : ''}" 
-                      onclick="switchStatsEraTab('${era}')" 
-                      data-era="${era}">${era}</button>
-            `).join('')}
+        <div class="collapsible-section">
+          <div class="collapsible-header" onclick="toggleFormCollapse('stats-content')">
+            <i class="fas fa-chart-bar" style="margin-right: 0.5rem;"></i> Stats (0-5)
+            <i class="fas fa-chevron-down bounce-arrow"></i>
           </div>
-          <div class="stats-form-content">
-            ${(() => {
-              // Helper function to get stat value for an era, checking previous eras if not found
-              const getStatValue = (era, statName) => {
-                // First check if this era has the stat
-                const eraStats = formOC.statsByEra?.[era];
-                if (eraStats && eraStats[statName] !== undefined) {
-                  return eraStats[statName];
-                }
-                
-                // If not found, check previous eras in order
-                const currentIndex = ERAS.indexOf(era);
-                for (let i = currentIndex - 1; i >= 0; i--) {
-                  const prevEra = ERAS[i];
-                  const prevEraStats = formOC.statsByEra?.[prevEra];
-                  if (prevEraStats && prevEraStats[statName] !== undefined) {
-                    return prevEraStats[statName];
-                  }
-                }
-                
-                // Fall back to default stats
-                if (formOC.stats && formOC.stats[statName] !== undefined) {
-                  return formOC.stats[statName];
-                }
-                
-                // Final fallback to default values
-                return statName === 'fuinjutsu' ? 0 : 3;
-              };
-              
-              return ERAS.map((era, index) => {
-                const isActive = index === 0 ? 'active' : '';
-                return `
-                  <div class="stats-form-panel ${isActive}" id="stats-form-panel-${era.replace(/\s+/g, '-')}">
-                    <div class="stats-container">
-                      <div class="stats-grid">
-                        ${STAT_NAMES.map(statName => 
-                          renderStatInput(`${statName}-${era}`, getStatValue(era, statName))
-                        ).join('')}
+          <div id="stats-content" class="collapsible-content active">
+            <div class="stats-form-container">
+              <div class="stats-form-tabs">
+                ${ERAS.map((era, index) => `
+                  <button type="button" class="stats-form-tab ${index === 0 ? 'active' : ''}" 
+                          onclick="switchStatsEraTab('${era}')" 
+                          data-era="${era}">${era}</button>
+                `).join('')}
+              </div>
+              <div class="stats-form-content">
+                ${(() => {
+                  // Helper function to get stat value for an era - defaults to 0 if not set
+                  const getStatValue = (era, statName) => {
+                    // First check if this era has the stat explicitly set
+                    const eraStats = formOC.statsByEra?.[era];
+                    if (eraStats && eraStats[statName] !== undefined && eraStats[statName] !== null) {
+                      return eraStats[statName];
+                    }
+                    
+                    // Fall back to default stats (only if statsByEra doesn't exist at all)
+                    if (!formOC.statsByEra && formOC.stats && formOC.stats[statName] !== undefined) {
+                      return formOC.stats[statName];
+                    }
+                    
+                    // Default to 0 for all new/unfilled stats
+                    return 0;
+                  };
+                  
+                  return ERAS.map((era, index) => {
+                    const isActive = index === 0 ? 'active' : '';
+                    return `
+                      <div class="stats-form-panel ${isActive}" id="stats-form-panel-${era.replace(/\s+/g, '-')}">
+                        <div class="stats-container" id="stats-container-${era.replace(/\s+/g, '-')}">
+                          <div class="stats-grid">
+                            ${STAT_NAMES.map(statName => 
+                              renderStatInput(`${statName}-${era}`, getStatValue(era, statName))
+                            ).join('')}
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                  </div>
-                `;
-              }).join('');
-            })()}
+                    `;
+                  }).join('');
+                })()}
+              </div>
+            </div>
           </div>
         </div>
         
@@ -1007,7 +1067,12 @@ export function renderOCForm(oc = null, onSave) {
         </div>
         
         <!-- Battle Strategy -->
-        <h3 class="mb-3 mt-4">Battle Strategy</h3>
+        <div class="collapsible-section">
+          <div class="collapsible-header" onclick="toggleFormCollapse('battle-strategy-content')">
+            <i class="fas fa-chess" style="margin-right: 0.5rem;"></i> Battle Strategy
+            <i class="fas fa-chevron-down bounce-arrow"></i>
+          </div>
+          <div id="battle-strategy-content" class="collapsible-content active">
         <div class="form-group">
           <label class="form-label">In a Team</label>
           <textarea class="form-control" id="strategyInTeam" rows="3">${formOC.battleStrategy?.inTeam || ''}</textarea>
@@ -1040,9 +1105,16 @@ export function renderOCForm(oc = null, onSave) {
           <label class="form-label">Notable Abilities</label>
           <textarea class="form-control" id="notableAbilities" rows="3">${formOC.battleStrategy?.notableAbilities || ''}</textarea>
         </div>
+          </div>
+        </div>
         
         <!-- Personality -->
-        <h3 class="mb-3 mt-4">Personality</h3>
+        <div class="collapsible-section">
+          <div class="collapsible-header" onclick="toggleFormCollapse('personality-content')">
+            <i class="fas fa-brain" style="margin-right: 0.5rem;"></i> Personality
+            <i class="fas fa-chevron-down bounce-arrow"></i>
+          </div>
+          <div id="personality-content" class="collapsible-content active">
         <div class="form-group">
           <label class="form-label">Overview</label>
           <textarea class="form-control" id="personalityOverview" rows="4" placeholder="Overall personality description...">${formOC.personality?.overview || ''}</textarea>
@@ -1066,10 +1138,16 @@ export function renderOCForm(oc = null, onSave) {
         <div class="form-group">
           <label class="form-label">Dislikes (one per line)</label>
           <textarea class="form-control" id="dislikes" rows="4">${(formOC.personality?.dislikes || []).join('\n')}</textarea>
+          </div>
         </div>
         
         <!-- Demeanor / Personality Traits -->
-        <h3 class="mb-3 mt-4">Demeanor <i class="japanese-header">態度</i></h3>
+        <div class="collapsible-section">
+          <div class="collapsible-header" onclick="toggleFormCollapse('demeanor-content')">
+            <i class="fas fa-smile" style="margin-right: 0.5rem;"></i> Demeanor <i class="japanese-header">態度</i>
+            <i class="fas fa-chevron-down bounce-arrow"></i>
+          </div>
+          <div id="demeanor-content" class="collapsible-content active">
         <p style="color: var(--color-text-dark-2); font-size: 0.9rem; margin-bottom: 1rem;">
           Rate each trait from 1 to 10. 1 = very left trait, 10 = very right trait. These traits define where your character falls on each spectrum.
         </p>
@@ -1136,10 +1214,16 @@ export function renderOCForm(oc = null, onSave) {
               `;
             }).join('');
           })()}
+          </div>
         </div>
         
         <!-- Record History / Story Arcs / Timeline -->
-        <h3 class="mb-3 mt-4">Record History <i class="japanese-header">記録履歴</i></h3>
+        <div class="collapsible-section">
+          <div class="collapsible-header" onclick="toggleFormCollapse('record-history-content')">
+            <i class="fas fa-scroll" style="margin-right: 0.5rem;"></i> Record History <i class="japanese-header">記録履歴</i>
+            <i class="fas fa-chevron-down bounce-arrow"></i>
+          </div>
+          <div id="record-history-content" class="collapsible-content active">
         <div class="form-group">
           <label class="form-label">Childhood</label>
           <textarea class="form-control" id="recordHistoryChildhood" rows="5">${formOC.recordHistory?.childhood || ''}</textarea>
@@ -1167,10 +1251,16 @@ export function renderOCForm(oc = null, onSave) {
             </div>
             <button type="button" class="btn-naruto btn-naruto-secondary mt-2" onclick="addStoryArc()">+ Add Story Arc</button>
           </div>
+          </div>
         </div>
         
         <!-- Appearance & Gear -->
-        <h3 class="mb-3 mt-4">Appearance & Gear <i class="japanese-header">外見と装備</i></h3>
+        <div class="collapsible-section">
+          <div class="collapsible-header" onclick="toggleFormCollapse('appearance-gear-content')">
+            <i class="fas fa-tshirt" style="margin-right: 0.5rem;"></i> Appearance & Gear <i class="japanese-header">外見と装備</i>
+            <i class="fas fa-chevron-down bounce-arrow"></i>
+          </div>
+          <div id="appearance-gear-content" class="collapsible-content active">
         <div class="form-group">
           <label class="form-label">Color Palette <small style="font-weight: normal; color: var(--color-text-dark-2);">(one color per line, hex codes or color names)</small></label>
           <textarea class="form-control" id="appearanceColors" rows="3" placeholder="#FF5733&#10;#33FF57&#10;blue" oninput="updateColorPreview()">${(formOC.appearance?.colors || []).join('\n')}</textarea>
@@ -1209,10 +1299,16 @@ export function renderOCForm(oc = null, onSave) {
             </div>
             <button type="button" class="btn-naruto btn-naruto-secondary mt-2" onclick="addGearItem()">+ Add Item</button>
           </div>
+          </div>
         </div>
         
         <!-- Appearance by Era -->
-        <h3 class="mb-3 mt-4">Appearance by Era</h3>
+        <div class="collapsible-section">
+          <div class="collapsible-header" onclick="toggleFormCollapse('appearance-era-content')">
+            <i class="fas fa-history" style="margin-right: 0.5rem;"></i> Appearance by Era
+            <i class="fas fa-chevron-down bounce-arrow"></i>
+          </div>
+          <div id="appearance-era-content" class="collapsible-content active">
         <div class="appearance-era-container">
           <div class="appearance-era-tabs" style="display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap;">
             ${ERAS.map((era, index) => `
@@ -1255,10 +1351,16 @@ export function renderOCForm(oc = null, onSave) {
               `;
             }).join('')}
           </div>
+          </div>
         </div>
         
         <!-- Background & History -->
-        <h3 class="mb-3 mt-4">Background & History <i class="japanese-header">背景と歴史</i></h3>
+        <div class="collapsible-section">
+          <div class="collapsible-header" onclick="toggleFormCollapse('background-history-content')">
+            <i class="fas fa-scroll" style="margin-right: 0.5rem;"></i> Background & History <i class="japanese-header">背景と歴史</i>
+            <i class="fas fa-chevron-down bounce-arrow"></i>
+          </div>
+          <div id="background-history-content" class="collapsible-content active">
         <div id="relationships-editor" class="mb-4">
           <label class="form-label mb-2">Relationships</label>
           <div class="card-naruto" style="padding: 1rem; margin-bottom: 1rem;">
@@ -1273,10 +1375,16 @@ export function renderOCForm(oc = null, onSave) {
             </div>
             <button type="button" class="btn-naruto btn-naruto-secondary mt-2" onclick="addRelationship()">+ Add Relationship</button>
           </div>
+          </div>
         </div>
         
         <!-- Other Media -->
-        <h3 class="mb-3 mt-4">In Other Media</h3>
+        <div class="collapsible-section">
+          <div class="collapsible-header" onclick="toggleFormCollapse('other-media-content')">
+            <i class="fas fa-film" style="margin-right: 0.5rem;"></i> In Other Media <i class="japanese-header">その他のメディア</i>
+            <i class="fas fa-chevron-down bounce-arrow"></i>
+          </div>
+          <div id="other-media-content" class="collapsible-content active">
         <div class="row">
           <div class="col-12 col-md-6">
             <div class="form-group">
@@ -1308,10 +1416,16 @@ export function renderOCForm(oc = null, onSave) {
         <div class="form-group">
           <label class="form-label">Non-Canon Events (one per line)</label>
           <textarea class="form-control" id="otherMediaNonCanon" rows="3" placeholder="e.g., Filler arc name">${(formOC.otherMedia?.nonCanon || []).join('\n')}</textarea>
+          </div>
         </div>
         
         <!-- Miscellaneous -->
-        <h3 class="mb-3 mt-4">Miscellaneous <i class="japanese-header">その他</i></h3>
+        <div class="collapsible-section">
+          <div class="collapsible-header" onclick="toggleFormCollapse('miscellaneous-content')">
+            <i class="fas fa-ellipsis-h" style="margin-right: 0.5rem;"></i> Miscellaneous <i class="japanese-header">その他</i>
+            <i class="fas fa-chevron-down bounce-arrow"></i>
+          </div>
+          <div id="miscellaneous-content" class="collapsible-content active">
         <div class="form-group">
           <label class="form-label">Quotes (one per line)</label>
           <textarea class="form-control" id="quotes" rows="4">${(formOC.quotes || []).join('\n')}</textarea>
@@ -1336,8 +1450,16 @@ export function renderOCForm(oc = null, onSave) {
         <div class="form-group">
           <label class="form-label">Trivia</label>
           <textarea class="form-control" id="trivia" rows="4">${formOC.trivia || ''}</textarea>
+          </div>
         </div>
         
+        <!-- Gallery -->
+        <div class="collapsible-section">
+          <div class="collapsible-header" onclick="toggleFormCollapse('gallery-content')">
+            <i class="fas fa-images" style="margin-right: 0.5rem;"></i> Gallery <i class="japanese-header">ギャラリー</i>
+            <i class="fas fa-chevron-down bounce-arrow"></i>
+          </div>
+          <div id="gallery-content" class="collapsible-content active">
         <div id="gallery-editor" class="mb-4">
           <label class="form-label mb-2">Gallery</label>
           <div class="card-naruto" style="padding: 1rem; margin-bottom: 1rem;">
@@ -1351,6 +1473,8 @@ export function renderOCForm(oc = null, onSave) {
               })()}
             </div>
             <button type="button" class="btn-naruto btn-naruto-secondary mt-2" onclick="addGalleryItem()">+ Add Gallery Image</button>
+          </div>
+        </div>
           </div>
         </div>
         
@@ -1500,15 +1624,15 @@ export function renderOCForm(oc = null, onSave) {
           }
         });
         return Object.keys(partIStats).length > 0 ? partIStats : {
-          intelligence: 1,
-          stamina: 1,
-          strength: 1,
-          speed: 1,
-          ninjutsu: 1,
-          genjutsu: 1,
-          taijutsu: 1,
-          handSeals: 1,
-          fuinjutsu: 1
+          intelligence: 0,
+          stamina: 0,
+          strength: 0,
+          speed: 0,
+          ninjutsu: 0,
+          genjutsu: 0,
+          taijutsu: 0,
+          handSeals: 0,
+          fuinjutsu: 0
         };
       })(),
       statsByEra: (() => {
@@ -1519,8 +1643,9 @@ export function renderOCForm(oc = null, onSave) {
           STAT_NAMES.forEach(stat => {
             const element = document.getElementById(`${stat}-${era}`);
             if (element) {
-              const value = parseFloat(element.value) || 0;
-              if (value > 0) {
+              const value = parseFloat(element.value);
+              // Allow 0 values - only skip if value is NaN or undefined
+              if (!isNaN(value) && value !== null && value !== undefined) {
                 eraStats[stat] = value;
               }
             }
@@ -1919,6 +2044,28 @@ export function renderOCForm(oc = null, onSave) {
   }, 0);
   
   // ------------------- Window Functions -------------------
+  // Collapsible sections toggle function for form
+  window.toggleFormCollapse = function(contentId) {
+    const content = document.getElementById(contentId);
+    if (content) {
+      const isActive = content.classList.contains('active');
+      content.classList.toggle('active');
+      
+      // Find the associated arrow and rotate it
+      const header = content.previousElementSibling;
+      if (header) {
+        const arrow = header.querySelector('.bounce-arrow');
+        if (arrow) {
+          if (isActive) {
+            arrow.style.transform = 'rotate(0deg)';
+          } else {
+            arrow.style.transform = 'rotate(180deg)';
+          }
+        }
+      }
+    }
+  };
+  
   // Get comprehensive list of Font Awesome icons with keywords
   // Make it available globally (used by gear icon picker)
   if (!window.getAllFontAwesomeIcons) {
@@ -2145,34 +2292,7 @@ export function renderOCForm(oc = null, onSave) {
       }
     });
     
-    // Copy values from previous era if current era inputs are empty
-    const currentIndex = ERAS.indexOf(era);
-    
-    // Check if current era has any values filled in
-    let hasValues = false;
-    STAT_NAMES.forEach(statName => {
-      const input = document.getElementById(`${statName}-${era}`);
-      if (input && input.value && parseFloat(input.value) > 0) {
-        hasValues = true;
-      }
-    });
-    
-    // If no values and there's a previous era, copy from it
-    if (!hasValues && currentIndex > 0) {
-      const previousEra = ERAS[currentIndex - 1];
-      STAT_NAMES.forEach(statName => {
-        const prevInput = document.getElementById(`${statName}-${previousEra}`);
-        const currentInput = document.getElementById(`${statName}-${era}`);
-        if (prevInput && currentInput && prevInput.value) {
-          const prevValue = parseFloat(prevInput.value);
-          if (prevValue > 0) {
-            currentInput.value = prevValue;
-            // Trigger input event to update any listeners
-            currentInput.dispatchEvent(new Event('input', { bubbles: true }));
-          }
-        }
-      });
-    }
+    // Don't auto-copy values - each era defaults to 0 independently
   };
   
   // Initialize selectedClassifications from formOC
@@ -2200,9 +2320,10 @@ export function renderOCForm(oc = null, onSave) {
 
 // ------------------- Render Functions -------------------
 function renderStatInput(name, value) {
-  // Clamp value to valid range (1-5) and round to nearest 0.5
-  const rawValue = value || 3;
-  const clampedValue = Math.max(1, Math.min(5, rawValue));
+  // Clamp value to valid range (0-5) and round to nearest 0.5
+  // Allow 0 for empty/unfilled stats
+  const rawValue = value !== undefined && value !== null && value !== '' ? parseFloat(value) : 0;
+  const clampedValue = Math.max(0, Math.min(5, rawValue));
   const roundedValue = Math.round(clampedValue * 2) / 2; // Round to nearest 0.5
   
   // Format display value (show as integer if whole number, otherwise show decimal)
@@ -2217,18 +2338,18 @@ function renderStatInput(name, value) {
       <div class="stat-header">
         <label class="stat-label">${displayName}</label>
         <div class="stat-value-display">
-          <span class="stat-number" id="${name}-value">${formatValue(roundedValue)}</span>
+          <span class="stat-number" id="${name}-value">${roundedValue === 0 ? '0' : formatValue(roundedValue)}</span>
           <span class="stat-max">/5</span>
         </div>
       </div>
       <div class="stat-control-wrapper">
-        <input type="range" class="stat-slider" id="${name}" min="1" max="5" step="0.5" value="${roundedValue}" 
-               oninput="const val = parseFloat(this.value); document.getElementById('${name}-value').textContent = val % 1 === 0 ? val.toString() : val.toFixed(1); updateStatVisual('${name}', val)">
+        <input type="range" class="stat-slider" id="${name}" min="0" max="5" step="0.5" value="${roundedValue}" 
+               oninput="const val = parseFloat(this.value) || 0; document.getElementById('${name}-value').textContent = val === 0 ? '0' : (val % 1 === 0 ? val.toString() : val.toFixed(1)); updateStatVisual('${name}', val)">
         <div class="stat-dots" id="${name}-dots">
-          ${Array.from({length: 9}, (_, i) => {
-            const dotValue = 1 + (i * 0.5); // Dots represent values 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5
+          ${Array.from({length: 11}, (_, i) => {
+            const dotValue = 0 + (i * 0.5); // Dots represent values 0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5
             const isHalf = dotValue % 1 !== 0;
-            const isActive = dotValue <= roundedValue;
+            const isActive = roundedValue > 0 && dotValue <= roundedValue;
             return `<span class="stat-dot ${isActive ? 'active' : ''} ${isHalf ? 'half-dot' : ''}" data-value="${dotValue}"></span>`;
           }).join('')}
         </div>
@@ -2917,14 +3038,15 @@ if (typeof window !== 'undefined') {
   window.updateStatVisual = function(name, value) {
     const dots = document.getElementById(`${name}-dots`);
     const slider = document.getElementById(name);
-    const numValue = parseFloat(value);
+    const numValue = parseFloat(value) || 0;
     
-    // Update dots (dots represent values 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5)
+    // Update dots (dots represent values 0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5)
     if (dots) {
       const dotElements = dots.querySelectorAll('.stat-dot');
       dotElements.forEach((dot) => {
         const dotValue = parseFloat(dot.getAttribute('data-value'));
-        if (dotValue <= numValue) {
+        // Only show active dots if value is greater than 0
+        if (numValue > 0 && dotValue <= numValue) {
           dot.classList.add('active');
         } else {
           dot.classList.remove('active');
@@ -2941,6 +3063,7 @@ if (typeof window !== 'undefined') {
         var(--color-border-2) ${percentage}%,
         var(--color-border-2) 100%)`;
     }
+    
   };
   
   // Classification selector functions
