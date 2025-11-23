@@ -3,16 +3,26 @@
   "lastName": "Chigiri",
   "firstName": "Akene",
   "nameJapanese": "契り朱根（ちぎり あけね）",
-  "nameMeaning": "契り (Chigiri) — vow; pledge; bond; also a lewd pun about “relations,” which the clan gets teased for. / 朱根 (Akene) — “scarlet / vermilion root,” implying deep lineage, fate, and the “red root” of knowledge.",
+  "lastNameMeaning": "契り — “vow; pledge; bond.”  ",
+  "firstNameMeaning": "朱根 — “scarlet root.”  ",
+  "nameMeaning": "“The Scarlet Root of the Vow” — a poetic implication that her existence is tied to ancestral duty, fate, and the Madōsho’s reincarnation cycle.",
   "aliases": [
     "Madōsho Vessel",
     "Walking Scroll",
     "Fate Reader"
   ],
-  "dob": "2025-11-22",
-  "age": 13,
-  "bloodType": "",
-  "gender": "",
+  "dob": "05-04",
+  "age": "Part I: 12-13, Part II: 15-17, Blank Period: 17-19, Gaiden: 20, Boruto: 32",
+  "ageByEra": {
+    "Part I": "12-13",
+    "Part II": "15-17",
+    "Blank Period": "17-19",
+    "Gaiden": "20",
+    "Boruto": "32"
+  },
+  "bloodType": "O+",
+  "gender": "Female",
+  "chakraType": "Fire Release (primary), Earth Release (secondary)",
   "village": "Konoha",
   "rank": "Genin",
   "clanId": null,
@@ -24,7 +34,65 @@
     "ninjutsu": 3,
     "genjutsu": 3,
     "taijutsu": 3,
-    "handSeals": 3
+    "handSeals": 3,
+    "fuinjutsu": 1
+  },
+  "statsByEra": {
+    "Part I": {
+      "intelligence": 3,
+      "stamina": 3,
+      "strength": 3,
+      "speed": 3,
+      "ninjutsu": 3,
+      "genjutsu": 3,
+      "taijutsu": 3,
+      "handSeals": 3,
+      "fuinjutsu": 1
+    },
+    "Part II": {
+      "intelligence": 3,
+      "stamina": 3,
+      "strength": 3,
+      "speed": 3,
+      "ninjutsu": 3,
+      "genjutsu": 3,
+      "taijutsu": 3,
+      "handSeals": 3,
+      "fuinjutsu": 1
+    },
+    "Blank Period": {
+      "intelligence": 3,
+      "stamina": 3,
+      "strength": 3,
+      "speed": 3,
+      "ninjutsu": 3,
+      "genjutsu": 3,
+      "taijutsu": 3,
+      "handSeals": 3,
+      "fuinjutsu": 1
+    },
+    "Gaiden": {
+      "intelligence": 3,
+      "stamina": 3,
+      "strength": 3,
+      "speed": 3,
+      "ninjutsu": 3,
+      "genjutsu": 3,
+      "taijutsu": 3,
+      "handSeals": 3,
+      "fuinjutsu": 1
+    },
+    "Boruto": {
+      "intelligence": 3,
+      "stamina": 3,
+      "strength": 3,
+      "speed": 3,
+      "ninjutsu": 3,
+      "genjutsu": 3,
+      "taijutsu": 3,
+      "handSeals": 3,
+      "fuinjutsu": 1
+    }
   },
   "identifyingInfo": {
     "bodyType": "",
@@ -74,7 +142,7 @@
     "gear": []
   },
   "profileImage": "",
-  "zodiac": "",
+  "zodiac": "♉ Taurus",
   "sexualOrientation": "",
   "romanticOrientation": "",
   "ninjaRegistrationNumber": "",
