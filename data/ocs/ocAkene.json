@@ -231,7 +231,21 @@
     ]
   },
   "relationships": [],
-  "storyArcs": [],
+  "storyArcs": [
+    {
+      "name": "📜 Pre-Academy",
+      "summary": "Akene is born into the Chigiri Clan shortly after the death of the previous Madousho. Her unreadable fate alerts the elders that she is the new vessel. A fabricated destiny is created to hide the truth, and her upbringing becomes tightly controlled. Even in early childhood she displays high intelligence, strict discipline, and Fire Branch aptitude.\n",
+      "keyEvents": [
+        "• Born shortly after previous Madousho vessel dies",
+        "• Fate cannot be read → identified as new Madousho vessel",
+        "• Clan elders begin constant monitoring",
+        "• Artificial “destiny” assigned to disguise her role",
+        "• Begins Fire Branch conditioning and early education",
+        "• Forms first bond with Kiri Kawakami",
+        "• Shows early signs of analytical and observational strength"
+      ]
+    }
+  ],
   "recordHistory": {
     "childhood": "",
     "adolescence": "",
