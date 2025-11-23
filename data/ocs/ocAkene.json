@@ -1,12 +1,16 @@
 {
   "id": "ocAkene",
-  "lastName": "",
+  "lastName": "Chigiri",
   "firstName": "Akene",
-  "nameJapanese": "",
-  "lastNameMeaning": "",
-  "firstNameMeaning": "",
-  "nameMeaning": "",
-  "aliases": [],
+  "nameJapanese": "契り朱根（ちぎり あけね）",
+  "lastNameMeaning": "“Vow; pledge; bond.” ",
+  "firstNameMeaning": "“Scarlet Root.”  ",
+  "nameMeaning": "“The Scarlet Root of the Vow.”",
+  "aliases": [
+    "Madōsho Vessel",
+    "Walking Scroll",
+    "Fate Reader"
+  ],
   "debut": {
     "manga": "",
     "anime": "",
@@ -199,6 +203,13 @@
     "analyticalAbility": "",
     "combatStrategy": "",
     "leadershipSkill": ""
+  },
+  "dojutsu": {
+    "name": "",
+    "type": "",
+    "development": "",
+    "stages": [],
+    "specialAbilities": []
   },
   "themeSong": "",
   "themeSongLink": "",
