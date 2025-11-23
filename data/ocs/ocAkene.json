@@ -9,8 +9,7 @@
   "aliases": [
     "Madousho",
     "Vessel of the Madousho",
-    "Fate Reader",
-    "this is a test to see if it shows on the website"
+    "Fate Reader"
   ],
   "debut": {
     "manga": "",
@@ -235,7 +234,7 @@
       "name": "Sasuke Uchiha",
       "relationshipType": "",
       "image": "",
-      "heartChart": "",
+      "heartChart": "🤍",
       "description": "oof"
     }
   ],
