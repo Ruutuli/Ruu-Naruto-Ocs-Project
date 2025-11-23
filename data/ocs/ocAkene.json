@@ -264,40 +264,10 @@
     "gear": [
       {
         "name": "Bone Chain Sickle (Kusarigama)",
-        "icon": "https://i.pinimg.com/736x/12/53/d8/1253d86d15350b5238e1727bc26985a4.jpg"
-      },
-      {
-        "name": "Kunai"
+        "icon": "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/84dc13b7-a2e7-4b45-83ec-311e72e82900/dd34is1-dbb57099-0561-4b97-b946-b2e047ce60d6.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiIvZi84NGRjMTNiNy1hMmU3LTRiNDUtODNlYy0zMTFlNzJlODI5MDAvZGQzNGlzMS1kYmI1NzA5OS0wNTYxLTRiOTctYjk0Ni1iMmUwNDdjZTYwZDYucG5nIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.bO2g0WV8kHUpWv2QpZSChz8dTRgyEuIFIAYkR8ZvbQA"
       },
       {
         "name": "Shuriken"
-      },
-      {
-        "name": "Ninja Wire"
-      },
-      {
-        "name": "Tool Pouch (waist)"
-      },
-      {
-        "name": "Leg Pouch (right thigh)"
-      },
-      {
-        "name": "Small Hoop Earrings (worn outside combat)"
-      },
-      {
-        "name": "Protective Wire Mesh Undergarment"
-      },
-      {
-        "name": "Weighted Arm Gloves (Part II)"
-      },
-      {
-        "name": "Weighted Leg Warmers (Part II)"
-      },
-      {
-        "name": "Standard Shinobi Sandals / Boots"
-      },
-      {
-        "name": "Thigh-high protective socks (Part I)"
       }
     ]
   },
