@@ -526,8 +526,15 @@ function renderIdentifyingInfo(oc) {
   const hasAgeByEra = Object.keys(ageByEra).length > 0 && Object.values(ageByEra).some(age => age && age.trim());
   
   // Parse multi-era data for height/weight
-  const heightData = parseMultiEraData(info.height);
-  const weightData = parseMultiEraData(info.weight);
+  const heightByEra = oc.heightByEra || {};
+  const hasHeightByEra = Object.keys(heightByEra).length > 0 && Object.values(heightByEra).some(height => height && height.trim());
+  
+  const weightByEra = oc.weightByEra || {};
+  const hasWeightByEra = Object.keys(weightByEra).length > 0 && Object.values(weightByEra).some(weight => weight && weight.trim());
+  
+  // Fallback to old format parsing
+  const heightData = hasHeightByEra ? null : parseMultiEraData(info.height);
+  const weightData = hasWeightByEra ? null : parseMultiEraData(info.weight);
   
   return `
     <div class="identifying-info">
@@ -584,8 +591,44 @@ function renderIdentifyingInfo(oc) {
           ${renderInfoLabel('Made Chunin')}
         </div>
         ${renderInfoRow('Body Type', info.bodyType || 'Unknown')}
-        ${heightData.hasEra ? renderMultiEraRow('Height', heightData) : renderInfoRow('Height', info.height || 'Unknown')}
-        ${weightData.hasEra ? renderMultiEraRow('Weight', weightData) : renderInfoRow('Weight', info.weight || 'Unknown')}
+        ${(() => {
+          // Render height by era if available, otherwise use old format
+          if (hasHeightByEra) {
+            const heightParts = ['Part I', 'Part II', 'Blank Period', 'Gaiden', 'Boruto']
+              .filter(era => heightByEra[era] && heightByEra[era].trim())
+              .map(era => ({
+                value: heightByEra[era],
+                era: era
+              }));
+            if (heightParts.length > 0) {
+              return renderMultiEraRow('Height', { hasEra: true, parts: heightParts });
+            }
+          }
+          // Fallback to old format
+          if (heightData && heightData.hasEra) {
+            return renderMultiEraRow('Height', heightData);
+          }
+          return renderInfoRow('Height', info.height || 'Unknown');
+        })()}
+        ${(() => {
+          // Render weight by era if available, otherwise use old format
+          if (hasWeightByEra) {
+            const weightParts = ['Part I', 'Part II', 'Blank Period', 'Gaiden', 'Boruto']
+              .filter(era => weightByEra[era] && weightByEra[era].trim())
+              .map(era => ({
+                value: weightByEra[era],
+                era: era
+              }));
+            if (weightParts.length > 0) {
+              return renderMultiEraRow('Weight', { hasEra: true, parts: weightParts });
+            }
+          }
+          // Fallback to old format
+          if (weightData && weightData.hasEra) {
+            return renderMultiEraRow('Weight', weightData);
+          }
+          return renderInfoRow('Weight', info.weight || 'Unknown');
+        })()}
       </div>
       <div class="rank-section">
         <h2 class="rank-section-title">Missions Completed <i class="japanese-header">完了した任務</i></h2>
@@ -689,10 +732,11 @@ function renderMultiEraRow(label, data) {
     return renderInfoRow(label, data.content || 'Unknown');
   }
   
+  // Format like the screenshot: each era on a new line with "Part I: value" format
   const eraItems = data.parts.map(part => {
-    const eraLabel = part.era ? `<span class="era-label">${part.era}</span>` : '';
-    return `<span class="era-item">${part.value} ${eraLabel}</span>`;
-  }).join(' / ');
+    const eraLabel = part.era ? `${part.era}:` : '';
+    return `<div class="era-item-line">${eraLabel} ${part.value}</div>`;
+  }).join('');
   
   return `
     <div class="info-row multi-era-row">

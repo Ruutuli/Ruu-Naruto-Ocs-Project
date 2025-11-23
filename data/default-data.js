@@ -18,6 +18,20 @@ export const defaultOC = {
     'Gaiden': '',
     'Boruto': ''
   },
+  heightByEra: {
+    'Part I': '',
+    'Part II': '',
+    'Blank Period': '',
+    'Gaiden': '',
+    'Boruto': ''
+  },
+  weightByEra: {
+    'Part I': '',
+    'Part II': '',
+    'Blank Period': '',
+    'Gaiden': '',
+    'Boruto': ''
+  },
   bloodType: '',
   gender: '',
   natureType: '',

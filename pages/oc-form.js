@@ -437,16 +437,108 @@ export function renderOCForm(oc = null, onSave) {
               <input type="text" class="form-control" id="bodyType" value="${formOC.identifyingInfo?.bodyType || ''}">
             </div>
           </div>
-          <div class="col-12 col-md-4">
+        </div>
+        
+        <div class="row">
+          <div class="col-12">
             <div class="form-group">
-              <label class="form-label">Height</label>
-              <input type="text" class="form-control" id="height" value="${formOC.identifyingInfo?.height || ''}">
+              <label class="form-label">Height by Era</label>
+              <div class="height-era-inputs">
+                <div class="row">
+                  ${(() => {
+                    // Helper function to extract height value from old format or heightByEra
+                    const getHeightValue = (era) => {
+                      // First check heightByEra
+                      if (formOC.heightByEra && formOC.heightByEra[era]) {
+                        return formOC.heightByEra[era];
+                      }
+                      // Then check old format string (e.g., "148.5 cm–150.1 cm (Part I), 161 cm (Part II)")
+                      if (typeof formOC.identifyingInfo?.height === 'string') {
+                        const escapedEra = era.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                        const eraMatch = formOC.identifyingInfo.height.match(new RegExp(`${escapedEra}:\\s*([^,]+)`));
+                        if (eraMatch && eraMatch[1]) {
+                          return eraMatch[1].trim();
+                        }
+                        // Also check for (Part I) format
+                        const eraMatch2 = formOC.identifyingInfo.height.match(new RegExp(`([^,]+)\\s*\\(${escapedEra}\\)`));
+                        if (eraMatch2 && eraMatch2[1]) {
+                          return eraMatch2[1].trim();
+                        }
+                      }
+                      return '';
+                    };
+                    
+                    const eras = [
+                      { key: 'Part I', label: 'Part I Height', placeholder: 'e.g., 148.5 cm–150.1 cm' },
+                      { key: 'Part II', label: 'Part II Height', placeholder: 'e.g., 161 cm' },
+                      { key: 'Blank Period', label: 'Blank Period Height', placeholder: 'e.g., 165 cm' },
+                      { key: 'Gaiden', label: 'Gaiden Height', placeholder: 'e.g., 165 cm' },
+                      { key: 'Boruto', label: 'Boruto Height', placeholder: 'e.g., 170 cm' }
+                    ];
+                    
+                    return eras.map(era => `
+                      <div class="col-md-6 col-lg-4" style="margin-bottom: 0.75rem;">
+                        <label style="font-size: 0.85rem; color: var(--color-text-dark-2); margin-bottom: 0.25rem; display: block;">${era.label}</label>
+                        <input type="text" class="form-control" id="height-${era.key}" 
+                               value="${getHeightValue(era.key)}" 
+                               placeholder="${era.placeholder}">
+                      </div>
+                    `).join('');
+                  })()}
+                </div>
+              </div>
             </div>
           </div>
-          <div class="col-12 col-md-4">
+        </div>
+        
+        <div class="row">
+          <div class="col-12">
             <div class="form-group">
-              <label class="form-label">Weight</label>
-              <input type="text" class="form-control" id="weight" value="${formOC.identifyingInfo?.weight || ''}">
+              <label class="form-label">Weight by Era</label>
+              <div class="weight-era-inputs">
+                <div class="row">
+                  ${(() => {
+                    // Helper function to extract weight value from old format or weightByEra
+                    const getWeightValue = (era) => {
+                      // First check weightByEra
+                      if (formOC.weightByEra && formOC.weightByEra[era]) {
+                        return formOC.weightByEra[era];
+                      }
+                      // Then check old format string
+                      if (typeof formOC.identifyingInfo?.weight === 'string') {
+                        const escapedEra = era.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                        const eraMatch = formOC.identifyingInfo.weight.match(new RegExp(`${escapedEra}:\\s*([^,]+)`));
+                        if (eraMatch && eraMatch[1]) {
+                          return eraMatch[1].trim();
+                        }
+                        // Also check for (Part I) format
+                        const eraMatch2 = formOC.identifyingInfo.weight.match(new RegExp(`([^,]+)\\s*\\(${escapedEra}\\)`));
+                        if (eraMatch2 && eraMatch2[1]) {
+                          return eraMatch2[1].trim();
+                        }
+                      }
+                      return '';
+                    };
+                    
+                    const eras = [
+                      { key: 'Part I', label: 'Part I Weight', placeholder: 'e.g., 35.4 kg–35.9 kg' },
+                      { key: 'Part II', label: 'Part II Weight', placeholder: 'e.g., 45.4 kg' },
+                      { key: 'Blank Period', label: 'Blank Period Weight', placeholder: 'e.g., 50 kg' },
+                      { key: 'Gaiden', label: 'Gaiden Weight', placeholder: 'e.g., 50 kg' },
+                      { key: 'Boruto', label: 'Boruto Weight', placeholder: 'e.g., 55 kg' }
+                    ];
+                    
+                    return eras.map(era => `
+                      <div class="col-md-6 col-lg-4" style="margin-bottom: 0.75rem;">
+                        <label style="font-size: 0.85rem; color: var(--color-text-dark-2); margin-bottom: 0.25rem; display: block;">${era.label}</label>
+                        <input type="text" class="form-control" id="weight-${era.key}" 
+                               value="${getWeightValue(era.key)}" 
+                               placeholder="${era.placeholder}">
+                      </div>
+                    `).join('');
+                  })()}
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -632,10 +724,50 @@ export function renderOCForm(oc = null, onSave) {
         });
         return Object.keys(statsByEra).length > 0 ? statsByEra : undefined;
       })(),
+      heightByEra: (() => {
+        const eras = ['Part I', 'Part II', 'Blank Period', 'Gaiden', 'Boruto'];
+        const heightByEra = {};
+        eras.forEach(era => {
+          const heightInput = document.getElementById(`height-${era}`);
+          if (heightInput && heightInput.value.trim()) {
+            heightByEra[era] = heightInput.value.trim();
+          }
+        });
+        return Object.keys(heightByEra).length > 0 ? heightByEra : undefined;
+      })(),
+      weightByEra: (() => {
+        const eras = ['Part I', 'Part II', 'Blank Period', 'Gaiden', 'Boruto'];
+        const weightByEra = {};
+        eras.forEach(era => {
+          const weightInput = document.getElementById(`weight-${era}`);
+          if (weightInput && weightInput.value.trim()) {
+            weightByEra[era] = weightInput.value.trim();
+          }
+        });
+        return Object.keys(weightByEra).length > 0 ? weightByEra : undefined;
+      })(),
       identifyingInfo: {
         bodyType: document.getElementById('bodyType').value,
-        height: document.getElementById('height').value,
-        weight: document.getElementById('weight').value,
+        height: (() => {
+          // Combine heights from all eras for backward compatibility
+          const eras = ['Part I', 'Part II', 'Blank Period', 'Gaiden', 'Boruto'];
+          const heightParts = eras.map(era => {
+            const heightInput = document.getElementById(`height-${era}`);
+            const heightValue = heightInput ? heightInput.value.trim() : '';
+            return heightValue ? `${era}: ${heightValue}` : null;
+          }).filter(height => height !== null);
+          return heightParts.length > 0 ? heightParts.join(', ') : '';
+        })(),
+        weight: (() => {
+          // Combine weights from all eras for backward compatibility
+          const eras = ['Part I', 'Part II', 'Blank Period', 'Gaiden', 'Boruto'];
+          const weightParts = eras.map(era => {
+            const weightInput = document.getElementById(`weight-${era}`);
+            const weightValue = weightInput ? weightInput.value.trim() : '';
+            return weightValue ? `${era}: ${weightValue}` : null;
+          }).filter(weight => weight !== null);
+          return weightParts.length > 0 ? weightParts.join(', ') : '';
+        })(),
         madeGenin: document.getElementById('madeGenin').value,
         madeChunin: document.getElementById('madeChunin').value
       },
