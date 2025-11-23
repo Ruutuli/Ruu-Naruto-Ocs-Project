@@ -755,8 +755,8 @@
   .story-detail-backdrop,
   .oc-sheet-scroll-top {
     width: 100% !important;
-    height: 40px !important;
-    top: 8px !important;
+    height: 30px !important;
+    top: 6px !important;
   }
   
   .detail-header,
@@ -764,27 +764,49 @@
   .lore-detail-header,
   .story-detail-header,
   .oc-sheet-banner {
-    height: 80px !important;
-    margin-top: -60px !important;
+    height: 50px !important;
+    margin-top: -40px !important;
     width: 95% !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    border-radius: 15px !important;
   }
   
   .detail-header-inner,
   .clan-detail-header-inner,
   .lore-detail-header-inner,
   .story-detail-header-inner {
-    margin-left: 1rem !important;
-    margin-right: 1rem !important;
-    width: 95% !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 0 0.5rem !important;
+  }
+  
+  .detail-header-inner,
+  .clan-detail-header-inner,
+  .lore-detail-header-inner,
+  .story-detail-header-inner {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
   }
   
   .detail-header-border,
   .clan-detail-header-border,
   .lore-detail-header-border,
   .story-detail-header-border {
-    width: 85% !important;
-    border-left: 30px solid var(--color-accent-2) !important;
-    border-right: 30px solid var(--color-accent-2) !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    border-left: 15px solid var(--color-accent-2) !important;
+    border-right: 15px solid var(--color-accent-2) !important;
+    margin: 0 auto !important;
+    min-height: 50px !important;
+  }
+  
+  .oc-sheet-banner {
+    border-left: 15px solid var(--color-accent-2) !important;
+    border-right: 15px solid var(--color-accent-2) !important;
   }
   
   .detail-content,
@@ -809,8 +831,8 @@
   .lore-detail-backdrop,
   .story-detail-backdrop,
   .oc-sheet-scroll-top {
-    height: 35px !important;
-    top: 5px !important;
+    height: 25px !important;
+    top: 4px !important;
   }
   
   .detail-header,
@@ -818,27 +840,43 @@
   .lore-detail-header,
   .story-detail-header,
   .oc-sheet-banner {
-    height: 70px !important;
-    margin-top: -50px !important;
+    height: 45px !important;
+    margin-top: -35px !important;
     width: 98% !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    border-radius: 12px !important;
   }
   
   .detail-header-inner,
   .clan-detail-header-inner,
   .lore-detail-header-inner,
   .story-detail-header-inner {
-    margin-left: 0.75rem !important;
-    margin-right: 0.75rem !important;
-    width: 98% !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 0 0.4rem !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
   }
   
   .detail-header-border,
   .clan-detail-header-border,
   .lore-detail-header-border,
   .story-detail-header-border {
-    width: 90% !important;
-    border-left: 20px solid var(--color-accent-2) !important;
-    border-right: 20px solid var(--color-accent-2) !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    border-left: 12px solid var(--color-accent-2) !important;
+    border-right: 12px solid var(--color-accent-2) !important;
+    margin: 0 auto !important;
+    min-height: 45px !important;
+  }
+  
+  .oc-sheet-banner {
+    border-left: 12px solid var(--color-accent-2) !important;
+    border-right: 12px solid var(--color-accent-2) !important;
   }
   
   .detail-content,
