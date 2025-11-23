@@ -1,0 +1,237 @@
+{
+  "id": "ocAkene",
+  "lastName": "Chigiri",
+  "firstName": "Akene",
+  "nameJapanese": "契り朱根（ちぎり あけね）",
+  "lastNameMeaning": "",
+  "firstNameMeaning": "",
+  "nameMeaning": "",
+  "aliases": [],
+  "debut": {
+    "manga": "",
+    "anime": "",
+    "novel": "",
+    "movie": "",
+    "game": ""
+  },
+  "appearsIn": [],
+  "dob": "",
+  "bloodType": "",
+  "gender": "",
+  "natureType": "",
+  "village": [],
+  "rank": [],
+  "clanId": null,
+  "clanName": null,
+  "stats": {
+    "intelligence": 3,
+    "stamina": 3,
+    "strength": 3,
+    "speed": 3,
+    "ninjutsu": 3,
+    "genjutsu": 3,
+    "taijutsu": 3,
+    "handSeals": 3,
+    "fuinjutsu": 1
+  },
+  "statsByEra": {
+    "Part I": {
+      "intelligence": 3,
+      "stamina": 3,
+      "strength": 3,
+      "speed": 3,
+      "ninjutsu": 3,
+      "genjutsu": 3,
+      "taijutsu": 3,
+      "handSeals": 3,
+      "fuinjutsu": 1
+    },
+    "Part II": {
+      "intelligence": 3,
+      "stamina": 3,
+      "strength": 3,
+      "speed": 3,
+      "ninjutsu": 3,
+      "genjutsu": 3,
+      "taijutsu": 3,
+      "handSeals": 3,
+      "fuinjutsu": 1
+    },
+    "Blank Period": {
+      "intelligence": 3,
+      "stamina": 3,
+      "strength": 3,
+      "speed": 3,
+      "ninjutsu": 3,
+      "genjutsu": 3,
+      "taijutsu": 3,
+      "handSeals": 3,
+      "fuinjutsu": 1
+    },
+    "Gaiden": {
+      "intelligence": 3,
+      "stamina": 3,
+      "strength": 3,
+      "speed": 3,
+      "ninjutsu": 3,
+      "genjutsu": 3,
+      "taijutsu": 3,
+      "handSeals": 3,
+      "fuinjutsu": 1
+    },
+    "Boruto": {
+      "intelligence": 3,
+      "stamina": 3,
+      "strength": 3,
+      "speed": 3,
+      "ninjutsu": 3,
+      "genjutsu": 3,
+      "taijutsu": 3,
+      "handSeals": 3,
+      "fuinjutsu": 1
+    }
+  },
+  "identifyingInfo": {
+    "bodyType": ""
+  },
+  "eyeColor": "",
+  "hairColor": "",
+  "distinguishingFeatures": [],
+  "teamNumber": "",
+  "teammates": [],
+  "sensei": "",
+  "madeGenin": "",
+  "madeChunin": "",
+  "battleStrategy": {
+    "inTeam": "",
+    "alone": "",
+    "fieldPosition": "",
+    "effectiveDistance": "",
+    "specialty": "",
+    "notableAbilities": ""
+  },
+  "personality": {
+    "likes": [],
+    "dislikes": [],
+    "demeanor": {
+      "charisma": 0,
+      "extraversion": 0,
+      "energy": 0,
+      "empathy": 0,
+      "impulsivity": 0,
+      "neuroticism": 0,
+      "intuition": 0,
+      "observation": 0,
+      "sensitivity": 0,
+      "generosity": 0,
+      "respectForAuthority": 0
+    }
+  },
+  "abilities": {},
+  "relationships": [],
+  "storyArcs": [],
+  "recordHistory": {
+    "childhood": "",
+    "adolescence": "",
+    "adulthood": ""
+  },
+  "appearance": {
+    "image": "",
+    "colors": [],
+    "gear": []
+  },
+  "appearanceByEra": {
+    "Part I": {
+      "description": "",
+      "clothing": "",
+      "accessories": "",
+      "visualMotifs": ""
+    },
+    "Part II": {
+      "description": "",
+      "clothing": "",
+      "accessories": "",
+      "visualMotifs": ""
+    },
+    "Blank Period": {
+      "description": "",
+      "clothing": "",
+      "accessories": "",
+      "visualMotifs": ""
+    },
+    "Gaiden": {
+      "description": "",
+      "clothing": "",
+      "accessories": "",
+      "visualMotifs": ""
+    },
+    "Boruto": {
+      "description": "",
+      "clothing": "",
+      "accessories": "",
+      "visualMotifs": ""
+    }
+  },
+  "profileImage": "",
+  "zodiac": "",
+  "sexualOrientation": "",
+  "romanticOrientation": "",
+  "family": {
+    "father": "",
+    "mother": "",
+    "siblings": [],
+    "otherRelatives": []
+  },
+  "ninjaRegistrationNumber": "",
+  "academyGraduationAge": "",
+  "classification": [],
+  "kekkeiGenkai": "",
+  "chakraPhysicalProwess": {
+    "chakraReserves": "",
+    "chakraControl": "",
+    "strengthFeats": "",
+    "speedFeats": "",
+    "taijutsuSkill": "",
+    "trainingInfluences": ""
+  },
+  "intelligence": {
+    "academicPerformance": "",
+    "analyticalAbility": "",
+    "combatStrategy": "",
+    "leadershipSkill": ""
+  },
+  "dojutsu": {
+    "name": "",
+    "type": "",
+    "development": "",
+    "stages": [],
+    "specialAbilities": []
+  },
+  "themeSong": "",
+  "themeSongLink": "",
+  "voiceActors": {
+    "japanese": "",
+    "english": ""
+  },
+  "otherMedia": {
+    "novel": [],
+    "game": [],
+    "ova": [],
+    "movies": [],
+    "nonCanon": []
+  },
+  "quotes": [],
+  "trivia": "",
+  "gallery": [],
+  "fears": [],
+  "moralAlignment": "",
+  "mbti": "",
+  "enneagram": "",
+  "missions": {
+    "s": 0,
+    "a": 0,
+    "b": 0,
+    "c": 0,
+    "d": 0
+  }
+}
