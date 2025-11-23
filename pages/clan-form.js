@@ -2,6 +2,16 @@
 
 import { defaultClan, generateId } from '../data/default-data.js';
 import storage from '../data/storage.js';
+import {
+  clanClassifications,
+  clanStatus,
+  villagesLands,
+  kekkeiGenkaiTypes,
+  kekkeiGenkaiClassifications,
+  ocCreationAllowed,
+  generateOptions,
+  generateGroupedOptions
+} from '../data/options.js';
 
 export function renderClanForm(clan = null, onSave) {
   const isEdit = !!clan;
@@ -68,14 +78,7 @@ export function renderClanForm(clan = null, onSave) {
               <label class="form-label">Classification</label>
               <select class="form-control" id="classification">
                 <option value="">Select Classification</option>
-                <option value="Shinobi Clan" ${getValue('classification') === 'Shinobi Clan' ? 'selected' : ''}>Shinobi Clan</option>
-                <option value="Noble Clan" ${getValue('classification') === 'Noble Clan' ? 'selected' : ''}>Noble Clan</option>
-                <option value="Cursed Clan" ${getValue('classification') === 'Cursed Clan' ? 'selected' : ''}>Cursed Clan</option>
-                <option value="Dispersed Clan" ${getValue('classification') === 'Dispersed Clan' ? 'selected' : ''}>Dispersed Clan</option>
-                <option value="Kekkei Genkai Clan" ${getValue('classification') === 'Kekkei Genkai Clan' ? 'selected' : ''}>Kekkei Genkai Clan</option>
-                <option value="Merchant Clan" ${getValue('classification') === 'Merchant Clan' ? 'selected' : ''}>Merchant Clan</option>
-                <option value="Samurai-Aligned Clan" ${getValue('classification') === 'Samurai-Aligned Clan' ? 'selected' : ''}>Samurai-Aligned Clan</option>
-                <option value="Other" ${getValue('classification') === 'Other' ? 'selected' : ''}>Other</option>
+                ${generateOptions(clanClassifications, getValue('classification'))}
               </select>
             </div>
           </div>
@@ -84,11 +87,7 @@ export function renderClanForm(clan = null, onSave) {
               <label class="form-label">Status</label>
               <select class="form-control" id="status">
                 <option value="">Select Status</option>
-                <option value="Active" ${getValue('status') === 'Active' ? 'selected' : ''}>Active</option>
-                <option value="Nearly extinct" ${getValue('status') === 'Nearly extinct' ? 'selected' : ''}>Nearly extinct</option>
-                <option value="Scattered" ${getValue('status') === 'Scattered' ? 'selected' : ''}>Scattered</option>
-                <option value="Rebuilding" ${getValue('status') === 'Rebuilding' ? 'selected' : ''}>Rebuilding</option>
-                <option value="In decline" ${getValue('status') === 'In decline' ? 'selected' : ''}>In decline</option>
+                ${generateOptions(clanStatus, getValue('status'))}
               </select>
             </div>
           </div>
@@ -113,60 +112,7 @@ export function renderClanForm(clan = null, onSave) {
           <label class="form-label">Village/Land</label>
           <select class="form-control" id="village" required>
             <option value="">Select Village/Land</option>
-            <optgroup label="Five Great Shinobi Villages">
-              <option value="Konoha" ${formClan.village === 'Konoha' ? 'selected' : ''}>Konohagakure (Hidden Leaf Village)</option>
-              <option value="Suna" ${formClan.village === 'Suna' ? 'selected' : ''}>Sunagakure (Hidden Sand Village)</option>
-              <option value="Kiri" ${formClan.village === 'Kiri' ? 'selected' : ''}>Kirigakure (Hidden Mist Village)</option>
-              <option value="Kumo" ${formClan.village === 'Kumo' ? 'selected' : ''}>Kumogakure (Hidden Cloud Village)</option>
-              <option value="Iwa" ${formClan.village === 'Iwa' ? 'selected' : ''}>Iwagakure (Hidden Stone Village)</option>
-            </optgroup>
-            <optgroup label="Other Shinobi Villages">
-              <option value="Ame" ${formClan.village === 'Ame' ? 'selected' : ''}>Amegakure (Hidden Rain Village)</option>
-              <option value="Oto" ${formClan.village === 'Oto' ? 'selected' : ''}>Otogakure (Hidden Sound Village)</option>
-              <option value="Taki" ${formClan.village === 'Taki' ? 'selected' : ''}>Takigakure (Hidden Waterfall Village)</option>
-              <option value="Yuga" ${formClan.village === 'Yuga' ? 'selected' : ''}>Yugakure (Hidden Hot Water Village)</option>
-              <option value="Hoshi" ${formClan.village === 'Hoshi' ? 'selected' : ''}>Hoshigakure (Hidden Star Village)</option>
-              <option value="Kusagakure" ${formClan.village === 'Kusagakure' ? 'selected' : ''}>Kusagakure (Hidden Grass Village)</option>
-              <option value="Shimogakure" ${formClan.village === 'Shimogakure' ? 'selected' : ''}>Shimogakure (Hidden Frost Village)</option>
-              <option value="Tanigakure" ${formClan.village === 'Tanigakure' ? 'selected' : ''}>Tanigakure (Hidden Valley Village)</option>
-              <option value="Uzushiogakure" ${formClan.village === 'Uzushiogakure' ? 'selected' : ''}>Uzushiogakure (Hidden Whirlpool Village)</option>
-            </optgroup>
-            <optgroup label="Lands">
-              <option value="Land of Fire" ${formClan.village === 'Land of Fire' ? 'selected' : ''}>Land of Fire (Hi no Kuni)</option>
-              <option value="Land of Wind" ${formClan.village === 'Land of Wind' ? 'selected' : ''}>Land of Wind (Kaze no Kuni)</option>
-              <option value="Land of Water" ${formClan.village === 'Land of Water' ? 'selected' : ''}>Land of Water (Mizu no Kuni)</option>
-              <option value="Land of Lightning" ${formClan.village === 'Land of Lightning' ? 'selected' : ''}>Land of Lightning (Kaminari no Kuni)</option>
-              <option value="Land of Earth" ${formClan.village === 'Land of Earth' ? 'selected' : ''}>Land of Earth (Tsuchi no Kuni)</option>
-              <option value="Land of Rain" ${formClan.village === 'Land of Rain' ? 'selected' : ''}>Land of Rain (Ame no Kuni)</option>
-              <option value="Land of Sound" ${formClan.village === 'Land of Sound' ? 'selected' : ''}>Land of Sound (Oto no Kuni)</option>
-              <option value="Land of Waterfalls" ${formClan.village === 'Land of Waterfalls' ? 'selected' : ''}>Land of Waterfalls (Taki no Kuni)</option>
-              <option value="Land of Hot Water" ${formClan.village === 'Land of Hot Water' ? 'selected' : ''}>Land of Hot Water (Yu no Kuni)</option>
-              <option value="Land of Iron" ${formClan.village === 'Land of Iron' ? 'selected' : ''}>Land of Iron (Tetsu no Kuni)</option>
-              <option value="Land of Snow" ${formClan.village === 'Land of Snow' ? 'selected' : ''}>Land of Snow (Yuki no Kuni)</option>
-              <option value="Land of Waves" ${formClan.village === 'Land of Waves' ? 'selected' : ''}>Land of Waves (Nami no Kuni)</option>
-              <option value="Land of Tea" ${formClan.village === 'Land of Tea' ? 'selected' : ''}>Land of Tea (Cha no Kuni)</option>
-              <option value="Land of Rice Fields" ${formClan.village === 'Land of Rice Fields' ? 'selected' : ''}>Land of Rice Fields (Ta no Kuni)</option>
-              <option value="Land of Vegetables" ${formClan.village === 'Land of Vegetables' ? 'selected' : ''}>Land of Vegetables (Ya no Kuni)</option>
-              <option value="Land of Bears" ${formClan.village === 'Land of Bears' ? 'selected' : ''}>Land of Bears (Kuma no Kuni)</option>
-              <option value="Land of Forests" ${formClan.village === 'Land of Forests' ? 'selected' : ''}>Land of Forests (Mori no Kuni)</option>
-              <option value="Land of Birds" ${formClan.village === 'Land of Birds' ? 'selected' : ''}>Land of Birds (Tori no Kuni)</option>
-              <option value="Land of Demons" ${formClan.village === 'Land of Demons' ? 'selected' : ''}>Land of Demons (Oni no Kuni)</option>
-              <option value="Land of Valleys" ${formClan.village === 'Land of Valleys' ? 'selected' : ''}>Land of Valleys (Tani no Kuni)</option>
-              <option value="Land of Rivers" ${formClan.village === 'Land of Rivers' ? 'selected' : ''}>Land of Rivers (Kawa no Kuni)</option>
-              <option value="Land of Keys" ${formClan.village === 'Land of Keys' ? 'selected' : ''}>Land of Keys (Kagi no Kuni)</option>
-              <option value="Land of Sky" ${formClan.village === 'Land of Sky' ? 'selected' : ''}>Land of Sky (Sora no Kuni)</option>
-              <option value="Land of Whirlpools" ${formClan.village === 'Land of Whirlpools' ? 'selected' : ''}>Land of Whirlpools (Uzushio no Kuni)</option>
-              <option value="Land of Honey" ${formClan.village === 'Land of Honey' ? 'selected' : ''}>Land of Honey (Mitsu no Kuni)</option>
-              <option value="Land of Claws" ${formClan.village === 'Land of Claws' ? 'selected' : ''}>Land of Claws (Tsume no Kuni)</option>
-              <option value="Land of Storms" ${formClan.village === 'Land of Storms' ? 'selected' : ''}>Land of Storms (Arashi no Kuni)</option>
-              <option value="Land of Moon" ${formClan.village === 'Land of Moon' ? 'selected' : ''}>Land of Moon (Tsuki no Kuni)</option>
-            </optgroup>
-            <optgroup label="Other Locations">
-              <option value="Mount Myoboku" ${formClan.village === 'Mount Myoboku' ? 'selected' : ''}>Mount Myoboku (Toad Sage Territory)</option>
-              <option value="Ryuchi Cave" ${formClan.village === 'Ryuchi Cave' ? 'selected' : ''}>Ryuchi Cave (Snake Sage Territory)</option>
-              <option value="Shikkotsu Forest" ${formClan.village === 'Shikkotsu Forest' ? 'selected' : ''}>Shikkotsu Forest (Slug Sage Territory)</option>
-              <option value="Other" ${formClan.village === 'Other' ? 'selected' : ''}>Other / Custom Location</option>
-            </optgroup>
+            ${generateGroupedOptions(villagesLands, formClan.village || '')}
           </select>
         </div>
         
@@ -205,12 +151,7 @@ export function renderClanForm(clan = null, onSave) {
               <label class="form-label">Type</label>
               <select class="form-control" id="kekkeiGenkai-type">
                 <option value="">Select Type</option>
-                <option value="Dōjutsu" ${getValue('kekkeiGenkai.type') === 'Dōjutsu' ? 'selected' : ''}>Dōjutsu</option>
-                <option value="Nature Transformation" ${getValue('kekkeiGenkai.type') === 'Nature Transformation' ? 'selected' : ''}>Nature Transformation</option>
-                <option value="Holy Art" ${getValue('kekkeiGenkai.type') === 'Holy Art' ? 'selected' : ''}>Holy Art</option>
-                <option value="Cursed Technique" ${getValue('kekkeiGenkai.type') === 'Cursed Technique' ? 'selected' : ''}>Cursed Technique</option>
-                <option value="Sensory Art" ${getValue('kekkeiGenkai.type') === 'Sensory Art' ? 'selected' : ''}>Sensory Art</option>
-                <option value="Clan-only Hiden" ${getValue('kekkeiGenkai.type') === 'Clan-only Hiden' ? 'selected' : ''}>Clan-only Hiden</option>
+                ${generateOptions(kekkeiGenkaiTypes, getValue('kekkeiGenkai.type'))}
               </select>
             </div>
           </div>
@@ -219,10 +160,7 @@ export function renderClanForm(clan = null, onSave) {
               <label class="form-label">Classification</label>
               <select class="form-control" id="kekkeiGenkai-classification">
                 <option value="">Select Classification</option>
-                <option value="Kekkei Genkai" ${getValue('kekkeiGenkai.classification') === 'Kekkei Genkai' ? 'selected' : ''}>Kekkei Genkai</option>
-                <option value="Kekkei Tōta" ${getValue('kekkeiGenkai.classification') === 'Kekkei Tōta' ? 'selected' : ''}>Kekkei Tōta</option>
-                <option value="Hiden" ${getValue('kekkeiGenkai.classification') === 'Hiden' ? 'selected' : ''}>Hiden</option>
-                <option value="Forbidden Technique" ${getValue('kekkeiGenkai.classification') === 'Forbidden Technique' ? 'selected' : ''}>Forbidden Technique</option>
+                ${generateOptions(kekkeiGenkaiClassifications, getValue('kekkeiGenkai.classification'))}
               </select>
             </div>
           </div>
@@ -550,9 +488,7 @@ export function renderClanForm(clan = null, onSave) {
         <div class="form-group">
           <label class="form-label">Are Others Allowed to Make OCs from This Clan?</label>
           <select class="form-control" id="ocCreationAllowed">
-            <option value="Yes" ${formClan.ocCreationAllowed === 'Yes' ? 'selected' : ''}>Yes</option>
-            <option value="No" ${formClan.ocCreationAllowed === 'No' ? 'selected' : ''}>No</option>
-            <option value="Ask" ${formClan.ocCreationAllowed === 'Ask' || !formClan.ocCreationAllowed ? 'selected' : ''}>Ask</option>
+            ${generateOptions(ocCreationAllowed, formClan.ocCreationAllowed || 'Ask')}
           </select>
         </div>
         

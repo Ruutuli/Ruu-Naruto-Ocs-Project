@@ -3,11 +3,65 @@
 import { defaultOC, generateId } from '../data/default-data.js';
 import storage from '../data/storage.js';
 import { natureReleases, getAllNatureReleaseNames } from '../data/nature-releases.js';
+import { getAllClanNames, getClanSymbol } from '../data/clan-symbols.js';
+import { 
+  villages, 
+  ranks, 
+  zodiacSigns, 
+  moralAlignments, 
+  mbtiTypes, 
+  enneagramTypes, 
+  months, 
+  days,
+  generateOptions,
+  generateGroupedOptions,
+  generateDatalistOptions
+} from '../data/options.js';
 
 export function renderOCForm(oc = null, onSave) {
   const isEdit = !!oc;
   const formOC = oc || { ...defaultOC, id: generateId() };
   const clans = storage.getAllClans();
+  
+  // Get predefined clan names from clan-symbols.js
+  const predefinedClanNames = getAllClanNames();
+  
+  // Get current clan name for display (either from clanId lookup or stored name)
+  let currentClanName = '';
+  if (formOC.clanId) {
+    const clan = clans.find(c => c.id === formOC.clanId);
+    if (clan) {
+      currentClanName = clan.name;
+    } else if (typeof formOC.clanId === 'string' && predefinedClanNames.includes(formOC.clanId)) {
+      // If clanId is actually a predefined clan name
+      currentClanName = formOC.clanId;
+    }
+  } else if (formOC.clanName) {
+    currentClanName = formOC.clanName;
+  }
+  
+  // Combine user-created clans and predefined clans for autocomplete
+  const allClanOptions = [
+    ...clans.map(clan => ({ name: clan.name, id: clan.id, type: 'user' })),
+    ...predefinedClanNames.map(name => ({ name, id: null, type: 'predefined' }))
+  ];
+  
+  // Remove duplicates (in case user created a clan with same name as predefined)
+  const uniqueClans = [];
+  const seenNames = new Set();
+  allClanOptions.forEach(clan => {
+    if (!seenNames.has(clan.name)) {
+      seenNames.add(clan.name);
+      uniqueClans.push(clan);
+    } else {
+      // If duplicate, prefer user-created over predefined
+      const existing = uniqueClans.find(c => c.name === clan.name);
+      if (existing && existing.type === 'predefined' && clan.type === 'user') {
+        const index = uniqueClans.indexOf(existing);
+        uniqueClans[index] = clan;
+      }
+    }
+  });
   
   const form = document.createElement('div');
   form.className = 'card-naruto';
@@ -69,6 +123,13 @@ export function renderOCForm(oc = null, onSave) {
           <input type="text" class="form-control" id="aliases" value="${formOC.aliases?.join(', ') || ''}">
         </div>
         
+        <div class="form-group">
+          <label class="form-label">Profile Image URL</label>
+          <input type="text" class="form-control" id="profileImage" value="${formOC.profileImage || ''}" placeholder="Enter image URL">
+        </div>
+        
+        <!-- Personal Information -->
+        <h3 class="mb-3 mt-4">Personal Information <i class="japanese-header">個人情報</i></h3>
         <div class="row">
           <div class="col-12 col-md-4">
             <div class="form-group">
@@ -85,12 +146,7 @@ export function renderOCForm(oc = null, onSave) {
                         // If YYYY-MM-DD format, month is at index 1; if MM-DD, it's at index 0
                         existingMonth = parts.length === 3 ? parts[1] : (parts.length === 2 ? parts[0] : '');
                       }
-                      return Array.from({length: 12}, (_, i) => {
-                        const month = String(i + 1).padStart(2, '0');
-                        const monthName = new Date(2000, i).toLocaleString('en-US', { month: 'long' });
-                        const selected = existingMonth === month ? 'selected' : '';
-                        return `<option value="${month}" ${selected}>${monthName}</option>`;
-                      }).join('');
+                      return generateOptions(months, existingMonth);
                     })()}
                   </select>
                 </div>
@@ -105,11 +161,7 @@ export function renderOCForm(oc = null, onSave) {
                         // If YYYY-MM-DD format, day is at index 2; if MM-DD, it's at index 1
                         existingDay = parts.length === 3 ? parts[2] : (parts.length === 2 ? parts[1] : '');
                       }
-                      return Array.from({length: 31}, (_, i) => {
-                        const day = String(i + 1).padStart(2, '0');
-                        const selected = existingDay === day ? 'selected' : '';
-                        return `<option value="${day}" ${selected}>${day}</option>`;
-                      }).join('');
+                      return generateOptions(days, existingDay);
                     })()}
                   </select>
                 </div>
@@ -173,18 +225,7 @@ export function renderOCForm(oc = null, onSave) {
               <label class="form-label">Zodiac Sign</label>
               <input type="text" class="form-control" id="zodiac" list="zodiac-signs" value="${formOC.zodiac || ''}" placeholder="Type or select a zodiac sign" autocomplete="off">
               <datalist id="zodiac-signs">
-                <option value="♈ Aries">♈ Aries (March 21 - April 19)</option>
-                <option value="♉ Taurus">♉ Taurus (April 20 - May 20)</option>
-                <option value="♊ Gemini">♊ Gemini (May 21 - June 20)</option>
-                <option value="♋ Cancer">♋ Cancer (June 21 - July 22)</option>
-                <option value="♌ Leo">♌ Leo (July 23 - August 22)</option>
-                <option value="♍ Virgo">♍ Virgo (August 23 - September 22)</option>
-                <option value="♎ Libra">♎ Libra (September 23 - October 22)</option>
-                <option value="♏ Scorpio">♏ Scorpio (October 23 - November 21)</option>
-                <option value="♐ Sagittarius">♐ Sagittarius (November 22 - December 21)</option>
-                <option value="♑ Capricorn">♑ Capricorn (December 22 - January 19)</option>
-                <option value="♒ Aquarius">♒ Aquarius (January 20 - February 18)</option>
-                <option value="♓ Pisces">♓ Pisces (February 19 - March 20)</option>
+                ${generateDatalistOptions(zodiacSigns)}
               </datalist>
             </div>
           </div>
@@ -199,53 +240,82 @@ export function renderOCForm(oc = null, onSave) {
           </div>
           <div class="col-12 col-md-4">
             <div class="form-group">
-              <label class="form-label">Nature Type</label>
-              <input type="text" class="form-control" id="natureType" list="nature-types" value="${formOC.natureType || ''}" placeholder="Type or select a nature type" autocomplete="off">
-              <datalist id="nature-types">
-                ${(() => {
-                  const allNames = getAllNatureReleaseNames();
-                  return allNames.map(name => {
-                    const release = natureReleases[name];
-                    let displayText = name;
-                    if (release.kanji) {
-                      displayText += ` (${release.kanji}, ${release.romaji})`;
-                    }
-                    if (release.strongAgainst && release.weakAgainst) {
-                      displayText += ` - Strong: ${release.strongAgainst}, Weak: ${release.weakAgainst}`;
-                    }
-                    if (release.components) {
-                      displayText += ` - ${release.components.join(' + ')}`;
-                    }
-                    return `<option value="${name}">${displayText}</option>`;
-                  }).join('');
-                })()}
-              </datalist>
-            </div>
-          </div>
-        </div>
-        
-        <div class="row">
-          <div class="col-12 col-md-4">
-            <div class="form-group">
-              <label class="form-label">Kekkei Genkai</label>
-              <input type="text" class="form-control" id="kekkeiGenkai" value="${formOC.kekkeiGenkai || ''}">
-            </div>
-          </div>
-        </div>
-        
-        <div class="row">
-          <div class="col-12 col-md-6">
-            <div class="form-group">
               <label class="form-label">Sexual Orientation</label>
               <input type="text" class="form-control" id="sexualOrientation" value="${formOC.sexualOrientation || ''}">
             </div>
           </div>
-          <div class="col-12 col-md-6">
+          <div class="col-12 col-md-4">
             <div class="form-group">
               <label class="form-label">Romantic Orientation</label>
               <input type="text" class="form-control" id="romanticOrientation" value="${formOC.romanticOrientation || ''}">
             </div>
           </div>
+        </div>
+        
+        <!-- Physical Appearance -->
+        <h3 class="mb-3 mt-4">Physical Appearance <i class="japanese-header">外見</i></h3>
+        <div class="row">
+          <div class="col-12 col-md-4">
+            <div class="form-group">
+              <label class="form-label">Body Type</label>
+              <input type="text" class="form-control" id="bodyType" value="${formOC.identifyingInfo?.bodyType || ''}">
+            </div>
+          </div>
+          <div class="col-12 col-md-4">
+            <div class="form-group">
+              <label class="form-label">Eye Color</label>
+              <input type="text" class="form-control" id="eyeColor" value="${formOC.eyeColor || ''}" placeholder="e.g., Brown">
+            </div>
+          </div>
+          <div class="col-12 col-md-4">
+            <div class="form-group">
+              <label class="form-label">Hair Color</label>
+              <input type="text" class="form-control" id="hairColor" value="${formOC.hairColor || ''}" placeholder="e.g., Black">
+            </div>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">Distinguishing Features <small style="font-weight: normal; color: var(--color-text-dark-2);">(one per line - scars, tattoos, etc.)</small></label>
+          <textarea class="form-control" id="distinguishingFeatures" rows="3">${(formOC.distinguishingFeatures || []).join('\n')}</textarea>
+        </div>
+        
+        <!-- Affiliations -->
+        <h3 class="mb-3 mt-4">Affiliations <i class="japanese-header">所属</i></h3>
+        <div class="row">
+          <div class="col-12 col-md-4">
+            <div class="form-group">
+              <label class="form-label">Village</label>
+              <select class="form-control" id="village" required>
+                <option value="">Select Village</option>
+                ${generateOptions(villages, formOC.village || '')}
+              </select>
+            </div>
+          </div>
+          <div class="col-12 col-md-4">
+            <div class="form-group">
+              <label class="form-label">Rank</label>
+              <select class="form-control" id="rank" required>
+                ${generateOptions(ranks, formOC.rank || '')}
+              </select>
+            </div>
+          </div>
+          <div class="col-12 col-md-4">
+            <div class="form-group">
+              <label class="form-label">Clan</label>
+              <input type="text" class="form-control" id="clanName" list="clan-list" 
+                     value="${currentClanName}" 
+                     placeholder="Type or select a clan" autocomplete="off">
+              <datalist id="clan-list">
+                ${uniqueClans.map(clan => `<option value="${clan.name}">${clan.name}${clan.type === 'predefined' ? ' (Predefined)' : ''}</option>`).join('')}
+              </datalist>
+            </div>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">Classification (comma-separated)</label>
+          <input type="text" class="form-control" id="classification" value="${(formOC.classification || []).join(', ')}" placeholder="e.g., Genin, Fate Reader, Missing-nin">
         </div>
         
         <div class="row">
@@ -257,65 +327,125 @@ export function renderOCForm(oc = null, onSave) {
           </div>
           <div class="col-12 col-md-6">
             <div class="form-group">
-              <label class="form-label">Academy Graduation Age</label>
-              <input type="number" class="form-control" id="academyGraduationAge" value="${formOC.academyGraduationAge || ''}" min="0">
+              <label class="form-label">Team Number</label>
+              <input type="text" class="form-control" id="teamNumber" value="${formOC.teamNumber || ''}" placeholder="e.g., Team 7">
             </div>
           </div>
         </div>
         
-        <div class="form-group">
-          <label class="form-label">Classification (comma-separated)</label>
-          <input type="text" class="form-control" id="classification" value="${(formOC.classification || []).join(', ')}" placeholder="e.g., Genin, Fate Reader, Missing-nin">
+        <div class="row">
+          <div class="col-12 col-md-6">
+            <div class="form-group">
+              <label class="form-label">Teammates (comma-separated)</label>
+              <input type="text" class="form-control" id="teammates" value="${(formOC.teammates || []).join(', ')}" placeholder="e.g., Naruto, Sasuke">
+            </div>
+          </div>
+          <div class="col-12 col-md-6">
+            <div class="form-group">
+              <label class="form-label">Sensei</label>
+              <input type="text" class="form-control" id="sensei" value="${formOC.sensei || ''}" placeholder="e.g., Kakashi Hatake">
+            </div>
+          </div>
         </div>
         
         <div class="row">
           <div class="col-12 col-md-4">
             <div class="form-group">
-              <label class="form-label">Village</label>
-              <select class="form-control" id="village" required>
-                <option value="">Select Village</option>
-                <option value="Konoha" ${formOC.village === 'Konoha' ? 'selected' : ''}>Konohagakure</option>
-                <option value="Suna" ${formOC.village === 'Suna' ? 'selected' : ''}>Sunagakure</option>
-                <option value="Kiri" ${formOC.village === 'Kiri' ? 'selected' : ''}>Kirigakure</option>
-                <option value="Kumo" ${formOC.village === 'Kumo' ? 'selected' : ''}>Kumogakure</option>
-                <option value="Iwa" ${formOC.village === 'Iwa' ? 'selected' : ''}>Iwagakure</option>
-                <option value="Ame" ${formOC.village === 'Ame' ? 'selected' : ''}>Amegakure</option>
-                <option value="Oto" ${formOC.village === 'Oto' ? 'selected' : ''}>Otogakure</option>
-              </select>
+              <label class="form-label">Academy Graduation Age</label>
+              <input type="number" class="form-control" id="academyGraduationAge" value="${formOC.academyGraduationAge || ''}" min="0">
+            </div>
+          </div>
+          <div class="col-12 col-md-4">
+            <div class="form-group">
+              <label class="form-label">Made Genin</label>
+              <input type="text" class="form-control" id="madeGenin" value="${formOC.madeGenin || formOC.identifyingInfo?.madeGenin || ''}" placeholder="e.g., Age 12">
+            </div>
+          </div>
+          <div class="col-12 col-md-4">
+            <div class="form-group">
+              <label class="form-label">Made Chunin</label>
+              <input type="text" class="form-control" id="madeChunin" value="${formOC.madeChunin || formOC.identifyingInfo?.madeChunin || ''}" placeholder="e.g., Age 15">
             </div>
           </div>
         </div>
         
+        <!-- Abilities & Powers -->
+        <h3 class="mb-3 mt-4">Abilities & Powers <i class="japanese-header">能力と力</i></h3>
         <div class="row">
           <div class="col-12 col-md-6">
             <div class="form-group">
-              <label class="form-label">Rank</label>
-              <select class="form-control" id="rank" required>
-                <option value="Genin" ${formOC.rank === 'Genin' ? 'selected' : ''}>Genin</option>
-                <option value="Chunin" ${formOC.rank === 'Chunin' ? 'selected' : ''}>Chunin</option>
-                <option value="Jonin" ${formOC.rank === 'Jonin' ? 'selected' : ''}>Jonin</option>
-                <option value="S-Rank" ${formOC.rank === 'S-Rank' ? 'selected' : ''}>S-Rank</option>
+              <label class="form-label">Nature Type <small style="font-weight: normal; color: var(--color-text-dark-2);">(Hold Ctrl/Cmd to select multiple)</small></label>
+              <select class="form-control" id="natureType" multiple size="5" style="min-height: 120px;">
+                ${(() => {
+                  // Handle both array and string formats for backward compatibility
+                  const currentTypes = Array.isArray(formOC.natureType) 
+                    ? formOC.natureType 
+                    : (formOC.natureType ? [formOC.natureType] : []);
+                  
+                  const allNames = getAllNatureReleaseNames();
+                  return allNames.map(name => {
+                    const release = natureReleases[name];
+                    const isSelected = currentTypes.includes(name) ? 'selected' : '';
+                    let displayText = name;
+                    if (release.kanji) {
+                      displayText += ` (${release.kanji}, ${release.romaji})`;
+                    }
+                    if (release.strongAgainst && release.weakAgainst) {
+                      displayText += ` - Strong: ${release.strongAgainst}, Weak: ${release.weakAgainst}`;
+                    }
+                    if (release.components) {
+                      displayText += ` - ${release.components.join(' + ')}`;
+                    }
+                    return `<option value="${name}" ${isSelected}>${displayText}</option>`;
+                  }).join('');
+                })()}
               </select>
+              <small style="color: var(--color-text-dark-2); font-size: 0.85rem; display: block; margin-top: 0.25rem;">
+                Selected: <span id="natureType-count">0</span>
+              </small>
             </div>
           </div>
           <div class="col-12 col-md-6">
             <div class="form-group">
-              <label class="form-label">Clan</label>
-              <select class="form-control" id="clanId">
-                <option value="">None</option>
-                ${clans.map(clan => `<option value="${clan.id}" ${formOC.clanId === clan.id ? 'selected' : ''}>${clan.name}</option>`).join('')}
-              </select>
+              <label class="form-label">Kekkei Genkai</label>
+              <input type="text" class="form-control" id="kekkeiGenkai" value="${formOC.kekkeiGenkai || ''}">
             </div>
           </div>
         </div>
         
-        <!-- Additional Info -->
-        <h3 class="mb-3 mt-4">Additional Information</h3>
+        <div id="abilities-editor" class="mt-3 mb-3">
+          <label class="form-label mb-2">Abilities & Techniques</label>
+          <div class="card-naruto" style="padding: 1rem; margin-bottom: 1rem;">
+            <div id="abilities-container">
+              ${(() => {
+                const abilities = formOC.abilities || { taijutsu: [], ninjutsu: [] };
+                let html = '';
+                abilities.taijutsu?.forEach((ability, index) => {
+                  html += renderAbilityEditor('taijutsu', ability, index);
+                });
+                abilities.ninjutsu?.forEach((ability, index) => {
+                  html += renderAbilityEditor('ninjutsu', ability, index);
+                });
+                return html || '<p class="text-muted">No abilities added yet. Click "Add Taijutsu" or "Add Ninjutsu" to add abilities.</p>';
+              })()}
+            </div>
+            <div class="mt-2">
+              <button type="button" class="btn-naruto btn-naruto-secondary" onclick="addAbility('taijutsu')" style="margin-right: 0.5rem;">+ Add Taijutsu</button>
+              <button type="button" class="btn-naruto btn-naruto-secondary" onclick="addAbility('ninjutsu')">+ Add Ninjutsu</button>
+            </div>
+          </div>
+        </div>
         <div class="row">
           <div class="col-12 col-md-6">
             <div class="form-group">
               <label class="form-label">Theme Song</label>
-              <input type="text" class="form-control" id="themeSong" value="${formOC.themeSong || ''}">
+              <input type="text" class="form-control" id="themeSong" value="${formOC.themeSong || ''}" placeholder="e.g., Song Title by Artist">
+            </div>
+          </div>
+          <div class="col-12 col-md-6">
+            <div class="form-group">
+              <label class="form-label">Theme Song Link</label>
+              <input type="url" class="form-control" id="themeSongLink" value="${formOC.themeSongLink || ''}" placeholder="https://...">
             </div>
           </div>
         </div>
@@ -337,19 +467,28 @@ export function renderOCForm(oc = null, onSave) {
           <div class="col-12 col-md-4">
             <div class="form-group">
               <label class="form-label">Moral Alignment</label>
-              <input type="text" class="form-control" id="moralAlignment" value="${formOC.moralAlignment || ''}" placeholder="e.g., Lawful Neutral">
+              <select class="form-control" id="moralAlignment">
+                <option value="">Select Alignment</option>
+                ${generateOptions(moralAlignments, formOC.moralAlignment || '')}
+              </select>
             </div>
           </div>
           <div class="col-12 col-md-4">
             <div class="form-group">
               <label class="form-label">MBTI</label>
-              <input type="text" class="form-control" id="mbti" value="${formOC.mbti || ''}" placeholder="e.g., ESTJ">
+              <select class="form-control" id="mbti">
+                <option value="">Select MBTI Type</option>
+                ${generateGroupedOptions(mbtiTypes, formOC.mbti || '')}
+              </select>
             </div>
           </div>
           <div class="col-12 col-md-4">
             <div class="form-group">
               <label class="form-label">Enneagram</label>
-              <input type="text" class="form-control" id="enneagram" value="${formOC.enneagram || ''}" placeholder="e.g., Type 1 with 5 Wing">
+              <select class="form-control" id="enneagram">
+                <option value="">Select Enneagram Type</option>
+                ${generateGroupedOptions(enneagramTypes, formOC.enneagram || '')}
+              </select>
             </div>
           </div>
         </div>
@@ -425,17 +564,6 @@ export function renderOCForm(oc = null, onSave) {
                 </div>
               `;
             }).join('')}
-          </div>
-        </div>
-        
-        <!-- Identifying Info -->
-        <h3 class="mb-3 mt-4">Identifying Information</h3>
-        <div class="row">
-          <div class="col-12 col-md-4">
-            <div class="form-group">
-              <label class="form-label">Body Type</label>
-              <input type="text" class="form-control" id="bodyType" value="${formOC.identifyingInfo?.bodyType || ''}">
-            </div>
           </div>
         </div>
         
@@ -543,21 +671,6 @@ export function renderOCForm(oc = null, onSave) {
           </div>
         </div>
         
-        <div class="row">
-          <div class="col-12 col-md-6">
-            <div class="form-group">
-              <label class="form-label">Made Genin</label>
-              <input type="text" class="form-control" id="madeGenin" value="${formOC.identifyingInfo?.madeGenin || ''}">
-            </div>
-          </div>
-          <div class="col-12 col-md-6">
-            <div class="form-group">
-              <label class="form-label">Made Chunin</label>
-              <input type="text" class="form-control" id="madeChunin" value="${formOC.identifyingInfo?.madeChunin || ''}">
-            </div>
-          </div>
-        </div>
-        
         <!-- Battle Strategy -->
         <h3 class="mb-3 mt-4">Battle Strategy</h3>
         <div class="form-group">
@@ -604,11 +717,94 @@ export function renderOCForm(oc = null, onSave) {
           <textarea class="form-control" id="dislikes" rows="4">${(formOC.personality?.dislikes || []).join('\n')}</textarea>
         </div>
         
-        <!-- Profile Image -->
-        <h3 class="mb-3 mt-4">Profile Image</h3>
+        <!-- Record History -->
+        <h3 class="mb-3 mt-4">Record History <i class="japanese-header">記録履歴</i></h3>
         <div class="form-group">
-          <label class="form-label">Image URL</label>
-          <input type="text" class="form-control" id="profileImage" value="${formOC.profileImage || ''}" placeholder="Enter image URL">
+          <label class="form-label">Childhood</label>
+          <textarea class="form-control" id="recordHistoryChildhood" rows="5">${formOC.recordHistory?.childhood || ''}</textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Adolescence</label>
+          <textarea class="form-control" id="recordHistoryAdolescence" rows="5">${formOC.recordHistory?.adolescence || ''}</textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Adulthood</label>
+          <textarea class="form-control" id="recordHistoryAdulthood" rows="5">${formOC.recordHistory?.adulthood || ''}</textarea>
+        </div>
+        
+        <!-- Appearance & Gear -->
+        <h3 class="mb-3 mt-4">Appearance & Gear <i class="japanese-header">外見と装備</i></h3>
+        <div class="form-group">
+          <label class="form-label">Appearance Image URL</label>
+          <input type="url" class="form-control" id="appearanceImage" value="${formOC.appearance?.image || ''}" placeholder="https://...">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Color Palette <small style="font-weight: normal; color: var(--color-text-dark-2);">(one color per line, hex codes or color names)</small></label>
+          <textarea class="form-control" id="appearanceColors" rows="3" placeholder="#FF5733&#10;#33FF57&#10;blue">${(formOC.appearance?.colors || []).join('\n')}</textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Gear Items <small style="font-weight: normal; color: var(--color-text-dark-2);">(JSON format - one item per line, or simple text one per line)</small></label>
+          <textarea class="form-control" id="appearanceGear" rows="6" placeholder='{"name": "Kunai", "category": "Weapon", "material": "Steel", "use": "Throwing weapon", "info": ["Standard issue", "Can be used for melee"]}&#10;{"name": "Shuriken", "category": "Weapon", "material": "Steel", "use": "Throwing weapon", "info": []}' style="font-family: monospace; font-size: 0.9rem;">${(() => {
+            // Format gear for display - handle both array of objects and array of strings
+            if (!formOC.appearance?.gear || formOC.appearance.gear.length === 0) {
+              return '';
+            }
+            return formOC.appearance.gear.map(gear => {
+              if (typeof gear === 'string') {
+                return gear;
+              }
+              return JSON.stringify(gear, null, 2);
+            }).join('\n\n');
+          })()}</textarea>
+          <small style="color: var(--color-text-dark-2); font-size: 0.85rem; display: block; margin-top: 0.25rem;">
+            Tip: You can enter simple text (one item per line) or JSON objects for detailed gear information.
+          </small>
+        </div>
+        
+        <!-- Background & History -->
+        <h3 class="mb-3 mt-4">Background & History <i class="japanese-header">背景と歴史</i></h3>
+        <div id="relationships-editor" class="mb-4">
+          <label class="form-label mb-2">Relationships</label>
+          <div class="card-naruto" style="padding: 1rem; margin-bottom: 1rem;">
+            <div id="relationships-container">
+              ${(() => {
+                const relationships = formOC.relationships || formOC.knownAssociates || [];
+                if (relationships.length === 0) {
+                  return '<p class="text-muted">No relationships added yet.</p>';
+                }
+                return relationships.map((rel, index) => renderRelationshipEditor(rel, index)).join('');
+              })()}
+            </div>
+            <button type="button" class="btn-naruto btn-naruto-secondary mt-2" onclick="addRelationship()">+ Add Relationship</button>
+          </div>
+        </div>
+        
+        <!-- Miscellaneous -->
+        <h3 class="mb-3 mt-4">Miscellaneous <i class="japanese-header">その他</i></h3>
+        <div class="form-group">
+          <label class="form-label">Quotes (one per line)</label>
+          <textarea class="form-control" id="quotes" rows="4">${(formOC.quotes || []).join('\n')}</textarea>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">Trivia</label>
+          <textarea class="form-control" id="trivia" rows="4">${formOC.trivia || ''}</textarea>
+        </div>
+        
+        <div id="gallery-editor" class="mb-4">
+          <label class="form-label mb-2">Gallery</label>
+          <div class="card-naruto" style="padding: 1rem; margin-bottom: 1rem;">
+            <div id="gallery-container">
+              ${(() => {
+                const gallery = formOC.gallery || [];
+                if (gallery.length === 0) {
+                  return '<p class="text-muted">No gallery images added yet.</p>';
+                }
+                return gallery.map((item, index) => renderGalleryItem(item, index)).join('');
+              })()}
+            </div>
+            <button type="button" class="btn-naruto btn-naruto-secondary mt-2" onclick="addGalleryItem()">+ Add Gallery Image</button>
+          </div>
         </div>
         
         <!-- Buttons -->
@@ -647,16 +843,6 @@ export function renderOCForm(oc = null, onSave) {
         const day = document.getElementById('dobDay').value;
         return (month && day) ? `${month}-${day}` : '';
       })(),
-      age: (() => {
-        // Combine ages from all eras for backward compatibility
-        const eras = ['Part I', 'Part II', 'Blank Period', 'Gaiden', 'Boruto'];
-        const ageParts = eras.map(era => {
-          const ageInput = document.getElementById(`age-${era}`);
-          const ageValue = ageInput ? ageInput.value.trim() : '';
-          return ageValue ? `${era}: ${ageValue}` : null;
-        }).filter(age => age !== null);
-        return ageParts.length > 0 ? ageParts.join(', ') : '';
-      })(),
       ageByEra: (() => {
         const eras = ['Part I', 'Part II', 'Blank Period', 'Gaiden', 'Boruto'];
         const ageByEra = {};
@@ -670,10 +856,52 @@ export function renderOCForm(oc = null, onSave) {
       })(),
       bloodType: document.getElementById('bloodType').value,
       gender: document.getElementById('gender').value,
-      natureType: document.getElementById('natureType').value,
+      natureType: (() => {
+        const select = document.getElementById('natureType');
+        const selected = Array.from(select.selectedOptions).map(option => option.value);
+        return selected.length > 0 ? (selected.length === 1 ? selected[0] : selected) : '';
+      })(),
       village: document.getElementById('village').value,
       rank: document.getElementById('rank').value,
-      clanId: document.getElementById('clanId').value || null,
+      clanId: (() => {
+        const clanNameInput = document.getElementById('clanName');
+        const enteredName = clanNameInput ? clanNameInput.value.trim() : '';
+        if (!enteredName) return null;
+        
+        // Check if it matches a user-created clan
+        const userClan = clans.find(c => c.name === enteredName);
+        if (userClan) {
+          return userClan.id;
+        }
+        
+        // Check if it matches a predefined clan
+        if (predefinedClanNames.includes(enteredName)) {
+          // Store predefined clan name in clanName field, keep clanId as null
+          return null;
+        }
+        
+        // If it doesn't match anything, still store it (user might be creating a new clan)
+        return null;
+      })(),
+      clanName: (() => {
+        const clanNameInput = document.getElementById('clanName');
+        const enteredName = clanNameInput ? clanNameInput.value.trim() : '';
+        if (!enteredName) return null;
+        
+        // Check if it matches a predefined clan
+        if (predefinedClanNames.includes(enteredName)) {
+          return enteredName;
+        }
+        
+        // Check if it matches a user-created clan (we'll use clanId for that)
+        const userClan = clans.find(c => c.name === enteredName);
+        if (userClan) {
+          return null; // Use clanId instead
+        }
+        
+        // If it doesn't match anything, store it as a custom clan name
+        return enteredName;
+      })(),
       stats: (() => {
         // Default stats (use Part I if available, otherwise default values)
         const eras = ['Part I', 'Part II', 'Blank Period', 'Gaiden', 'Boruto'];
@@ -747,30 +975,16 @@ export function renderOCForm(oc = null, onSave) {
         return Object.keys(weightByEra).length > 0 ? weightByEra : undefined;
       })(),
       identifyingInfo: {
-        bodyType: document.getElementById('bodyType').value,
-        height: (() => {
-          // Combine heights from all eras for backward compatibility
-          const eras = ['Part I', 'Part II', 'Blank Period', 'Gaiden', 'Boruto'];
-          const heightParts = eras.map(era => {
-            const heightInput = document.getElementById(`height-${era}`);
-            const heightValue = heightInput ? heightInput.value.trim() : '';
-            return heightValue ? `${era}: ${heightValue}` : null;
-          }).filter(height => height !== null);
-          return heightParts.length > 0 ? heightParts.join(', ') : '';
-        })(),
-        weight: (() => {
-          // Combine weights from all eras for backward compatibility
-          const eras = ['Part I', 'Part II', 'Blank Period', 'Gaiden', 'Boruto'];
-          const weightParts = eras.map(era => {
-            const weightInput = document.getElementById(`weight-${era}`);
-            const weightValue = weightInput ? weightInput.value.trim() : '';
-            return weightValue ? `${era}: ${weightValue}` : null;
-          }).filter(weight => weight !== null);
-          return weightParts.length > 0 ? weightParts.join(', ') : '';
-        })(),
-        madeGenin: document.getElementById('madeGenin').value,
-        madeChunin: document.getElementById('madeChunin').value
+        bodyType: document.getElementById('bodyType').value
       },
+      eyeColor: document.getElementById('eyeColor').value,
+      hairColor: document.getElementById('hairColor').value,
+      distinguishingFeatures: document.getElementById('distinguishingFeatures').value.split('\n').filter(f => f.trim()),
+      teamNumber: document.getElementById('teamNumber').value,
+      teammates: document.getElementById('teammates').value.split(',').map(t => t.trim()).filter(t => t),
+      sensei: document.getElementById('sensei').value,
+      madeGenin: document.getElementById('madeGenin').value,
+      madeChunin: document.getElementById('madeChunin').value,
       battleStrategy: {
         inTeam: document.getElementById('strategyInTeam').value,
         alone: document.getElementById('strategyAlone').value,
@@ -788,10 +1002,152 @@ export function renderOCForm(oc = null, onSave) {
           sensitivity: 3, generosity: 3, respectForAuthority: 3
         }
       },
-      abilities: formOC.abilities || { taijutsu: [], ninjutsu: [] },
-      knownAssociates: formOC.knownAssociates || [],
-      recordHistory: formOC.recordHistory || { childhood: '', adolescence: '', adulthood: '' },
-      appearance: formOC.appearance || { image: '', colors: [], gear: [] },
+      abilities: (() => {
+        const container = document.getElementById('abilities-container');
+        if (!container) return { taijutsu: [], ninjutsu: [] };
+        const abilities = { taijutsu: [], ninjutsu: [] };
+        container.querySelectorAll('.ability-editor-item').forEach(item => {
+          const type = item.dataset.type;
+          const index = item.dataset.index;
+          const styleInput = container.querySelector(`[name="ability-style-${type}-${index}"]`);
+          const descInput = container.querySelector(`[name="ability-description-${type}-${index}"]`);
+          
+          if (!styleInput || !descInput) return;
+          
+          const ability = {
+            style: styleInput.value || '',
+            description: descInput.value || ''
+          };
+          
+          if (type === 'taijutsu') {
+            const baseStyleInput = container.querySelector(`[name="ability-baseStyle-${type}-${index}"]`);
+            const masteryInput = container.querySelector(`[name="ability-mastery-${type}-${index}"]`);
+            ability.baseStyle = baseStyleInput?.value || '';
+            ability.mastery = parseInt(masteryInput?.value) || 3;
+          } else {
+            const rankInput = container.querySelector(`[name="ability-rank-${type}-${index}"]`);
+            const difficultyInput = container.querySelector(`[name="ability-difficulty-${type}-${index}"]`);
+            const chakraInput = container.querySelector(`[name="ability-chakraIntensity-${type}-${index}"]`);
+            ability.rank = rankInput?.value || '';
+            ability.difficulty = parseInt(difficultyInput?.value) || 3;
+            ability.chakraIntensity = parseInt(chakraInput?.value) || 3;
+          }
+          
+          if (ability.style || ability.description) {
+            abilities[type].push(ability);
+          }
+        });
+        return abilities;
+      })(),
+      relationships: (() => {
+        const container = document.getElementById('relationships-container');
+        if (!container) return [];
+        const relationships = [];
+        container.querySelectorAll('.relationship-editor-item').forEach(item => {
+          const index = item.dataset.index;
+          const nameInput = container.querySelector(`[name="relationship-name-${index}"]`);
+          const typeInput = container.querySelector(`[name="relationship-type-${index}"]`);
+          const imageInput = container.querySelector(`[name="relationship-image-${index}"]`);
+          const heartInput = container.querySelector(`[name="relationship-heartChart-${index}"]`);
+          const descInput = container.querySelector(`[name="relationship-description-${index}"]`);
+          
+          if (!nameInput && !descInput) return;
+          
+          const rel = {
+            name: nameInput?.value || '',
+            relationshipType: typeInput?.value || '',
+            image: imageInput?.value || '',
+            heartChart: heartInput?.value || '',
+            description: descInput?.value || ''
+          };
+          
+          if (rel.name || rel.description) {
+            relationships.push(rel);
+          }
+        });
+        return relationships;
+      })(),
+      recordHistory: {
+        childhood: document.getElementById('recordHistoryChildhood').value,
+        adolescence: document.getElementById('recordHistoryAdolescence').value,
+        adulthood: document.getElementById('recordHistoryAdulthood').value
+      },
+      appearance: {
+        image: document.getElementById('appearanceImage').value,
+        colors: (() => {
+          const colorsText = document.getElementById('appearanceColors').value;
+          return colorsText.split('\n').map(c => c.trim()).filter(c => c);
+        })(),
+        gear: (() => {
+          const gearText = document.getElementById('appearanceGear').value.trim();
+          if (!gearText) return [];
+          
+          // Try to parse as JSON array first
+          try {
+            const parsed = JSON.parse(gearText);
+            if (Array.isArray(parsed)) {
+              return parsed;
+            }
+          } catch (e) {
+            // Not a JSON array, continue with line-by-line parsing
+          }
+          
+          // Parse line by line - each line can be JSON or simple text
+          const lines = gearText.split('\n');
+          const gear = [];
+          let currentJson = '';
+          let braceCount = 0;
+          
+          lines.forEach(line => {
+            const trimmed = line.trim();
+            if (!trimmed) return;
+            
+            // Check if this line starts a JSON object
+            if (trimmed.startsWith('{')) {
+              currentJson = trimmed;
+              braceCount = (trimmed.match(/{/g) || []).length - (trimmed.match(/}/g) || []).length;
+              
+              if (braceCount === 0) {
+                // Complete JSON object on one line
+                try {
+                  gear.push(JSON.parse(currentJson));
+                } catch (e) {
+                  gear.push(trimmed); // Fallback to string
+                }
+                currentJson = '';
+              }
+            } else if (currentJson) {
+              // Continue building JSON object
+              currentJson += '\n' + trimmed;
+              braceCount += (trimmed.match(/{/g) || []).length - (trimmed.match(/}/g) || []).length;
+              
+              if (braceCount === 0) {
+                // Complete JSON object
+                try {
+                  gear.push(JSON.parse(currentJson));
+                } catch (e) {
+                  gear.push(currentJson); // Fallback to string
+                }
+                currentJson = '';
+              }
+            } else {
+              // Simple text line
+              gear.push(trimmed);
+            }
+          });
+          
+          // Handle any remaining JSON
+          if (currentJson) {
+            try {
+              gear.push(JSON.parse(currentJson));
+            } catch (e) {
+              gear.push(currentJson);
+            }
+          }
+          
+          return gear;
+        })()
+      },
       profileImage: document.getElementById('profileImage').value,
       zodiac: document.getElementById('zodiac').value,
       sexualOrientation: document.getElementById('sexualOrientation').value,
@@ -801,10 +1157,37 @@ export function renderOCForm(oc = null, onSave) {
       classification: document.getElementById('classification').value.split(',').map(c => c.trim()).filter(c => c),
       kekkeiGenkai: document.getElementById('kekkeiGenkai').value,
       themeSong: document.getElementById('themeSong').value,
+      themeSongLink: document.getElementById('themeSongLink').value,
       voiceActors: {
         japanese: document.getElementById('voiceActorJP').value,
         english: document.getElementById('voiceActorEN').value
       },
+      quotes: document.getElementById('quotes').value.split('\n').filter(q => q.trim()),
+      trivia: document.getElementById('trivia').value,
+      gallery: (() => {
+        const container = document.getElementById('gallery-container');
+        if (!container) return [];
+        const gallery = [];
+        container.querySelectorAll('.gallery-editor-item').forEach(item => {
+          const index = item.dataset.index;
+          const urlInput = container.querySelector(`[name="gallery-url-${index}"]`);
+          const captionInput = container.querySelector(`[name="gallery-caption-${index}"]`);
+          
+          if (!urlInput) return;
+          
+          const url = urlInput.value || '';
+          const caption = captionInput?.value || '';
+          
+          if (url) {
+            if (caption) {
+              gallery.push({ url: url, caption: caption });
+            } else {
+              gallery.push(url);
+            }
+          }
+        });
+        return gallery;
+      })(),
       fears: document.getElementById('fears').value.split('\n').filter(f => f.trim()),
       moralAlignment: document.getElementById('moralAlignment').value,
       mbti: document.getElementById('mbti').value,
@@ -833,6 +1216,18 @@ export function renderOCForm(oc = null, onSave) {
         var(--color-border-2) ${percentage}%,
         var(--color-border-2) 100%)`;
     });
+    
+    // Initialize nature type count display
+    const natureTypeSelect = form.querySelector('#natureType');
+    const natureTypeCount = form.querySelector('#natureType-count');
+    if (natureTypeSelect && natureTypeCount) {
+      const updateCount = () => {
+        const selectedCount = natureTypeSelect.selectedOptions.length;
+        natureTypeCount.textContent = selectedCount;
+      };
+      updateCount(); // Initial count
+      natureTypeSelect.addEventListener('change', updateCount);
+    }
   }, 0);
   
   // Make switchStatsEraTab function available globally
@@ -886,8 +1281,226 @@ function renderStatInput(name, value) {
   `;
 }
 
-// Make updateStatVisual function globally available
+// Ability editor helper functions
+function renderAbilityEditor(type, ability = {}, index) {
+  const isTaijutsu = type === 'taijutsu';
+  return `
+    <div class="ability-editor-item mb-3" data-type="${type}" data-index="${index}" style="border: 1px solid var(--color-border-2); padding: 1rem; border-radius: 4px;">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <strong>${isTaijutsu ? 'Taijutsu' : 'Ninjutsu'}</strong>
+        <button type="button" class="btn-naruto btn-naruto-secondary" onclick="removeAbility('${type}', ${index})" style="padding: 0.25rem 0.5rem; font-size: 0.85rem;">Remove</button>
+      </div>
+      <div class="row">
+        <div class="col-12 col-md-6">
+          <div class="form-group">
+            <label>Style</label>
+            <input type="text" class="form-control" name="ability-style-${type}-${index}" value="${ability.style || ''}" placeholder="e.g., Strong Fist">
+          </div>
+        </div>
+        ${!isTaijutsu ? `
+        <div class="col-12 col-md-3">
+          <div class="form-group">
+            <label>Rank</label>
+            <input type="text" class="form-control" name="ability-rank-${type}-${index}" value="${ability.rank || ''}" placeholder="e.g., C-Rank">
+          </div>
+        </div>
+        ` : ''}
+        ${isTaijutsu ? `
+        <div class="col-12 col-md-3">
+          <div class="form-group">
+            <label>Base Style</label>
+            <input type="text" class="form-control" name="ability-baseStyle-${type}-${index}" value="${ability.baseStyle || ''}" placeholder="e.g., Gentle Fist">
+          </div>
+        </div>
+        <div class="col-12 col-md-3">
+          <div class="form-group">
+            <label>Mastery (1-5)</label>
+            <input type="number" class="form-control" name="ability-mastery-${type}-${index}" value="${ability.mastery || 3}" min="1" max="5">
+          </div>
+        </div>
+        ` : `
+        <div class="col-12 col-md-3">
+          <div class="form-group">
+            <label>Difficulty (1-5)</label>
+            <input type="number" class="form-control" name="ability-difficulty-${type}-${index}" value="${ability.difficulty || 3}" min="1" max="5">
+          </div>
+        </div>
+        <div class="col-12 col-md-3">
+          <div class="form-group">
+            <label>Chakra Intensity (1-5)</label>
+            <input type="number" class="form-control" name="ability-chakraIntensity-${type}-${index}" value="${ability.chakraIntensity || 3}" min="1" max="5">
+          </div>
+        </div>
+        `}
+      </div>
+      <div class="form-group">
+        <label>Description</label>
+        <textarea class="form-control" name="ability-description-${type}-${index}" rows="2">${ability.description || ''}</textarea>
+      </div>
+    </div>
+  `;
+}
+
+function renderRelationshipEditor(rel = {}, index) {
+  return `
+    <div class="relationship-editor-item mb-3" data-index="${index}" style="border: 1px solid var(--color-border-2); padding: 1rem; border-radius: 4px;">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <strong>Relationship</strong>
+        <button type="button" class="btn-naruto btn-naruto-secondary" onclick="removeRelationship(${index})" style="padding: 0.25rem 0.5rem; font-size: 0.85rem;">Remove</button>
+      </div>
+      <div class="row">
+        <div class="col-12 col-md-6">
+          <div class="form-group">
+            <label>Name</label>
+            <input type="text" class="form-control" name="relationship-name-${index}" value="${rel.name || rel.character || rel.fullName || ''}" placeholder="e.g., Naruto Uzumaki">
+          </div>
+        </div>
+        <div class="col-12 col-md-6">
+          <div class="form-group">
+            <label>Relationship Type</label>
+            <input type="text" class="form-control" name="relationship-type-${index}" value="${rel.relationshipType || rel.type || ''}" placeholder="e.g., Friend, Rival, Family">
+          </div>
+        </div>
+        <div class="col-12 col-md-6">
+          <div class="form-group">
+            <label>Image URL</label>
+            <input type="text" class="form-control" name="relationship-image-${index}" value="${rel.image || rel.icon || ''}" placeholder="https://...">
+          </div>
+        </div>
+        <div class="col-12 col-md-6">
+          <div class="form-group">
+            <label>Heart Chart (Emoji)</label>
+            <input type="text" class="form-control" name="relationship-heartChart-${index}" value="${rel.heartChart || ''}" placeholder="e.g., 💚">
+          </div>
+        </div>
+        <div class="col-12">
+          <div class="form-group">
+            <label>Description</label>
+            <textarea class="form-control" name="relationship-description-${index}" rows="2">${rel.description || ''}</textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function renderGalleryItem(item = {}, index) {
+  const url = typeof item === 'string' ? item : (item.url || item.image || '');
+  const caption = typeof item === 'object' ? (item.caption || item.title || '') : '';
+  return `
+    <div class="gallery-editor-item mb-3" data-index="${index}" style="border: 1px solid var(--color-border-2); padding: 1rem; border-radius: 4px;">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <strong>Gallery Image ${index + 1}</strong>
+        <button type="button" class="btn-naruto btn-naruto-secondary" onclick="removeGalleryItem(${index})" style="padding: 0.25rem 0.5rem; font-size: 0.85rem;">Remove</button>
+      </div>
+      <div class="row">
+        <div class="col-12 col-md-8">
+          <div class="form-group">
+            <label>Image URL</label>
+            <input type="text" class="form-control" name="gallery-url-${index}" value="${url}" placeholder="https://...">
+          </div>
+        </div>
+        <div class="col-12 col-md-4">
+          <div class="form-group">
+            <label>Caption/Title</label>
+            <input type="text" class="form-control" name="gallery-caption-${index}" value="${caption}" placeholder="Optional caption">
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// Make helper functions globally available
 if (typeof window !== 'undefined') {
+  window.addAbility = function(type) {
+    const container = document.getElementById('abilities-container');
+    const items = container.querySelectorAll(`[data-type="${type}"]`);
+    const index = items.length;
+    const newAbility = type === 'taijutsu' 
+      ? { style: '', baseStyle: '', mastery: 3, description: '' }
+      : { style: '', rank: '', difficulty: 3, chakraIntensity: 3, description: '' };
+    container.innerHTML += renderAbilityEditor(type, newAbility, index);
+    if (container.querySelector('.text-muted')) {
+      container.querySelector('.text-muted').remove();
+    }
+  };
+  
+  window.removeAbility = function(type, index) {
+    const container = document.getElementById('abilities-container');
+    const item = container.querySelector(`[data-type="${type}"][data-index="${index}"]`);
+    if (item) item.remove();
+    updateAbilityIndices();
+  };
+  
+  window.addRelationship = function() {
+    const container = document.getElementById('relationships-container');
+    const items = container.querySelectorAll('.relationship-editor-item');
+    const index = items.length;
+    container.innerHTML += renderRelationshipEditor({}, index);
+    if (container.querySelector('.text-muted')) {
+      container.querySelector('.text-muted').remove();
+    }
+  };
+  
+  window.removeRelationship = function(index) {
+    const container = document.getElementById('relationships-container');
+    const item = container.querySelector(`[data-index="${index}"]`);
+    if (item) item.remove();
+    updateRelationshipIndices();
+  };
+  
+  window.addGalleryItem = function() {
+    const container = document.getElementById('gallery-container');
+    const items = container.querySelectorAll('.gallery-editor-item');
+    const index = items.length;
+    container.innerHTML += renderGalleryItem({}, index);
+    if (container.querySelector('.text-muted')) {
+      container.querySelector('.text-muted').remove();
+    }
+  };
+  
+  window.removeGalleryItem = function(index) {
+    const container = document.getElementById('gallery-container');
+    const item = container.querySelector(`[data-index="${index}"]`);
+    if (item) item.remove();
+    updateGalleryIndices();
+  };
+  
+  function updateAbilityIndices() {
+    const container = document.getElementById('abilities-container');
+    container.querySelectorAll('.ability-editor-item').forEach((item, index) => {
+      item.setAttribute('data-index', index);
+      item.querySelectorAll('input, textarea').forEach(input => {
+        input.name = input.name.replace(/-\d+$/, `-${index}`);
+      });
+      item.querySelector('button').setAttribute('onclick', `removeAbility('${item.dataset.type}', ${index})`);
+    });
+  }
+  
+  function updateRelationshipIndices() {
+    const container = document.getElementById('relationships-container');
+    container.querySelectorAll('.relationship-editor-item').forEach((item, index) => {
+      item.setAttribute('data-index', index);
+      item.querySelectorAll('input, textarea').forEach(input => {
+        input.name = input.name.replace(/-\d+$/, `-${index}`);
+      });
+      item.querySelector('button').setAttribute('onclick', `removeRelationship(${index})`);
+    });
+  }
+  
+  function updateGalleryIndices() {
+    const container = document.getElementById('gallery-container');
+    container.querySelectorAll('.gallery-editor-item').forEach((item, index) => {
+      item.setAttribute('data-index', index);
+      item.querySelectorAll('input').forEach(input => {
+        input.name = input.name.replace(/-\d+$/, `-${index}`);
+      });
+      item.querySelector('strong').textContent = `Gallery Image ${index + 1}`;
+      item.querySelector('button').setAttribute('onclick', `removeGalleryItem(${index})`);
+    });
+  }
+  
   window.updateStatVisual = function(name, value) {
     const dots = document.getElementById(`${name}-dots`);
     const slider = document.getElementById(name);

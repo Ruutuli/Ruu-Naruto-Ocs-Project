@@ -1,6 +1,7 @@
 // OC Detail Component - Full Data Book style character sheet renderer
 
 import { natureReleases, getNatureRelease } from '../data/nature-releases.js';
+import { getClanSymbol } from '../data/clan-symbols.js';
 
 export function renderOCDetail(oc) {
   const container = document.createElement('div');
@@ -47,7 +48,7 @@ export function renderOCDetail(oc) {
         
         <div class="oc-badges" id="oc-badges-container">
           ${renderVillageBadge(oc.village)}
-          ${renderClanBadge(oc.clanId)}
+          ${renderClanBadge(oc.clanId, oc.clanName)}
           ${renderLandBadge(oc.village)}
         </div>
         
@@ -135,16 +136,35 @@ export function renderOCDetail(oc) {
       </div>
     ` : ''}
     
-      ${oc.themeSong || oc.voiceActors?.japanese || oc.voiceActors?.english ? `
+      ${oc.themeSong || oc.themeSongLink || oc.voiceActors?.japanese || oc.voiceActors?.english || (oc.quotes && oc.quotes.length > 0) || oc.trivia ? `
       <div class="media-section">
-        <h3>Media & Representation <i class="japanese-header">メディアと表現</i></h3>
-        ${oc.themeSong ? `<p><strong>Theme Song:</strong> ${oc.themeSong}</p>` : ''}
+        <h3>Miscellaneous <i class="japanese-header">その他</i></h3>
+        ${oc.themeSong || oc.themeSongLink ? `
+        <p><strong>Theme Song:</strong> 
+          ${oc.themeSong ? oc.themeSong : ''}
+          ${oc.themeSongLink ? ` <a href="${oc.themeSongLink}" target="_blank" rel="noopener noreferrer" style="color: var(--color-accent-2); text-decoration: underline;">🔗 Listen</a>` : ''}
+        </p>
+        ` : ''}
         ${oc.voiceActors?.japanese || oc.voiceActors?.english ? `
         <p><strong>Voice Actors:</strong>
           ${oc.voiceActors.japanese ? `JP: ${oc.voiceActors.japanese}` : ''}
           ${oc.voiceActors.japanese && oc.voiceActors.english ? ' • ' : ''}
           ${oc.voiceActors.english ? `EN: ${oc.voiceActors.english}` : ''}
         </p>
+        ` : ''}
+        ${oc.quotes && oc.quotes.length > 0 ? `
+        <div style="margin-top: 1rem;">
+          <h4>Quotes <i class="japanese-header">名言</i></h4>
+          <ul style="list-style-type: none; padding-left: 0;">
+            ${oc.quotes.map(quote => `<li style="margin-bottom: 0.5rem; font-style: italic;">"${quote}"</li>`).join('')}
+          </ul>
+        </div>
+        ` : ''}
+        ${oc.trivia ? `
+        <div style="margin-top: 1rem;">
+          <h4>Trivia <i class="japanese-header">トリビア</i></h4>
+          <p>${oc.trivia}</p>
+        </div>
         ` : ''}
       </div>
       ` : ''}
@@ -212,18 +232,35 @@ export function renderOCDetail(oc) {
   
   // Load clan badge image if clan exists, otherwise show kunai
   import('../data/storage.js').then(module => {
-    const badgeContainer = container.querySelector(`#clan-badge-${oc.clanId || 'none'}`);
+    const clanIdentifier = oc.clanId || oc.clanName || 'none';
+    const badgeContainer = container.querySelector(`#clan-badge-${clanIdentifier}`);
     if (badgeContainer) {
+      let clanName = '';
+      let symbolUrl = null;
+      
       if (oc.clanId) {
+        // User-created clan - get from storage
         const clan = module.default.getClan(oc.clanId);
-        if (clan && clan.symbol) {
-          badgeContainer.innerHTML = `<img src="${clan.symbol}" alt="${clan.name}">`;
-          badgeContainer.setAttribute('title', `Clan: ${clan.name}`);
-        } else {
-          // No clan symbol, use kunai
-          badgeContainer.innerHTML = `<img src="images/assets/kunai.png" alt="No Clan">`;
-          badgeContainer.setAttribute('title', 'No Clan');
+        if (clan) {
+          clanName = clan.name;
+          symbolUrl = clan.symbol;
         }
+      } else if (oc.clanName) {
+        // Predefined clan or custom clan name
+        clanName = oc.clanName;
+        const predefinedClan = getClanSymbol(oc.clanName);
+        if (predefinedClan) {
+          symbolUrl = predefinedClan.symbolUrl;
+        }
+      }
+      
+      if (clanName && symbolUrl) {
+        badgeContainer.innerHTML = `<img src="${symbolUrl}" alt="${clanName}">`;
+        badgeContainer.setAttribute('title', `Clan: ${clanName}`);
+      } else if (clanName) {
+        // Clan name exists but no symbol - use kunai with clan name in title
+        badgeContainer.innerHTML = `<img src="images/assets/kunai.png" alt="No Clan Symbol">`;
+        badgeContainer.setAttribute('title', `Clan: ${clanName}`);
       } else {
         // No clan, use kunai
         badgeContainer.innerHTML = `<img src="images/assets/kunai.png" alt="No Clan">`;
@@ -469,9 +506,10 @@ function renderVillageBadge(village) {
     : '<div class="oc-badge"></div>';
 }
 
-function renderClanBadge(clanId) {
+function renderClanBadge(clanId, clanName) {
   // Will be populated dynamically after rendering
-  return `<div class="oc-badge" id="clan-badge-${clanId || 'none'}" title="Clan"></div>`;
+  const identifier = clanId || clanName || 'none';
+  return `<div class="oc-badge" id="clan-badge-${identifier}" title="Clan"></div>`;
 }
 
 function renderLandBadge(village) {
@@ -584,13 +622,15 @@ function renderIdentifyingInfo(oc) {
         ${oc.ninjaRegistrationNumber ? renderInfoRow('Ninja Registration Number', oc.ninjaRegistrationNumber) : ''}
         ${oc.academyGraduationAge ? renderInfoRow('Academy Graduation Age', oc.academyGraduationAge) : ''}
         ${oc.classification && oc.classification.length > 0 ? renderInfoRow('Classification', oc.classification.join(', ')) : ''}
-        <div class="info-row">
-          ${renderInfoContent(info.madeGenin || 'Unknown')}
-          ${renderInfoLabel('Made Genin')}
-          ${renderInfoContent(info.madeChunin || 'Unknown')}
-          ${renderInfoLabel('Made Chunin')}
-        </div>
+        ${oc.teamNumber ? renderInfoRow('Team Number', oc.teamNumber) : ''}
+        ${oc.teammates && oc.teammates.length > 0 ? renderInfoRow('Teammates', oc.teammates.join(', ')) : ''}
+        ${oc.sensei ? renderInfoRow('Sensei', oc.sensei) : ''}
+        ${oc.madeGenin ? renderInfoRow('Made Genin', oc.madeGenin) : ''}
+        ${oc.madeChunin ? renderInfoRow('Made Chunin', oc.madeChunin) : ''}
         ${renderInfoRow('Body Type', info.bodyType || 'Unknown')}
+        ${oc.eyeColor ? renderInfoRow('Eye Color', oc.eyeColor) : ''}
+        ${oc.hairColor ? renderInfoRow('Hair Color', oc.hairColor) : ''}
+        ${oc.distinguishingFeatures && oc.distinguishingFeatures.length > 0 ? renderInfoRow('Distinguishing Features', oc.distinguishingFeatures.join(', ')) : ''}
         ${(() => {
           // Render height by era if available, otherwise use old format
           if (hasHeightByEra) {
@@ -1095,18 +1135,68 @@ function getNatureTypeIcon(natureType) {
 }
 
 function renderNatureTypeRow(natureType) {
-  const release = getNatureRelease(natureType);
+  // Handle both array and string formats for backward compatibility
+  const natureTypes = Array.isArray(natureType) ? natureType : (natureType ? [natureType] : []);
+  
+  if (natureTypes.length === 0) {
+    return '';
+  }
+  
+  // If multiple types, render them all
+  if (natureTypes.length > 1) {
+    const typesHtml = natureTypes.map(type => {
+      const release = getNatureRelease(type);
+      if (!release) {
+        return `<span style="display: inline-block; margin-right: 1rem; margin-bottom: 0.5rem;">${type}</span>`;
+      }
+      
+      const iconUrl = release.iconUrl;
+      const iconHtml = iconUrl ? `<img src="${iconUrl}" alt="${type}" style="width: 20px; height: 20px; vertical-align: middle; margin-right: 4px; display: inline-block;">` : '';
+      
+      let details = [];
+      if (release.kanji) {
+        details.push(`${release.kanji} (${release.romaji})`);
+      }
+      if (release.strongAgainst && release.weakAgainst) {
+        details.push(`Strong: ${release.strongAgainst}, Weak: ${release.weakAgainst}`);
+      }
+      if (release.components) {
+        details.push(`Components: ${release.components.join(' + ')}`);
+      }
+      
+      const detailsHtml = details.length > 0 ? `<br><small style="color: var(--color-text-dark-2); font-size: 0.75rem;">${details.join(' • ')}</small>` : '';
+      
+      return `
+        <div style="display: inline-block; margin-right: 1rem; margin-bottom: 0.5rem; padding: 0.5rem; background-color: var(--color-bg-1); border: 1px solid var(--color-border-2); border-radius: 4px;">
+          ${iconHtml}${type}${detailsHtml}
+        </div>
+      `;
+    }).join('');
+    
+    return `
+      <div class="info-row">
+        <div class="info-content" style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+          ${typesHtml}
+        </div>
+        ${renderInfoLabel('nature type')}
+      </div>
+    `;
+  }
+  
+  // Single type - original format
+  const type = natureTypes[0];
+  const release = getNatureRelease(type);
   if (!release) {
     return `
       <div class="info-row">
-        ${renderInfoContent(natureType)}
+        ${renderInfoContent(type)}
         ${renderInfoLabel('nature type')}
       </div>
     `;
   }
   
   const iconUrl = release.iconUrl;
-  const iconHtml = iconUrl ? `<img src="${iconUrl}" alt="${natureType}" style="width: 24px; height: 24px; vertical-align: middle; margin-right: 8px; display: inline-block;">` : '';
+  const iconHtml = iconUrl ? `<img src="${iconUrl}" alt="${type}" style="width: 24px; height: 24px; vertical-align: middle; margin-right: 8px; display: inline-block;">` : '';
   
   let details = [];
   if (release.kanji) {
@@ -1123,7 +1213,7 @@ function renderNatureTypeRow(natureType) {
   
   return `
     <div class="info-row">
-      ${renderInfoContent(`${iconHtml}${natureType}${detailsHtml}`)}
+      ${renderInfoContent(`${iconHtml}${type}${detailsHtml}`)}
       ${renderInfoLabel('nature type')}
     </div>
   `;

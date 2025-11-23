@@ -2,6 +2,7 @@
 
 import { defaultLore, generateId } from '../data/default-data.js';
 import storage from '../data/storage.js';
+import { loreCategories, generateOptions } from '../data/options.js';
 
 export function renderLoreForm(lore = null, onSave) {
   const isEdit = !!lore;
@@ -26,10 +27,7 @@ export function renderLoreForm(lore = null, onSave) {
         <div class="form-group">
           <label class="form-label">Category</label>
           <select class="form-control" id="category" required>
-            <option value="village" ${formLore.category === 'village' ? 'selected' : ''}>Village</option>
-            <option value="technique" ${formLore.category === 'technique' ? 'selected' : ''}>Technique</option>
-            <option value="history" ${formLore.category === 'history' ? 'selected' : ''}>History</option>
-            <option value="world" ${formLore.category === 'world' ? 'selected' : ''}>World</option>
+            ${generateOptions(loreCategories, formLore.category || '')}
           </select>
         </div>
         

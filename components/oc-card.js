@@ -34,10 +34,10 @@ export function renderOCCard(oc, onClick) {
         </div>
         ` : `<div class="oc-card-village"><span>${oc.village || 'Unknown'}</span></div>`}
       </div>
-      ${oc.clanId ? `
+      ${(oc.clanId || oc.clanName) ? `
         <div class="oc-card-clan">
           <i class="fas fa-users"></i>
-          <span><strong>Clan:</strong> <span id="clan-name-${oc.clanId}" class="oc-card-clan-name">Loading...</span></span>
+          <span><strong>Clan:</strong> <span id="clan-name-${oc.clanId || oc.clanName || 'none'}" class="oc-card-clan-name">${oc.clanName || 'Loading...'}</span></span>
         </div>
       ` : ''}
       <div class="oc-card-actions">
@@ -57,8 +57,14 @@ export function renderOCCard(oc, onClick) {
       const clanNameEl = card.querySelector(`#clan-name-${oc.clanId}`);
       if (clanNameEl && clan) {
         clanNameEl.textContent = clan.name;
+      } else if (clanNameEl && !clan) {
+        // Clan not found, remove the loading text
+        clanNameEl.textContent = 'Unknown';
       }
     });
+  } else if (oc.clanName) {
+    // Predefined or custom clan name - already displayed in template
+    // No need to load anything
   }
   
   return card;

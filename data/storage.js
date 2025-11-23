@@ -3,6 +3,7 @@
 // Files are saved to data/clans/, data/ocs/, etc. in your GitHub repo
 
 import { githubConfig, getGitHubToken, saveGitHubToken } from './github-config.js';
+import { migrateOCData } from './default-data.js';
 
 class Storage {
   constructor() {
@@ -94,7 +95,9 @@ class Storage {
                   if (fileResponse.ok) {
                     const data = await fileResponse.json();
                     if (data && data.id) {
-                      this._cache[type].set(data.id, data);
+                      // Migrate OC data if it's an OC
+                      const migratedData = type === 'ocs' ? migrateOCData(data) : data;
+                      this._cache[type].set(migratedData.id, migratedData);
                     }
                   }
                 } catch (e) {
@@ -177,7 +180,9 @@ class Storage {
       if (response.ok) {
         const data = await response.json();
         if (data && data.id) {
-          this._cache[type].set(data.id, data);
+          // Migrate OC data if it's an OC
+          const migratedData = type === 'ocs' ? migrateOCData(data) : data;
+          this._cache[type].set(migratedData.id, migratedData);
         }
       }
     } catch (e) {
@@ -234,7 +239,9 @@ class Storage {
         try {
           const parsed = JSON.parse(data);
           if (parsed && parsed.id) {
-            this._cache[type].set(parsed.id, parsed);
+            // Migrate OC data if it's an OC
+            const migratedData = type === 'ocs' ? migrateOCData(parsed) : parsed;
+            this._cache[type].set(migratedData.id, migratedData);
           }
         } catch (e) {
           console.error(`Error loading ${type}/${id} from localStorage:`, e);
