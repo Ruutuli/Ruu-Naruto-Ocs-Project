@@ -313,6 +313,12 @@
   padding-bottom: 0.6rem;
 }
 
+.info-content.multi-era-content {
+  justify-content: flex-start;
+  align-items: flex-start;
+  text-align: left;
+}
+
 .info-label {
   flex: 0 0 180px;
   padding: 0.4rem 0.5rem;
@@ -360,6 +366,8 @@
   font-size: 0.8rem;
   line-height: 1.5;
   width: 100%;
+  text-align: left;
+  align-items: flex-start;
 }
 
 .era-item {
@@ -374,20 +382,19 @@
   line-height: 1.6;
 }
 
-/* Age row alignment - align values to the right */
+/* Age row alignment - align values to the left */
 .age-row .era-item-line {
   display: flex;
-  justify-content: space-between;
   align-items: center;
 }
 
 .age-row .era-item-line .era-label-text {
   flex: 0 0 auto;
+  margin-right: 0.5rem;
 }
 
 .age-row .era-item-line .age-value {
-  margin-left: auto;
-  text-align: right;
+  text-align: left;
   flex: 0 0 auto;
 }
 

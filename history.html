@@ -104,7 +104,7 @@
                 const matchesCategory = !category || eventCategory === category;
                 const matchesSearch = !query || eventText.includes(query);
                 
-                (event as HTMLElement).style.display = (matchesCategory && matchesSearch) ? 'block' : 'none';
+                event.style.display = (matchesCategory && matchesSearch) ? 'block' : 'none';
             });
         }
 
