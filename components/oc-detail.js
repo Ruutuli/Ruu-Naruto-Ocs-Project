@@ -1429,23 +1429,41 @@ function renderKnownAssociates(oc) {
 
 function renderDemeanor(oc) {
   const demeanor = oc.personality?.demeanor || {};
-  const traits = [
-    'charisma', 'extraversion', 'energy', 'empathy', 'impulsivity',
-    'neuroticism', 'intuition', 'observation', 'sensitivity',
-    'generosity', 'respectForAuthority'
+  
+  const traitPairs = [
+    { key: 'friendlyReserved', left: 'Friendly', right: 'Reserved' },
+    { key: 'politeBlunt', left: 'Polite', right: 'Blunt' },
+    { key: 'cleverFoolish', left: 'Clever', right: 'Foolish' },
+    { key: 'sensitiveTough', left: 'Sensitive', right: 'Tough' },
+    { key: 'braveTimid', left: 'Brave', right: 'Timid' },
+    { key: 'carefulReckless', left: 'Careful', right: 'Reckless' },
+    { key: 'sincereDeceptive', left: 'Sincere', right: 'Deceptive' },
+    { key: 'diligentLazy', left: 'Diligent', right: 'Lazy' },
+    { key: 'calmIrritable', left: 'Calm', right: 'Irritable' },
+    { key: 'humorousSerious', left: 'Humorous', right: 'Serious' }
   ];
   
   return `
     <div class="demeanor-section">
-      ${traits.map(trait => {
-        const value = demeanor[trait] || 3;
+      ${traitPairs.map(trait => {
+        // Value is 1-10, where 1 = very left trait, 10 = very right trait
+        // Default to 5.5 (middle) if not set
+        const value = demeanor[trait.key] !== undefined ? demeanor[trait.key] : 5.5;
+        const percentage = ((value - 1) / 9) * 100; // Convert 1-10 to 0-100%
+        
         return `
           <div class="demeanor-row">
-            <div class="demeanor-name">${trait.replace(/([A-Z])/g, ' $1').toLowerCase()}</div>
-            <div class="demeanor-rating">
-              ${Array.from({ length: 5 }, (_, i) => 
-                `<span class="rating-circle ${i < value ? 'filled' : ''}"></span>`
-              ).join('')}
+            <div class="demeanor-trait-label">
+              <span class="trait-left">${trait.left}</span>
+              <span class="trait-separator">–</span>
+              <span class="trait-right">${trait.right}</span>
+            </div>
+            <div class="demeanor-slider-container">
+              <div class="demeanor-slider-track">
+                <div class="demeanor-slider-fill" style="width: ${percentage}%;"></div>
+                <div class="demeanor-slider-marker" style="left: ${percentage}%;"></div>
+              </div>
+              <div class="demeanor-value">${Math.round(value)}</div>
             </div>
           </div>
         `;

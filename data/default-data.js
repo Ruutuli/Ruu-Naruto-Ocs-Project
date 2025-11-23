@@ -240,17 +240,16 @@ export const defaultOC = {
     neutralTraits: [],
     overview: '',
     demeanor: {
-      charisma: 0,
-      extraversion: 0,
-      energy: 0,
-      empathy: 0,
-      impulsivity: 0,
-      neuroticism: 0,
-      intuition: 0,
-      observation: 0,
-      sensitivity: 0,
-      generosity: 0,
-      respectForAuthority: 0
+      friendlyReserved: 5.5,
+      politeBlunt: 5.5,
+      cleverFoolish: 5.5,
+      sensitiveTough: 5.5,
+      braveTimid: 5.5,
+      carefulReckless: 5.5,
+      sincereDeceptive: 5.5,
+      diligentLazy: 5.5,
+      calmIrritable: 5.5,
+      humorousSerious: 5.5
     }
   },
   fears: [],

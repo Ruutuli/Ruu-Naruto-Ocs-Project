@@ -937,45 +937,110 @@ i.era-label {
 
 /* Demeanor */
 .demeanor-section {
-  background-color: var(--color-dark-1);
-  border: 1px solid var(--color-dark-3);
-  padding: 1rem;
-  text-transform: uppercase;
-  font-size: 11px;
+  background: linear-gradient(135deg, var(--color-bg-1) 0%, var(--color-bg-2) 100%);
+  border: 2px solid var(--color-border-2);
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .demeanor-row {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 0.5rem;
-  padding: 0.25rem 0;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+  padding: 1rem;
+  background-color: rgba(255, 255, 255, 0.6);
+  border-radius: 6px;
+  border-left: 4px solid var(--color-accent-2);
+  transition: all 0.3s ease;
+}
+
+.demeanor-row:hover {
+  background-color: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
 .demeanor-row:last-child {
   margin-bottom: 0;
 }
 
-.demeanor-name {
-  flex: 0 0 60%;
-  color: var(--color-text-light);
-}
-
-.demeanor-rating {
+.demeanor-trait-label {
   display: flex;
-  gap: 0.25rem;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--color-text-dark-2);
 }
 
-.rating-circle {
-  width: 12px;
-  height: 12px;
+.trait-left {
+  color: #228B22;
+  font-weight: 600;
+}
+
+.trait-separator {
+  color: var(--color-text-dark-2);
+  font-weight: 400;
+}
+
+.trait-right {
+  color: var(--color-accent-2);
+  font-weight: 600;
+}
+
+.demeanor-slider-container {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+}
+
+.demeanor-slider-track {
+  flex: 1;
+  height: 20px;
+  background: linear-gradient(to right, rgba(34, 139, 34, 0.15) 0%, rgba(200, 200, 200, 0.3) 50%, rgba(227, 94, 63, 0.15) 100%);
+  border: 2px solid var(--color-border-2);
+  border-radius: 10px;
+  position: relative;
+  overflow: visible;
+}
+
+.demeanor-slider-fill {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  background: linear-gradient(to right, #228B22 0%, rgba(227, 94, 63, 0.6) 100%);
+  border-radius: 8px 0 0 8px;
+  transition: width 0.3s ease;
+  opacity: 0.5;
+}
+
+.demeanor-slider-marker {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 20px;
+  height: 20px;
+  background: linear-gradient(135deg, var(--color-accent-2) 0%, var(--color-accent-1) 100%);
+  border: 3px solid var(--color-text-light);
   border-radius: 50%;
-  border: 1px solid var(--color-text-light);
-  background-color: transparent;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+  z-index: 2;
+  transition: left 0.3s ease;
 }
 
-.rating-circle.filled {
-  background-color: var(--color-text-light);
+.demeanor-value {
+  min-width: 30px;
+  text-align: center;
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--color-accent-2);
+  background-color: rgba(255, 255, 255, 0.9);
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  border: 1px solid var(--color-border-2);
 }
 
 /* Abilities */
@@ -1852,19 +1917,35 @@ i.era-label {
   }
   
   .demeanor-section {
-    padding: 0.75rem !important;
-    font-size: 10px !important;
+    padding: 1rem !important;
   }
   
   .demeanor-row {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.25rem;
+    padding: 0.75rem !important;
+    gap: 0.5rem;
   }
   
-  .demeanor-name {
-    flex: 1 1 100%;
+  .demeanor-trait-label {
+    font-size: 0.85rem !important;
+  }
+  
+  .demeanor-slider-container {
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: stretch;
+  }
+  
+  .demeanor-slider-track {
     width: 100%;
+  }
+  
+  .demeanor-value {
+    align-self: flex-end;
+  }
+  
+  .demeanor-slider-marker {
+    width: 18px !important;
+    height: 18px !important;
   }
 }
 
