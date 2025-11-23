@@ -23,7 +23,7 @@ class Storage {
     this._token = null;
     this._isLocalhost = this.isLocalhost();
     this._saveQueue = new Map(); // Track ongoing saves to prevent concurrent saves
-    this.init();
+    this._readyPromise = this.init();
   }
 
   // Check if running on localhost
@@ -33,12 +33,23 @@ class Storage {
            window.location.hostname === '';
   }
 
+  // Get promise that resolves when storage is ready
+  ready() {
+    return this._readyPromise;
+  }
+
   async init() {
-    // Check for GitHub token (from config, .env, or localStorage)
-    this._token = await getGitHubToken();
-    
-    // Load all existing data from GitHub (with localStorage fallback for loading only)
-    await this.loadAllFromGitHub();
+    try {
+      // Check for GitHub token (from config, .env, or localStorage)
+      this._token = await getGitHubToken();
+      
+      // Load all existing data from GitHub (with localStorage fallback for loading only)
+      await this.loadAllFromGitHub();
+    } catch (error) {
+      console.error('Error initializing storage:', error);
+      // Even if initialization fails, resolve the promise so the app can continue
+      // (it will use empty cache or localStorage fallback)
+    }
   }
 
   // Get file SHA (required for updating existing files)
@@ -319,7 +330,7 @@ class Storage {
   }
 
   // Perform the actual save operation
-  async _performSave(type, id, data, retryCount = 0) {
+  async _performSave(type, id, data, retryCount = 0, providedSHA = null) {
     if (!this._token) {
       this._token = await getGitHubToken();
     }
@@ -354,8 +365,11 @@ class Storage {
 
       const encodedContent = btoa(unescape(encodeURIComponent(content)));
       
-      // Get existing file SHA if it exists (always fetch fresh SHA)
-      const sha = await this.getFileSHA(path);
+      // Use provided SHA if available (from conflict resolution), otherwise fetch fresh SHA
+      let sha = providedSHA;
+      if (!sha) {
+        sha = await this.getFileSHA(path);
+      }
       
       const body = {
         message: `Update ${type}: ${id}`,
@@ -397,6 +411,7 @@ class Storage {
           await new Promise(resolve => setTimeout(resolve, delay));
           
           // Try to get the current file content and check if we should merge
+          let freshSHA = null;
           try {
             const currentFileResponse = await fetch(
               `${this._githubBase}/contents/${path}?ref=${githubConfig.branch}`,
@@ -410,6 +425,9 @@ class Storage {
             
             if (currentFileResponse.ok) {
               const currentFile = await currentFileResponse.json();
+              // Extract the SHA from the current file response
+              freshSHA = currentFile.sha;
+              
               const currentContent = atob(currentFile.content.replace(/\s/g, ''));
               const currentData = JSON.parse(currentContent);
               
@@ -428,8 +446,8 @@ class Storage {
             console.warn('Could not fetch current file for comparison:', e);
           }
           
-          // Retry with fresh SHA
-          return this._performSave(type, id, data, retryCount + 1);
+          // Retry with fresh SHA from the current file response
+          return this._performSave(type, id, data, retryCount + 1, freshSHA);
         }
         
         throw new Error(error.message || 'Failed to save file');

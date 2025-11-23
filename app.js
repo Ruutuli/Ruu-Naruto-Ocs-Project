@@ -1171,9 +1171,17 @@ function loadHomePage() {
 
 // ------------------- OCs Page Loader ------------------
 // OCs Page
-function loadOCsPage() {
+async function loadOCsPage() {
+  // Wait for storage to be ready before loading OCs
+  await storage.ready();
+  
   const ocs = storage.getAllOCs();
   const container = document.getElementById('ocs-list');
+  
+  if (!container) {
+    console.warn('OC list container not found');
+    return;
+  }
   
   if (ocs.length === 0) {
     container.innerHTML = '';
@@ -1292,9 +1300,17 @@ window.deleteLore = (id) => deleteItem('lore', id, {
 
 // ------------------- Clans Page Loader ------------------
 // Clans Page
-function loadClansPage() {
+async function loadClansPage() {
+  // Wait for storage to be ready before loading clans
+  await storage.ready();
+  
   const clans = storage.getAllClans();
   const container = document.getElementById('clans-list');
+  
+  if (!container) {
+    console.warn('Clan list container not found');
+    return;
+  }
   
   if (clans.length === 0) {
     container.innerHTML = '';
@@ -1360,9 +1376,17 @@ function setupClanFilters() {
 
 // ------------------- Stories Page Loader ------------------
 // Stories Page
-function loadStoriesPage() {
+async function loadStoriesPage() {
+  // Wait for storage to be ready before loading stories
+  await storage.ready();
+  
   const stories = storage.getAllStories();
   const container = document.getElementById('stories-list');
+  
+  if (!container) {
+    console.warn('Story list container not found');
+    return;
+  }
   
   if (stories.length === 0) {
     container.innerHTML = '';
@@ -1435,7 +1459,10 @@ function setupStoryFilters() {
 
 // ------------------- Lore Page Loader ------------------
 // Lore Page
-function loadLorePage() {
+async function loadLorePage() {
+  // Wait for storage to be ready before loading lore
+  await storage.ready();
+  
   import('./pages/lore-list.js').then(module => {
     const lore = storage.getAllLore();
     const container = document.getElementById('lore-list');
