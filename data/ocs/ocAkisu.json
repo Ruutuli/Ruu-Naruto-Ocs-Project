@@ -1,0 +1,339 @@
+{
+  "id": "ocAkisu",
+  "lastName": "Toraneko",
+  "firstName": "Akisu ",
+  "nameJapanese": "虎猫 空巣（とらねこ あきす）",
+  "lastNameMeaning": "Tiger-cat",
+  "firstNameMeaning": "Empty house; burglary of an empty home; sneak thief; prowler",
+  "nameMeaning": "Tiger-cat, sneak thief",
+  "aliases": [
+    "Aki"
+  ],
+  "debut": {
+    "manga": "",
+    "anime": "",
+    "novel": "",
+    "movie": "",
+    "game": ""
+  },
+  "appearsIn": [],
+  "dob": "10-19",
+  "ageByEra": {
+    "Part I": "13-14",
+    "Part II": "16-18"
+  },
+  "bloodType": "B",
+  "gender": "Male",
+  "natureType": [
+    "Wind Release",
+    "Earth Release"
+  ],
+  "village": "Konoha",
+  "rank": "Chunin",
+  "clanId": null,
+  "clanName": null,
+  "stats": {
+    "intelligence": 2,
+    "stamina": 3.5,
+    "strength": 2.5,
+    "speed": 4,
+    "ninjutsu": 2,
+    "genjutsu": 1,
+    "taijutsu": 4,
+    "handSeals": 2,
+    "fuinjutsu": 1
+  },
+  "statsByEra": {
+    "Part I": {
+      "intelligence": 2,
+      "stamina": 3.5,
+      "strength": 2.5,
+      "speed": 4,
+      "ninjutsu": 2,
+      "genjutsu": 1,
+      "taijutsu": 4,
+      "handSeals": 2,
+      "fuinjutsu": 1
+    },
+    "Part II": {
+      "intelligence": 3,
+      "stamina": 3,
+      "strength": 3,
+      "speed": 3,
+      "ninjutsu": 3,
+      "genjutsu": 3,
+      "taijutsu": 3,
+      "handSeals": 3,
+      "fuinjutsu": 3
+    },
+    "Blank Period": {
+      "intelligence": 3,
+      "stamina": 3,
+      "strength": 3,
+      "speed": 3,
+      "ninjutsu": 3,
+      "genjutsu": 3,
+      "taijutsu": 3,
+      "handSeals": 3,
+      "fuinjutsu": 3
+    },
+    "Gaiden": {
+      "intelligence": 3,
+      "stamina": 3,
+      "strength": 3,
+      "speed": 3,
+      "ninjutsu": 3,
+      "genjutsu": 3,
+      "taijutsu": 3,
+      "handSeals": 3,
+      "fuinjutsu": 3
+    },
+    "Boruto": {
+      "intelligence": 3,
+      "stamina": 3,
+      "strength": 3,
+      "speed": 3,
+      "ninjutsu": 3,
+      "genjutsu": 3,
+      "taijutsu": 3,
+      "handSeals": 3,
+      "fuinjutsu": 3
+    }
+  },
+  "heightByEra": {
+    "Part I": "146 cm (4'9\")",
+    "Part II": "157 cm (5'2\")"
+  },
+  "weightByEra": {
+    "Part I": "40 kg (88 lbs)",
+    "Part II": "49 kg (108 lbs)"
+  },
+  "identifyingInfo": {
+    "bodyType": "Lean, compact, catlike build; narrow shoulders; light muscle definition; very agile."
+  },
+  "eyeColor": "Golden-yellow (catlike irises).",
+  "hairColor": "Light brown / warm chestnut.",
+  "distinguishingFeatures": [
+    "Catlike eyes  ",
+    "Sharp canines (visible fang)  ",
+    "Silver/gray cat-ear hair accessory",
+    "Naturally droopy eyelids / resting unimpressed expression  ",
+    "Fast, quiet gait reminiscent of a prowling cat "
+  ],
+  "teamNumber": "Team 4",
+  "teammates": [
+    "Chigiri Akene",
+    "Amagawa Oniji"
+  ],
+  "sensei": "Suishou Teruo",
+  "madeGenin": "12",
+  "madeChunin": "16",
+  "battleStrategy": {
+    "inTeam": "Akisu excels as a reactive striker. He waits for openings created by his teammates and slips into blind spots to deliver quick, disruptive hits. He runs interference, draws attention away from slower allies, and creates chaos that benefits more structured fighters. Not a leader — but the perfect wild card.\n",
+    "alone": "He becomes significantly more unpredictable. Akisu relies on stealth, speed, and misdirection, often wearing targets down with hit-and-run harassment. He avoids direct confrontation and plays a cat-and-mouse game until the opponent makes a mistake. Survival over victory.\n",
+    "fieldPosition": "Side flanks or forward-left shadow. He gravitates toward elevated or uneven terrain where his agility shines. Prefers positions with environmental cover: rooftops, trees, narrow alleys, markets, rubble.",
+    "effectiveDistance": "Close to mid-range.   Close-range for pounce-style taijutsu.   Mid-range for thrown weapons, dust tricks, and wind-assisted dodges.",
+    "specialty": "Ambush, evasion, distraction, pressure disruption, blindsided entries, stealth mobility, unpredictable taijutsu rhythms. He thrives in messy environments or fast-paced scenarios.",
+    "notableAbilities": "- Cat’s Pounce (Neko Tobi)  \n- Wind-Shift Dash  \n- Silent Step Household Art  \n- Curved Path Throw  \n- Stray Claw Combination  \n- Dust Scatter Step"
+  },
+  "personality": {
+    "overview": "Akisu is a loud, reactive tsundere with the instincts of a stray cat and the emotional range of someone who grew up wrestling seven siblings for dinner portions. He snaps, complains, and postures when embarrassed — but goes quiet and clingy when he actually cares. Quick to flare up and just as quick to cool off, Akisu hides his softness behind sarcasm and side-eye. Despite the dramatics, he’s loyal, protective, and surprisingly gentle with the people he trusts. His instincts are sharp, his attention span terrible, and his heart a little too big for someone who pretends not to like anyone.",
+    "positiveTraits": [
+      "Protective  ",
+      "Agile-minded  ",
+      "Quick to adapt  ",
+      "Affectionate (secretly)  ",
+      "Hardworking when motivated  ",
+      "Brave in unpredictable situations  "
+    ],
+    "negativeTraits": [
+      "Short-tempered  ",
+      "Easily embarrassed  ",
+      "Impulsive  ",
+      "Stubborn  ",
+      "Jealous  ",
+      "Avoidant during emotional conversations  ",
+      "Holds petty grudges  "
+    ],
+    "neutralTraits": [
+      "Dramatic  ",
+      "Competitive  ",
+      "Nosy  ",
+      "Food-motivated  ",
+      "Blunt  ",
+      "Secretly clingy  ",
+      "Sarcastic by default  "
+    ],
+    "likes": [
+      "Warm naps  ",
+      "Fish-based meals  ",
+      "Praise (denies it)  ",
+      "Being petted on the head (denies it loudly)  ",
+      "Climbing things  ",
+      "Fast-moving fights  ",
+      "Market crowds  ",
+      "Challenging dares  ",
+      "Soft hand wraps or gloves  "
+    ],
+    "dislikes": [
+      "Being scolded  ",
+      "Feeling ignored  ",
+      "Cold mornings  ",
+      "Long missions with no breaks  ",
+      "Complicated emotional conversations  ",
+      "People touching his stuff  ",
+      "Being outsped  ",
+      "Anyone petting him unexpectedly (immediate flustered denial)"
+    ],
+    "demeanor": {
+      "friendlyReserved": 3,
+      "politeBlunt": 8,
+      "cleverFoolish": 6,
+      "sensitiveTough": 3,
+      "braveTimid": 5,
+      "carefulReckless": 5.5,
+      "sincereDeceptive": 5.5,
+      "diligentLazy": 7,
+      "calmIrritable": 7,
+      "humorousSerious": 3
+    }
+  },
+  "abilities": {
+    "taijutsu": [
+      {
+        "style": "Cat’s Pounce (猫跳び, Neko Tobi)",
+        "description": "A sudden lunging strike where Akisu launches forward with catlike momentum, closing distance in a blur. Used to overwhelm opponents with speed rather than power. Extremely effective when executed from blind spots or elevated surfaces.\n",
+        "baseStyle": "",
+        "mastery": 3
+      }
+    ]
+  },
+  "relationships": [],
+  "storyArcs": [],
+  "recordHistory": {
+    "childhood": "Akisu grew up in a cramped, chaotic apartment stacked above his family’s spice stall in Konoha’s open-air market district. As the oldest of eight children, he learned early how to fight for food, dodge flying ladles, and slip through crowded spaces without being stepped on. His parents worked long hours at the stall, so Akisu naturally became the unofficial caretaker of his younger siblings—wrangling them, feeding them, and physically removing them from trouble on a daily basis.\n\nHe developed his catlike balance long before he entered the Academy, climbing shelves and darting between baskets of herbs to steal snacks or avoid chores. Market merchants nicknamed him “Tora’s Stray” for the way he appeared silently in their stores and vanished just as quickly. Although he acted tough, Akisu was affectionate with his siblings, letting them cling to him even as he loudly complained.\n\nHis teachers described him as “smart, but allergic to sitting still.” He excelled in physical tests, but struggled with written exams unless bribed with snacks. Despite this, he entered the Academy with a reputation as a quick-footed troublemaker who always survived the consequences of his own bad ideas.\n",
+    "adolescence": "During his Academy years, Akisu met Chigiri Akene, who always seemed far more composed than he was. He didn’t understand her at first—she was quiet where he was loud, calm where he was reactive—but he found himself hovering near her anyway. His pride never let him admit it out loud.\n\nGraduating at eleven, Akisu was placed on Team 4 with Akene and Amagawa Oniji, under Suishou Teruo. Their dynamic was an immediate mess: Oniji was responsible and patient; Akene was blunt and observant; Akisu was a walking disaster that somehow always landed on his feet. But together, they worked—and Teruo quickly identified Akisu as the team’s flanker and disruptor, using his speed and chaotic footwork to break enemy formations.\n\nHe matured slowly but noticeably. Missions forced him to control his impulses, think under pressure, and act with purpose. His tsundere tendencies got worse before they got better—especially around people he liked—but his loyalty deepened as Team 4 became a strange, mismatched little family.\n\nEven after Akene’s disappearance, Akisu kept searching for her without admitting that’s what he was doing. He insisted he was “just checking something,” even when he returned home bruised and frustrated. His growing sense of responsibility and his protective instincts increased his reliability as a shinobi, eventually earning him the rank of Chunin.\n",
+    "adulthood": "As an adult, Akisu grew into himself without losing the edges that made him who he was. He remained small, quick, outspoken, and impossible to pin down, though he learned how to channel his energy instead of letting it explode in every direction. His work as a Chunin emphasized reconnaissance, rapid-response missions, and urban tracking—roles that suited his instincts perfectly.\n\nHe kept close ties with his family, often delivering food or money home even when he claimed he didn’t care. His seven younger siblings continued to rely on him, and he visited their household often with a mix of exasperation and pride.\n\nThough older and more experienced, Akisu remained a true cat at heart: jumping into fights with reckless bravery, sulking when criticized, clinging (secretly) to the people he cared about, and hiding his softness behind grumbling and red-faced denial. His loyalty to Team 4 never faltered, and he maintained quiet contact with Oniji even as their missions pulled them in different directions.\n\nBy the Boruto era, Akisu had become a skilled, seasoned Chunin with a reputation for getting out of impossible situations—and dragging his teammates out with him. He still moved like a stray cat darting between shadows, still complained about everything, and still cared more than he ever admitted"
+  },
+  "appearance": {
+    "image": "",
+    "colors": [],
+    "gear": []
+  },
+  "appearanceByEra": {
+    "Part I": {
+      "description": "",
+      "clothing": "",
+      "accessories": "",
+      "visualMotifs": ""
+    },
+    "Part II": {
+      "description": "",
+      "clothing": "",
+      "accessories": "",
+      "visualMotifs": ""
+    },
+    "Blank Period": {
+      "description": "",
+      "clothing": "",
+      "accessories": "",
+      "visualMotifs": ""
+    },
+    "Gaiden": {
+      "description": "",
+      "clothing": "",
+      "accessories": "",
+      "visualMotifs": ""
+    },
+    "Boruto": {
+      "description": "",
+      "clothing": "",
+      "accessories": "",
+      "visualMotifs": ""
+    }
+  },
+  "imagesByEra": {
+    "Part I": "https://drive.google.com/file/d/11y1yOLiXPqMcFNdZ3sWCaNZkwI_Nyv0z/view?usp=sharing"
+  },
+  "profileImage": "",
+  "zodiac": "♎ Libra",
+  "sexualOrientation": "Bisexual",
+  "romanticOrientation": "Biromantic",
+  "family": {
+    "father": "Toraneko Haruto (虎猫 陽人)",
+    "mother": "Toraneko Miyo (虎猫 美代)",
+    "siblings": [
+      "Toraneko Kogane (虎猫 小金)",
+      "Toraneko Kase (虎猫 火勢)",
+      "Toraneko Nukui (虎猫 抜井)",
+      "Toraneko Sarashi (虎猫 晒)",
+      "Toraneko Ubai (虎猫 奪)",
+      "Toraneko Shitate (虎猫 仕立)",
+      "Toraneko Sukima (虎猫 隙間)"
+    ],
+    "otherRelatives": []
+  },
+  "ninjaRegistrationNumber": "012605",
+  "academyGraduationAge": "12",
+  "classification": [],
+  "kekkeiGenkai": "",
+  "chakraPhysicalProwess": {
+    "chakraReserves": "Akisu has modest chakra reserves—enough for quick bursts of speed and a few mid-level jutsu, but not built for long battles. He fights efficiently to avoid wasting chakra, relying on timing rather than brute output.\n",
+    "chakraControl": "Akisu has modest chakra reserves—enough for quick bursts of speed and a few mid-level jutsu, but not built for long battles. He fights efficiently to avoid wasting chakra, relying on timing rather than brute output.\n",
+    "strengthFeats": "Physically light and wiry, Akisu doesn’t excel in raw strength. What he lacks in muscle, he compensates with leverage, momentum, and well-timed strikes. His hits land sharper than expected due to technique, not power.\n",
+    "speedFeats": "His greatest natural asset. Akisu is startlingly fast—quick to dodge, quick to pounce, and unnervingly silent. He slips into blind spots easily and moves with catlike grace, often startling both teammates and opponents.\n",
+    "taijutsuSkill": "Highly agile, scrappy, close-quarters fighter. He uses low stances, sweeping kicks, abrupt lunges, and feint-heavy patterns. While not formally elegant, his taijutsu is unpredictable and effective.\n",
+    "trainingInfluences": "A chaotic childhood with seven younger siblings honed his reflexes early. Clan traditions emphasize light-footed mobility and balance, while Team 4 training under Suishou Teruo focused on speed, coordination, and battlefield awareness. Akisu also taught himself pounce-style taijutsu after observing stray cats in the market district.\n"
+  },
+  "intelligence": {
+    "academicPerformance": "Akisu was never a standout in traditional academics. His grades were average at best, dragged down by poor focus, boredom, and a tendency to skip homework to help at home or wander the village. Despite this, teachers noted that when something genuinely interested him, he absorbed it quickly. His performance wasn’t limited by ability—only motivation.\n",
+    "analyticalAbility": "While not an academic thinker, Akisu has sharp situational instincts. He reads movement patterns, openings, and body language with surprising accuracy. He notices small shifts—weight distribution, feints, and emotional tells—making him extremely good at predicting immediate reactions. Long-term analysis isn’t his strength, but short-range intuition is exceptional.\n",
+    "combatStrategy": "Akisu excels in reactive strategy rather than planning. He fights like a stray cat: opportunistic, flexible, adaptive, and quick to exploit mistakes. He’s not the one crafting a mission plan, but he is the one who can improvise when everything goes wrong. Chaos suits him, and he performs best under sudden pressure where instinct matters more than structure.\n",
+    "leadershipSkill": "Akisu is not a natural leader. He prefers following someone decisive, staying in the backline until it’s time to strike. However, in high-stress or chaotic situations, he occasionally slips into a low-key leadership role—not through authority, but through decisive action. He leads by doing, not by directing, and others tend to follow him when he moves first.\n"
+  },
+  "themeSong": "",
+  "themeSongLink": "",
+  "voiceActors": {
+    "japanese": "Yūki Kaji",
+    "english": "Max Mittelman"
+  },
+  "otherMedia": {
+    "novel": [],
+    "game": [],
+    "ova": [],
+    "movies": [],
+    "nonCanon": []
+  },
+  "quotes": [
+    "\"Wh— I wasn’t waiting for you. I just got here, okay?!\"",
+    "\"Don’t touch my hair. I mean it— it took forever to get it like this.\"",
+    "\"I’m not following you. We’re just going the same way. Shut up.\"",
+    "\"I wasn’t scared. I was assessing the risk. From behind the box.\"",
+    "\"Stop looking at me like that. My face does this naturally.\"",
+    "\"Tch— I didn’t save you. You just happened to be near my attack.\"",
+    "\"I don’t like you. …But don’t leave yet.\"",
+    "\"If you tell anyone I said that, I’m biting you.\"",
+    "\"I’m not jealous. I’m annoyed. Those are different.\"",
+    "\"I didn’t trip. The ground moved.\""
+  ],
+  "trivia": "• Akisu grew up as the eldest of eight siblings and still eats like food will be stolen from him.  \n• Merchants in the Konoha market call him “Tora’s Stray” because he appears silently and leaves even faster.  \n• His balance is good enough that he can walk across laundry lines without falling.  \n• Akisu’s ears turn red before the rest of his face when he gets flustered.  \n• He always claims he hates being petted— but visibly melts if someone he trusts does it.  \n• Has a habit of perching on furniture, railings, rooftops, or anything slightly elevated.  \n• Will hiss under his breath when startled. Team 4 is used to it.  \n• His Wind Release techniques developed naturally from trying to jump higher than his siblings.  \n• Market cats follow him around because he shares leftover snacks.  \n• When he’s embarrassed, he always denies it three times in different ways before giving up.",
+  "gallery": [],
+  "fears": [
+    "Being overlooked  ",
+    "Being underestimated  ",
+    "Losing freedom or movement  ",
+    "Letting his siblings down  ",
+    "Being trapped in a plan he didn’t choose  ",
+    "Not being strong enough to protect the people he cares about  "
+  ],
+  "moralAlignment": "Chaotic Good",
+  "mbti": "ESFP",
+  "enneagram": "Type 6",
+  "missions": {
+    "s": 0,
+    "a": 1,
+    "b": 4,
+    "c": 12,
+    "d": 23
+  }
+}
