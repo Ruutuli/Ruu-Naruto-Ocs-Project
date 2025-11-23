@@ -88,14 +88,14 @@ export function renderStoryDetail(story) {
       
       ${story.summary ? `
         <div class="story-summary-section">
-          <h3><i class="fas fa-scroll" style="margin-right: 0.5rem; color: var(--color-accent-2);"></i>Summary</h3>
+          <h3><i class="fas fa-scroll" style="margin-right: 0.5rem; color: var(--color-accent-2);"></i>Summary <i class="japanese-header">概要</i></h3>
           <div class="story-summary-text markdown-content">${renderMarkdown(story.summary)}</div>
         </div>
       ` : ''}
       
       ${characters.length > 0 ? `
         <div class="story-characters-section">
-          <h3><i class="fas fa-users" style="margin-right: 0.5rem; color: var(--color-accent-2);"></i>Characters</h3>
+          <h3><i class="fas fa-users" style="margin-right: 0.5rem; color: var(--color-accent-2);"></i>Characters <i class="japanese-header">キャラクター</i></h3>
           <div class="story-characters-grid">
             ${characters.map(oc => {
               const profileImageUrl = oc.profileImage ? convertImageUrl(oc.profileImage) : null;
@@ -123,7 +123,7 @@ export function renderStoryDetail(story) {
       
       <div class="story-content-section" id="story-content-section">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 1rem;">
-          ${chapters.length > 1 ? '' : '<h3 style="margin: 0;"><i class="fas fa-scroll" style="margin-right: 0.5rem; color: var(--color-accent-2);"></i>Story Content</h3>'}
+          ${chapters.length > 1 ? '' : '<h3 style="margin: 0;"><i class="fas fa-scroll" style="margin-right: 0.5rem; color: var(--color-accent-2);"></i>Story Content <i class="japanese-header">物語の内容</i></h3>'}
           <button class="btn-naruto" id="reader-mode-toggle" onclick="window.toggleReaderMode()" style="padding: 0.5rem 1rem; font-size: 0.9rem;">
             <i class="fas fa-book-reader"></i> <span id="reader-mode-text">Reader Mode</span>
           </button>

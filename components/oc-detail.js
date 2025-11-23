@@ -142,7 +142,7 @@ export function renderOCDetail(oc) {
     
     <div id="demeanor-collapse" class="collapsible-section">
       <div class="collapsible-header" onclick="toggleCollapse('demeanor-content')">
-        Demeanor <i class="japanese-header">態度</i>
+        <i class="fas fa-smile" style="margin-right: 0.5rem;"></i> Demeanor <i class="japanese-header">態度</i>
         <i class="fas fa-chevron-down bounce-arrow"></i>
       </div>
       <div id="demeanor-content" class="collapsible-content">
@@ -151,7 +151,7 @@ export function renderOCDetail(oc) {
     </div>
     
     <div class="appearance-section">
-      <h1>Appearance & Gear <i class="japanese-header">外見と装備</i></h1>
+      <h1><i class="fas fa-tshirt" style="margin-right: 0.5rem;"></i> Appearance & Gear <i class="japanese-header">外見と装備</i></h1>
       ${oc.appearance?.image ? (
         oc.appearance.image.startsWith('fa-') || oc.appearance.image.startsWith('fas ') || oc.appearance.image.startsWith('far ') || oc.appearance.image.startsWith('fab ') ?
           `<div class="appearance-image-container"><div class="appearance-icon"><i class="${oc.appearance.image}"></i></div></div>` :
@@ -191,7 +191,7 @@ export function renderOCDetail(oc) {
     
       <div id="record-history-collapse" class="collapsible-section">
         <div class="collapsible-header" onclick="toggleCollapse('record-history-content')">
-          Record History <i class="japanese-header">記録履歴</i>
+          <i class="fas fa-scroll" style="margin-right: 0.5rem;"></i> Record History <i class="japanese-header">記録履歴</i>
           <i class="fas fa-chevron-down bounce-arrow"></i>
         </div>
         <div id="record-history-content" class="collapsible-content">
@@ -201,7 +201,7 @@ export function renderOCDetail(oc) {
       
       <div id="other-media-collapse" class="collapsible-section">
         <div class="collapsible-header" onclick="toggleCollapse('other-media-content')">
-          In Other Media <i class="japanese-header">その他のメディア</i>
+          <i class="fas fa-film" style="margin-right: 0.5rem;"></i> In Other Media <i class="japanese-header">その他のメディア</i>
           <i class="fas fa-chevron-down bounce-arrow"></i>
         </div>
         <div id="other-media-content" class="collapsible-content">
@@ -260,7 +260,7 @@ export function renderOCDetail(oc) {
       </div>
       
       <div class="media-section">
-        <h3>Miscellaneous <i class="japanese-header">その他</i></h3>
+        <h3><i class="fas fa-ellipsis-h" style="margin-right: 0.5rem;"></i> Miscellaneous <i class="japanese-header">その他</i></h3>
         ${oc.themeSong || oc.themeSongLink ? `
         <p><strong>Theme Song:</strong> 
           ${oc.themeSong ? oc.themeSong : ''}
@@ -292,7 +292,7 @@ export function renderOCDetail(oc) {
       
     <div id="gallery-collapse" class="collapsible-section">
       <div class="collapsible-header" onclick="toggleCollapse('gallery-content')">
-        Gallery <i class="japanese-header">ギャラリー</i>
+        <i class="fas fa-images" style="margin-right: 0.5rem;"></i> Gallery <i class="japanese-header">ギャラリー</i>
         <i class="fas fa-chevron-down bounce-arrow"></i>
       </div>
       <div id="gallery-content" class="collapsible-content">
@@ -910,7 +910,7 @@ function renderIdentifyingInfo(oc) {
   
   return `
     <div class="identifying-info">
-      <h1>Identifying Information <i class="japanese-header">識別情報</i></h1>
+      <h1><i class="fas fa-id-card" style="margin-right: 0.5rem;"></i> Identifying Information <i class="japanese-header">識別情報</i></h1>
       <div class="info-grid">
         ${renderInfoRow('Aliases', oc.aliases?.join(', ') || 'None')}
         ${(() => {
@@ -1002,7 +1002,7 @@ function renderIdentifyingInfo(oc) {
         })()}
       </div>
       <div class="rank-section">
-        <h2 class="rank-section-title">Missions Completed <i class="japanese-header">完了した任務</i></h2>
+        <h2 class="rank-section-title"><i class="fas fa-tasks" style="margin-right: 0.5rem;"></i> Missions Completed <i class="japanese-header">完了した任務</i></h2>
         <div class="rank-row">
           ${['S', 'A', 'B', 'C', 'D'].map(rank => {
             const missionCount = oc.missions?.[rank.toLowerCase()] || 0;
@@ -1148,7 +1148,7 @@ function renderBattleStrategy(oc) {
   
   return `
     <div class="battle-strategy">
-      <h3>Battle Strategy <i class="japanese-header">戦略</i></h3>
+      <h3><i class="fas fa-chess" style="margin-right: 0.5rem;"></i> Battle Strategy <i class="japanese-header">戦略</i></h3>
       <div class="strategy-text">
         <strong>In a team:</strong> ${strategy.inTeam || 'Content'}<br>
         <strong>Alone:</strong> ${strategy.alone || 'Content'}

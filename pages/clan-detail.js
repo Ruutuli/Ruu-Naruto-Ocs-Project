@@ -85,7 +85,7 @@ export function renderClanDetail(clan) {
       
       ${hasValue('overview.origins') || hasValue('overview.knownFor') || hasValue('overview.purpose') || hasValue('overview.fitInUniverse') ? `
         <div class="clan-info-section">
-          <h3><i class="fas fa-book-open"></i> Overview</h3>
+          <h3><i class="fas fa-book-open" style="margin-right: 0.5rem;"></i> Overview <i class="japanese-header">概要</i></h3>
           ${hasValue('overview.origins') ? `
             <div style="margin-bottom: 1rem;">
               <strong style="color: var(--color-dark-2); font-size: 1.1rem;">Origins:</strong>
@@ -115,7 +115,7 @@ export function renderClanDetail(clan) {
       
       ${hasValue('kekkeiGenkai.name') || hasValue('kekkeiGenkai.description') ? `
         <div class="clan-info-section">
-          <h3><i class="fas fa-eye"></i> Kekkei Genkai / Hiden</h3>
+          <h3><i class="fas fa-eye" style="margin-right: 0.5rem;"></i> Kekkei Genkai / Hiden <i class="japanese-header">血継限界・秘伝</i></h3>
           ${hasValue('kekkeiGenkai.name') ? `
             <div style="margin-bottom: 1rem;">
               <strong style="color: var(--color-dark-2); font-size: 1.1rem;">Name:</strong>
@@ -163,7 +163,7 @@ export function renderClanDetail(clan) {
       
       ${hasValue('villagesLands.primaryLocation') || hasArray('villagesLands.branches') || hasValue('villagesLands.territory') || hasValue('villagesLands.reputation') ? `
         <div class="clan-info-section">
-          <h3><i class="fas fa-map"></i> Village / Region Presence</h3>
+          <h3><i class="fas fa-map" style="margin-right: 0.5rem;"></i> Village / Region Presence <i class="japanese-header">村・地域の存在</i></h3>
           ${hasValue('villagesLands.primaryLocation') ? `
             <div style="margin-bottom: 1rem;">
               <strong style="color: var(--color-dark-2); font-size: 1.1rem;">Primary Location:</strong>
@@ -195,7 +195,7 @@ export function renderClanDetail(clan) {
       
       ${hasValue('appearancePhysicalTraits') ? `
         <div class="clan-info-section">
-          <h3><i class="fas fa-user"></i> Appearance / Physical Traits</h3>
+          <h3><i class="fas fa-user" style="margin-right: 0.5rem;"></i> Appearance / Physical Traits <i class="japanese-header">外見・身体的特徴</i></h3>
           <div style="line-height: 1.8; color: var(--color-text-dark-2); font-size: 1.05rem;" class="markdown-content">${renderMarkdown(getValue('appearancePhysicalTraits'))}</div>
         </div>
       ` : ''}
@@ -212,7 +212,7 @@ export function renderClanDetail(clan) {
         return hasSignatureJutsu || hasChakraNatures || hasCombatStyle || hasRoleInVillage || hasStrengths || hasWeaknesses || oldFormatAbilities;
       })() ? `
         <div class="clan-info-section">
-          <h3><i class="fas fa-magic"></i> Abilities</h3>
+          <h3><i class="fas fa-magic" style="margin-right: 0.5rem;"></i> Abilities <i class="japanese-header">能力</i></h3>
           ${(() => {
             const newFormatAbilities = clan.abilities && typeof clan.abilities === 'object' && !Array.isArray(clan.abilities);
             const hasSignatureJutsu = newFormatAbilities && Array.isArray(clan.abilities.signatureJutsu) && clan.abilities.signatureJutsu.length > 0;
@@ -312,7 +312,7 @@ export function renderClanDetail(clan) {
       
       ${hasValue('leaders.currentLeader') || hasArray('leaders.pastLeaders') || hasValue('leaders.heirs') ? `
         <div class="clan-info-section">
-          <h3><i class="fas fa-crown"></i> Leaders</h3>
+          <h3><i class="fas fa-crown" style="margin-right: 0.5rem;"></i> Leaders <i class="japanese-header">リーダー</i></h3>
           ${hasValue('leaders.currentLeader') ? `
             <div style="margin-bottom: 1rem;">
               <strong style="color: var(--color-dark-2); font-size: 1.1rem;">Current Leader:</strong>
@@ -338,7 +338,7 @@ export function renderClanDetail(clan) {
       
       ${hasArray('notableMembers') ? `
         <div class="clan-info-section">
-          <h3><i class="fas fa-users"></i> Notable Clan Members</h3>
+          <h3><i class="fas fa-users" style="margin-right: 0.5rem;"></i> Notable Clan Members <i class="japanese-header">著名な一族のメンバー</i></h3>
           <ul style="color: var(--color-text-dark-2); padding-left: 1.5rem;">
             ${getValue('notableMembers', []).map(member => `<li style="margin-bottom: 0.5rem; line-height: 1.6;">${renderMarkdown(member)}</li>`).join('')}
           </ul>
@@ -347,14 +347,14 @@ export function renderClanDetail(clan) {
       
       ${hasValue('history') ? `
         <div class="clan-info-section">
-          <h3><i class="fas fa-scroll"></i> History</h3>
+          <h3><i class="fas fa-scroll" style="margin-right: 0.5rem;"></i> History <i class="japanese-header">歴史</i></h3>
           <div style="line-height: 1.8; color: var(--color-text-dark-2); font-size: 1.05rem; padding: 1rem; background-color: rgba(227, 94, 63, 0.05); border-radius: 6px; border-left: 4px solid var(--color-accent-2);" class="markdown-content">${renderMarkdown(clan.history)}</div>
         </div>
       ` : ''}
       
       ${hasValue('ocCreationAllowed') ? `
         <div class="clan-info-section">
-          <h3><i class="fas fa-user-plus"></i> OC Creation Policy</h3>
+          <h3><i class="fas fa-user-plus" style="margin-right: 0.5rem;"></i> OC Creation Policy <i class="japanese-header">OC作成ポリシー</i></h3>
           <div style="padding: 1rem; background-color: rgba(227, 94, 63, 0.05); border-radius: 6px; border-left: 4px solid var(--color-accent-2);">
             <strong style="color: var(--color-dark-2);">Are Others Allowed to Make OCs from This Clan?</strong>
             <div style="color: var(--color-text-dark-2); margin-top: 0.5rem; font-size: 1.1rem; font-weight: 600;">${getValue('ocCreationAllowed')}</div>
@@ -364,21 +364,21 @@ export function renderClanDetail(clan) {
       
       ${hasValue('trivia') ? `
         <div class="clan-info-section">
-          <h3><i class="fas fa-lightbulb"></i> Trivia</h3>
+          <h3><i class="fas fa-lightbulb" style="margin-right: 0.5rem;"></i> Trivia <i class="japanese-header">トリビア</i></h3>
           <div style="line-height: 1.8; color: var(--color-text-dark-2); font-size: 1.05rem; padding: 1rem; background-color: rgba(227, 94, 63, 0.05); border-radius: 6px; border-left: 4px solid var(--color-accent-2);" class="markdown-content">${renderMarkdown(getValue('trivia'))}</div>
         </div>
       ` : ''}
       
       ${hasValue('references') ? `
         <div class="clan-info-section">
-          <h3><i class="fas fa-book"></i> References</h3>
+          <h3><i class="fas fa-book" style="margin-right: 0.5rem;"></i> References <i class="japanese-header">参考文献</i></h3>
           <div style="line-height: 1.8; color: var(--color-text-dark-2); font-size: 1.05rem;" class="markdown-content">${renderMarkdown(getValue('references'))}</div>
         </div>
       ` : ''}
       
       ${hasArray('moodBoardImages') ? `
         <div class="clan-info-section">
-          <h3><i class="fas fa-images"></i> Aesthetic Mood Board</h3>
+          <h3><i class="fas fa-images" style="margin-right: 0.5rem;"></i> Aesthetic Mood Board <i class="japanese-header">美的ムードボード</i></h3>
           <div class="mood-board-grid">
             ${getValue('moodBoardImages', []).map((imgUrl, index) => `
               <div class="mood-board-item" style="animation-delay: ${index * 0.1}s;">
@@ -390,7 +390,7 @@ export function renderClanDetail(clan) {
       ` : ''}
       
       <div class="clan-info-section">
-        <h3><i class="fas fa-users"></i> Clan Members (${members.length})</h3>
+        <h3><i class="fas fa-users" style="margin-right: 0.5rem;"></i> Clan Members <i class="japanese-header">一族のメンバー</i> (${members.length})</h3>
         ${members.length > 0 ? `
           <div class="clan-members-grid">
             ${members.map(oc => `

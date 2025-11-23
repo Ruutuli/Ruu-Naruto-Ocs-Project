@@ -40,7 +40,7 @@ export function renderLoreDetail(lore) {
       
       ${relatedOCs.length > 0 ? `
         <div class="lore-related-section">
-          <h3><i class="fas fa-users" style="margin-right: 0.5rem; color: var(--color-accent-2);"></i>Related OCs</h3>
+          <h3><i class="fas fa-users" style="margin-right: 0.5rem; color: var(--color-accent-2);"></i>Related OCs <i class="japanese-header">関連OC</i></h3>
           <div class="lore-related-grid">
             ${relatedOCs.map(oc => `
               <div class="lore-related-card" onclick="window.location.hash = 'ocs/${oc.id}'">
@@ -55,7 +55,7 @@ export function renderLoreDetail(lore) {
       
       ${relatedClans.length > 0 ? `
         <div class="lore-related-section">
-          <h3><i class="fas fa-shield-alt" style="margin-right: 0.5rem; color: var(--color-accent-2);"></i>Related Clans</h3>
+          <h3><i class="fas fa-shield-alt" style="margin-right: 0.5rem; color: var(--color-accent-2);"></i>Related Clans <i class="japanese-header">関連一族</i></h3>
           <div class="lore-related-grid">
             ${relatedClans.map(clan => `
               <div class="lore-related-card" onclick="window.location.hash = 'clans/${clan.id}'">
@@ -69,7 +69,7 @@ export function renderLoreDetail(lore) {
       ` : ''}
       
       <div class="lore-related-section">
-        <h3 style="margin-bottom: 1.5rem;"><i class="fas fa-scroll" style="margin-right: 0.5rem; color: var(--color-accent-2);"></i>Lore Content</h3>
+        <h3 style="margin-bottom: 1.5rem;"><i class="fas fa-scroll" style="margin-right: 0.5rem; color: var(--color-accent-2);"></i>Lore Content <i class="japanese-header">伝承の内容</i></h3>
         <div class="lore-content-section markdown-content">
           ${renderMarkdown(lore.content || 'No content available.')}
         </div>
