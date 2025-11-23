@@ -905,6 +905,57 @@
   font-style: italic;
 }
 
+/* Family Section */
+.family-info {
+  padding: 1rem;
+}
+
+.family-member {
+  margin-bottom: 1rem;
+  padding: 0.75rem;
+  background-color: var(--color-bg-1);
+  border-left: 3px solid var(--color-accent-2);
+}
+
+.family-member strong {
+  color: var(--color-accent-2);
+  margin-right: 0.5rem;
+}
+
+/* Physical Appearance Section */
+.physical-appearance-info {
+  padding: 1rem;
+}
+
+.appearance-item {
+  margin-bottom: 1rem;
+  padding: 0.75rem;
+  background-color: var(--color-bg-1);
+  border-left: 3px solid var(--color-accent-2);
+}
+
+.appearance-item strong {
+  color: var(--color-accent-2);
+  margin-right: 0.5rem;
+}
+
+/* Affiliations Section */
+.affiliations-info {
+  padding: 1rem;
+}
+
+.affiliation-item {
+  margin-bottom: 1rem;
+  padding: 0.75rem;
+  background-color: var(--color-bg-1);
+  border-left: 3px solid var(--color-accent-2);
+}
+
+.affiliation-item strong {
+  color: var(--color-accent-2);
+  margin-right: 0.5rem;
+}
+
 /* Record History */
 .record-history {
   margin-top: 2rem;

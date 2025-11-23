@@ -1,6 +1,7 @@
 // OC Detail Component - Full Data Book style character sheet renderer
 
 import { natureReleases, getNatureRelease, getClanSymbol, getTechniqueTypeLabel, allTechniqueTypes } from '../data/options.js';
+import storage from '../data/storage.js';
 
 export function renderOCDetail(oc) {
   const container = document.createElement('div');
@@ -82,6 +83,46 @@ export function renderOCDetail(oc) {
       </div>
     </div>
     
+    <div id="family-collapse" class="collapsible-section">
+      <div class="collapsible-header" onclick="toggleCollapse('family-content')">
+        Family <i class="japanese-header">家族</i>
+        <i class="fas fa-chevron-down bounce-arrow"></i>
+      </div>
+      <div id="family-content" class="collapsible-content">
+        ${renderFamily(oc)}
+      </div>
+    </div>
+    
+    <div id="physical-appearance-collapse" class="collapsible-section">
+      <div class="collapsible-header" onclick="toggleCollapse('physical-appearance-content')">
+        Physical Appearance <i class="japanese-header">外見</i>
+        <i class="fas fa-chevron-down bounce-arrow"></i>
+      </div>
+      <div id="physical-appearance-content" class="collapsible-content">
+        ${renderPhysicalAppearance(oc)}
+      </div>
+    </div>
+    
+    <div id="appearance-by-era-collapse" class="collapsible-section">
+      <div class="collapsible-header" onclick="toggleCollapse('appearance-by-era-content')">
+        Appearance by Era <i class="japanese-header">時代別の外見</i>
+        <i class="fas fa-chevron-down bounce-arrow"></i>
+      </div>
+      <div id="appearance-by-era-content" class="collapsible-content">
+        ${renderAppearanceByEra(oc)}
+      </div>
+    </div>
+    
+    <div id="affiliations-collapse" class="collapsible-section">
+      <div class="collapsible-header" onclick="toggleCollapse('affiliations-content')">
+        Affiliations <i class="japanese-header">所属</i>
+        <i class="fas fa-chevron-down bounce-arrow"></i>
+      </div>
+      <div id="affiliations-content" class="collapsible-content">
+        ${renderAffiliations(oc)}
+      </div>
+    </div>
+    
     <div id="personality-collapse" class="collapsible-section">
       <div class="collapsible-header" onclick="toggleCollapse('personality-content')">
         Known Behavior <i class="japanese-header">既知の行動</i>
@@ -138,43 +179,15 @@ export function renderOCDetail(oc) {
           }).join('')}
         </div>
       ` : (!oc.appearance?.gear || oc.appearance.gear.length === 0 ? '<p style="color: var(--color-text-dark-2); font-style: italic; padding: 1rem;">No gear items recorded.</p>' : '')}
-      ${(() => {
-        const eras = ['Part I', 'Part II', 'Blank Period', 'Gaiden', 'Boruto'];
-        const hasAppearanceByEra = oc.appearanceByEra && eras.some(era => {
-          const eraApp = oc.appearanceByEra[era];
-          return eraApp && (eraApp.description || eraApp.clothing || eraApp.accessories || eraApp.visualMotifs);
-        });
-        return hasAppearanceByEra ? `
-          <div style="margin-top: 2rem;">
-            <h3>Appearance by Era <i class="japanese-header">時代別の外見</i></h3>
-            ${eras.map(era => {
-              const eraApp = oc.appearanceByEra?.[era];
-              if (!eraApp || (!eraApp.description && !eraApp.clothing && !eraApp.accessories && !eraApp.visualMotifs)) {
-                return '';
-              }
-              return `
-                <div style="margin-bottom: 2rem; padding: 1rem; border: 1px solid var(--color-border-2); border-radius: 4px;">
-                  <h4 style="color: var(--color-accent-2); margin-bottom: 1rem;">${era}</h4>
-                  ${eraApp.description ? `<p><strong>Description:</strong> ${eraApp.description}</p>` : ''}
-                  ${eraApp.clothing ? `<p><strong>Signature Clothing:</strong> ${eraApp.clothing}</p>` : ''}
-                  ${eraApp.accessories ? `<p><strong>Accessories:</strong> ${eraApp.accessories}</p>` : ''}
-                  ${eraApp.visualMotifs ? `<p><strong>Visual Motifs:</strong> ${eraApp.visualMotifs}</p>` : ''}
-                </div>
-              `;
-            }).filter(html => html).join('')}
-          </div>
-        ` : '';
-      })()}
     </div>
     
-      ${oc.storyArcs && oc.storyArcs.length > 0 ? `
       <div id="story-arcs-collapse" class="collapsible-section">
         <div class="collapsible-header" onclick="toggleCollapse('story-arcs-content')">
           Story Arcs / Timeline <i class="japanese-header">ストーリーアーク/タイムライン</i>
           <i class="fas fa-chevron-down bounce-arrow"></i>
         </div>
         <div id="story-arcs-content" class="collapsible-content">
-          ${oc.storyArcs.map(arc => `
+          ${oc.storyArcs && oc.storyArcs.length > 0 ? oc.storyArcs.map(arc => `
             <div class="story-arc-entry" style="margin-bottom: 2rem; padding-bottom: 2rem; border-bottom: 1px solid var(--color-border-2);">
               <h3 style="color: var(--color-accent-2); margin-bottom: 0.5rem;">${arc.name || 'Unnamed Arc'}</h3>
               ${arc.summary ? `<p style="margin-bottom: 1rem;">${arc.summary}</p>` : ''}
@@ -185,24 +198,28 @@ export function renderOCDetail(oc) {
                 </ul>
               ` : ''}
             </div>
-          `).join('')}
+          `).join('') : '<div class="relationships-empty"><p>No story arcs recorded.</p></div>'}
         </div>
       </div>
-      ` : ''}
       
-      ${oc.otherMedia ? (() => {
-        const hasOtherMedia = (oc.otherMedia.novel && oc.otherMedia.novel.length > 0) ||
-                              (oc.otherMedia.game && oc.otherMedia.game.length > 0) ||
-                              (oc.otherMedia.ova && oc.otherMedia.ova.length > 0) ||
-                              (oc.otherMedia.movies && oc.otherMedia.movies.length > 0) ||
-                              (oc.otherMedia.nonCanon && oc.otherMedia.nonCanon.length > 0);
-        return hasOtherMedia ? `
-          <div id="other-media-collapse" class="collapsible-section">
-            <div class="collapsible-header" onclick="toggleCollapse('other-media-content')">
-              In Other Media <i class="japanese-header">その他のメディア</i>
-              <i class="fas fa-chevron-down bounce-arrow"></i>
-            </div>
-            <div id="other-media-content" class="collapsible-content">
+      <div id="other-media-collapse" class="collapsible-section">
+        <div class="collapsible-header" onclick="toggleCollapse('other-media-content')">
+          In Other Media <i class="japanese-header">その他のメディア</i>
+          <i class="fas fa-chevron-down bounce-arrow"></i>
+        </div>
+        <div id="other-media-content" class="collapsible-content">
+          ${(() => {
+            const hasOtherMedia = oc.otherMedia && (
+              (oc.otherMedia.novel && oc.otherMedia.novel.length > 0) ||
+              (oc.otherMedia.game && oc.otherMedia.game.length > 0) ||
+              (oc.otherMedia.ova && oc.otherMedia.ova.length > 0) ||
+              (oc.otherMedia.movies && oc.otherMedia.movies.length > 0) ||
+              (oc.otherMedia.nonCanon && oc.otherMedia.nonCanon.length > 0)
+            );
+            if (!hasOtherMedia) {
+              return '<div class="relationships-empty"><p>No other media appearances recorded.</p></div>';
+            }
+            return `
               ${oc.otherMedia.novel && oc.otherMedia.novel.length > 0 ? `
                 <div style="margin-bottom: 1rem;">
                   <h4>Novel Appearances</h4>
@@ -243,10 +260,10 @@ export function renderOCDetail(oc) {
                   </ul>
                 </div>
               ` : ''}
-            </div>
-          </div>
-        ` : '';
-      })() : ''}
+            `;
+          })()}
+        </div>
+      </div>
       
       <div class="media-section">
         <h3>Miscellaneous <i class="japanese-header">その他</i></h3>
@@ -279,17 +296,15 @@ export function renderOCDetail(oc) {
         ` : ''}
       </div>
       
-    ${oc.gallery && oc.gallery.length > 0 ? `
     <div id="gallery-collapse" class="collapsible-section">
       <div class="collapsible-header" onclick="toggleCollapse('gallery-content')">
         Gallery <i class="japanese-header">ギャラリー</i>
         <i class="fas fa-chevron-down bounce-arrow"></i>
       </div>
       <div id="gallery-content" class="collapsible-content">
-        ${renderGallery(oc)}
+        ${oc.gallery && oc.gallery.length > 0 ? renderGallery(oc) : '<div class="relationships-empty"><p>No images in gallery.</p></div>'}
       </div>
     </div>
-    ` : ''}
       <div class="oc-sheet-footer">
         <div>authorized personnel only<br>shinobi registration file</div>
       </div>
@@ -716,6 +731,55 @@ function renderLandBadges(village) {
   }).join('');
 }
 
+// Helper function to find an OC by name (matches firstName, lastName, or full name)
+function findOCByName(name) {
+  if (!name || typeof name !== 'string') return null;
+  
+  const allOCs = storage.getAllOCs();
+  const normalizedName = name.trim().toLowerCase();
+  
+  // Try to find exact match first
+  for (const otherOC of allOCs) {
+    const fullName = `${otherOC.firstName || ''} ${otherOC.lastName || ''}`.trim().toLowerCase();
+    const firstName = (otherOC.firstName || '').trim().toLowerCase();
+    const lastName = (otherOC.lastName || '').trim().toLowerCase();
+    
+    // Match full name, first name, or last name
+    if (fullName === normalizedName || 
+        firstName === normalizedName || 
+        lastName === normalizedName ||
+        fullName.includes(normalizedName) ||
+        normalizedName.includes(fullName)) {
+      return otherOC;
+    }
+  }
+  
+  return null;
+}
+
+// Helper function to render character names as links
+function renderCharacterLinks(names, isArray = false) {
+  if (!names) return '';
+  
+  const nameList = isArray ? names : [names];
+  if (nameList.length === 0) return '';
+  
+  const links = nameList.map(name => {
+    if (!name || typeof name !== 'string') return name;
+    
+    const matchedOC = findOCByName(name);
+    if (matchedOC) {
+      // Create clickable link
+      return `<a href="#ocs/${matchedOC.id}" onclick="window.showOCDetail('${matchedOC.id}'); return false;" style="color: var(--color-accent-2); text-decoration: underline; cursor: pointer;">${name}</a>`;
+    } else {
+      // Just return the name as plain text if no match found
+      return name;
+    }
+  });
+  
+  return links.join(', ');
+}
+
 function renderIdentifyingInfo(oc) {
   const info = oc.identifyingInfo || {};
   
@@ -758,7 +822,7 @@ function renderIdentifyingInfo(oc) {
             const meaningsHtml = meanings.map(m => `<div style="margin-bottom: 0.25rem;">${m}</div>`).join('');
             return renderInfoRow('Name Meaning', `<div style="display: block;">${meaningsHtml}</div>`);
           }
-          return '';
+          return renderInfoRow('Name Meaning', 'Not specified');
         })()}
         ${renderInfoRow('Date of Birth', formatDateOfBirth(oc.dob) || 'Unknown')}
         ${oc.zodiac ? renderInfoRow('Zodiac', oc.zodiac) : ''}
@@ -781,40 +845,19 @@ function renderIdentifyingInfo(oc) {
         })()}
         ${renderInfoRow('Blood Type', oc.bloodType || 'Unknown')}
         ${renderInfoRow('Gender', oc.gender || 'Unknown')}
-        ${orientation ? renderInfoRow('Orientation', orientation) : ''}
-        ${oc.natureType ? renderNatureTypeRow(oc.natureType) : ''}
-        ${oc.kekkeiGenkai ? renderInfoRow('Kekkei Genkai', oc.kekkeiGenkai) : ''}
-        ${oc.ninjaRegistrationNumber ? renderInfoRow('Ninja Registration Number', oc.ninjaRegistrationNumber) : ''}
-        ${oc.academyGraduationAge ? renderInfoRow('Academy Graduation Age', oc.academyGraduationAge) : ''}
-        ${oc.classification && oc.classification.length > 0 ? renderInfoRow('Classification', oc.classification.join(', ')) : ''}
-        ${oc.rank && (Array.isArray(oc.rank) ? oc.rank.length > 0 : oc.rank) ? renderInfoRow('Rank', Array.isArray(oc.rank) ? oc.rank.join(', ') : oc.rank) : ''}
-        ${oc.teamNumber ? renderInfoRow('Team Number', oc.teamNumber) : ''}
-        ${oc.teammates && oc.teammates.length > 0 ? renderInfoRow('Teammates', oc.teammates.join(', ')) : ''}
-        ${oc.sensei ? renderInfoRow('Sensei', oc.sensei) : ''}
-        ${oc.madeGenin ? renderInfoRow('Made Genin', oc.madeGenin) : ''}
-        ${oc.madeChunin ? renderInfoRow('Made Chunin', oc.madeChunin) : ''}
-        ${oc.debut ? (() => {
+        ${orientation ? renderInfoRow('Orientation', orientation) : renderInfoRow('Orientation', 'Not specified')}
+        ${oc.natureType ? renderNatureTypeRow(oc.natureType) : renderInfoRow('Nature Type', 'Not specified')}
+        ${oc.kekkeiGenkai ? renderInfoRow('Kekkei Genkai', oc.kekkeiGenkai) : renderInfoRow('Kekkei Genkai', 'None')}
+        ${(() => {
           const debuts = [];
-          if (oc.debut.manga) debuts.push(`Manga: ${oc.debut.manga}`);
-          if (oc.debut.anime) debuts.push(`Anime: ${oc.debut.anime}`);
-          if (oc.debut.novel) debuts.push(`Novel: ${oc.debut.novel}`);
-          if (oc.debut.movie) debuts.push(`Movie: ${oc.debut.movie}`);
-          if (oc.debut.game) debuts.push(`Game: ${oc.debut.game}`);
-          return debuts.length > 0 ? renderInfoRow('Debut', debuts.join('<br>')) : '';
-        })() : ''}
-        ${oc.appearsIn && oc.appearsIn.length > 0 ? renderInfoRow('Appears In', oc.appearsIn.join(', ')) : ''}
-        ${oc.family ? (() => {
-          const familyInfo = [];
-          if (oc.family.father) familyInfo.push(`Father: ${oc.family.father}`);
-          if (oc.family.mother) familyInfo.push(`Mother: ${oc.family.mother}`);
-          if (oc.family.siblings && oc.family.siblings.length > 0) familyInfo.push(`Siblings: ${oc.family.siblings.join(', ')}`);
-          if (oc.family.otherRelatives && oc.family.otherRelatives.length > 0) familyInfo.push(`Other Relatives: ${oc.family.otherRelatives.join(', ')}`);
-          return familyInfo.length > 0 ? renderInfoRow('Family', familyInfo.join('<br>')) : '';
-        })() : ''}
-        ${renderInfoRow('Body Type', info.bodyType || 'Unknown')}
-        ${oc.eyeColor ? renderInfoRow('Eye Color', oc.eyeColor) : ''}
-        ${oc.hairColor ? renderInfoRow('Hair Color', oc.hairColor) : ''}
-        ${oc.distinguishingFeatures && oc.distinguishingFeatures.length > 0 ? renderInfoRow('Distinguishing Features', oc.distinguishingFeatures.join(', ')) : ''}
+          if (oc.debut?.manga) debuts.push(`Manga: ${oc.debut.manga}`);
+          if (oc.debut?.anime) debuts.push(`Anime: ${oc.debut.anime}`);
+          if (oc.debut?.novel) debuts.push(`Novel: ${oc.debut.novel}`);
+          if (oc.debut?.movie) debuts.push(`Movie: ${oc.debut.movie}`);
+          if (oc.debut?.game) debuts.push(`Game: ${oc.debut.game}`);
+          return debuts.length > 0 ? renderInfoRow('Debut', debuts.join('<br>')) : renderInfoRow('Debut', 'Not specified');
+        })()}
+        ${oc.appearsIn && oc.appearsIn.length > 0 ? renderInfoRow('Appears In', oc.appearsIn.join(', ')) : renderInfoRow('Appears In', 'Not specified')}
         ${(() => {
           // Render height by era if available, otherwise use old format
           if (hasHeightByEra) {
@@ -1119,6 +1162,124 @@ function renderRelationships(oc) {
           </div>
         `;
       }).join('')}
+    </div>
+  `;
+}
+
+function renderFamily(oc) {
+  const family = oc.family || {};
+  const hasFamily = family.father || family.mother || (family.siblings && family.siblings.length > 0) || (family.otherRelatives && family.otherRelatives.length > 0);
+  
+  if (!hasFamily) {
+    return '<div class="relationships-empty"><p>No family information recorded.</p></div>';
+  }
+  
+  return `
+    <div class="family-info">
+      ${family.father ? `<div class="family-member"><strong>Father:</strong> ${family.father}</div>` : ''}
+      ${family.mother ? `<div class="family-member"><strong>Mother:</strong> ${family.mother}</div>` : ''}
+      ${family.siblings && family.siblings.length > 0 ? `
+        <div class="family-member">
+          <strong>Siblings:</strong> ${family.siblings.join(', ')}
+        </div>
+      ` : ''}
+      ${family.otherRelatives && family.otherRelatives.length > 0 ? `
+        <div class="family-member">
+          <strong>Other Relatives:</strong> ${family.otherRelatives.join(', ')}
+        </div>
+      ` : ''}
+    </div>
+  `;
+}
+
+function renderPhysicalAppearance(oc) {
+  const info = oc.identifyingInfo || {};
+  const hasAppearance = info.bodyType || oc.eyeColor || oc.hairColor || (oc.distinguishingFeatures && oc.distinguishingFeatures.length > 0);
+  
+  if (!hasAppearance) {
+    return '<div class="relationships-empty"><p>No physical appearance information recorded.</p></div>';
+  }
+  
+  return `
+    <div class="physical-appearance-info">
+      ${info.bodyType ? `<div class="appearance-item"><strong>Body Type:</strong> ${info.bodyType}</div>` : ''}
+      ${oc.eyeColor ? `<div class="appearance-item"><strong>Eye Color:</strong> ${oc.eyeColor}</div>` : ''}
+      ${oc.hairColor ? `<div class="appearance-item"><strong>Hair Color:</strong> ${oc.hairColor}</div>` : ''}
+      ${oc.distinguishingFeatures && oc.distinguishingFeatures.length > 0 ? `
+        <div class="appearance-item">
+          <strong>Distinguishing Features:</strong> ${oc.distinguishingFeatures.join(', ')}
+        </div>
+      ` : ''}
+    </div>
+  `;
+}
+
+function renderAppearanceByEra(oc) {
+  const eras = ['Part I', 'Part II', 'Blank Period', 'Gaiden', 'Boruto'];
+  const hasAppearanceByEra = oc.appearanceByEra && eras.some(era => {
+    const eraApp = oc.appearanceByEra[era];
+    return eraApp && (eraApp.description || eraApp.clothing || eraApp.accessories || eraApp.visualMotifs);
+  });
+  
+  if (!hasAppearanceByEra) {
+    return '<div class="relationships-empty"><p>No appearance data by era recorded.</p></div>';
+  }
+  
+  return `
+    <div class="appearance-by-era">
+      ${eras.map(era => {
+        const eraApp = oc.appearanceByEra?.[era];
+        if (!eraApp || (!eraApp.description && !eraApp.clothing && !eraApp.accessories && !eraApp.visualMotifs)) {
+          return '';
+        }
+        return `
+          <div style="margin-bottom: 2rem; padding: 1rem; border: 1px solid var(--color-border-2); border-radius: 4px;">
+            <h4 style="color: var(--color-accent-2); margin-bottom: 1rem;">${era}</h4>
+            ${eraApp.description ? `<p><strong>Description:</strong> ${eraApp.description}</p>` : ''}
+            ${eraApp.clothing ? `<p><strong>Signature Clothing:</strong> ${eraApp.clothing}</p>` : ''}
+            ${eraApp.accessories ? `<p><strong>Accessories:</strong> ${eraApp.accessories}</p>` : ''}
+            ${eraApp.visualMotifs ? `<p><strong>Visual Motifs:</strong> ${eraApp.visualMotifs}</p>` : ''}
+          </div>
+        `;
+      }).filter(html => html).join('')}
+    </div>
+  `;
+}
+
+function renderAffiliations(oc) {
+  // Handle backward compatibility: convert single values to arrays
+  const villages = Array.isArray(oc.village) ? oc.village : (oc.village ? [oc.village] : []);
+  const clanIds = Array.isArray(oc.clanId) ? oc.clanId : (oc.clanId ? [oc.clanId] : []);
+  const clanNames = Array.isArray(oc.clanName) ? oc.clanName : (oc.clanName ? [oc.clanName] : []);
+  const ranks = Array.isArray(oc.rank) ? oc.rank : (oc.rank ? [oc.rank] : []);
+  const classifications = Array.isArray(oc.classification) ? oc.classification : (oc.classification ? [oc.classification] : []);
+  
+  const hasAffiliations = villages.length > 0 || clanIds.length > 0 || clanNames.length > 0 || ranks.length > 0 || 
+                         classifications.length > 0 || oc.ninjaRegistrationNumber || oc.teamNumber || 
+                         (oc.teammates && oc.teammates.length > 0) || oc.sensei || oc.academyGraduationAge || 
+                         oc.madeGenin || oc.madeChunin;
+  
+  if (!hasAffiliations) {
+    return '<div class="relationships-empty"><p>No affiliation information recorded.</p></div>';
+  }
+  
+  return `
+    <div class="affiliations-info">
+      ${villages.length > 0 ? `<div class="affiliation-item"><strong>Village(s):</strong> ${villages.join(', ')}</div>` : ''}
+      ${clanIds.length > 0 || clanNames.length > 0 ? `
+        <div class="affiliation-item">
+          <strong>Clan(s):</strong> ${[...clanIds, ...clanNames].filter(Boolean).join(', ')}
+        </div>
+      ` : ''}
+      ${ranks.length > 0 ? `<div class="affiliation-item"><strong>Rank(s):</strong> ${ranks.join(', ')}</div>` : ''}
+      ${classifications.length > 0 ? `<div class="affiliation-item"><strong>Classification(s):</strong> ${classifications.join(', ')}</div>` : ''}
+      ${oc.ninjaRegistrationNumber ? `<div class="affiliation-item"><strong>Ninja Registration Number:</strong> ${oc.ninjaRegistrationNumber}</div>` : ''}
+      ${oc.teamNumber ? `<div class="affiliation-item"><strong>Team Number:</strong> ${oc.teamNumber}</div>` : ''}
+      ${oc.teammates && oc.teammates.length > 0 ? `<div class="affiliation-item"><strong>Teammates:</strong> ${renderCharacterLinks(oc.teammates, true)}</div>` : ''}
+      ${oc.sensei ? `<div class="affiliation-item"><strong>Sensei:</strong> ${renderCharacterLinks(oc.sensei, false)}</div>` : ''}
+      ${oc.academyGraduationAge ? `<div class="affiliation-item"><strong>Academy Graduation Age:</strong> ${oc.academyGraduationAge}</div>` : ''}
+      ${oc.madeGenin ? `<div class="affiliation-item"><strong>Made Genin:</strong> ${oc.madeGenin}</div>` : ''}
+      ${oc.madeChunin ? `<div class="affiliation-item"><strong>Made Chunin:</strong> ${oc.madeChunin}</div>` : ''}
     </div>
   `;
 }
@@ -1445,22 +1606,9 @@ function renderNatureTypeRow(natureType) {
       const iconUrl = release.iconUrl;
       const iconHtml = iconUrl ? `<img src="${iconUrl}" alt="${type}" style="width: 20px; height: 20px; vertical-align: middle; margin-right: 4px; display: inline-block;">` : '';
       
-      let details = [];
-      if (release.kanji) {
-        details.push(`${release.kanji} (${release.romaji})`);
-      }
-      if (release.strongAgainst && release.weakAgainst) {
-        details.push(`Strong: ${release.strongAgainst}, Weak: ${release.weakAgainst}`);
-      }
-      if (release.components) {
-        details.push(`Components: ${release.components.join(' + ')}`);
-      }
-      
-      const detailsHtml = details.length > 0 ? `<br><small style="color: var(--color-text-dark-2); font-size: 0.75rem;">${details.join(' • ')}</small>` : '';
-      
       return `
         <div style="display: inline-block; margin-right: 1rem; margin-bottom: 0.5rem; padding: 0.5rem; background-color: var(--color-bg-1); border: 1px solid var(--color-border-2); border-radius: 4px;">
-          ${iconHtml}${type}${detailsHtml}
+          ${iconHtml}${type}
         </div>
       `;
     }).join('');
@@ -1490,22 +1638,9 @@ function renderNatureTypeRow(natureType) {
   const iconUrl = release.iconUrl;
   const iconHtml = iconUrl ? `<img src="${iconUrl}" alt="${type}" style="width: 24px; height: 24px; vertical-align: middle; margin-right: 8px; display: inline-block;">` : '';
   
-  let details = [];
-  if (release.kanji) {
-    details.push(`${release.kanji} (${release.romaji})`);
-  }
-  if (release.strongAgainst && release.weakAgainst) {
-    details.push(`Strong: ${release.strongAgainst}, Weak: ${release.weakAgainst}`);
-  }
-  if (release.components) {
-    details.push(`Components: ${release.components.join(' + ')}`);
-  }
-  
-  const detailsHtml = details.length > 0 ? `<br><small style="color: var(--color-text-dark-2); font-size: 0.85rem;">${details.join(' • ')}</small>` : '';
-  
   return `
     <div class="info-row">
-      ${renderInfoContent(`${iconHtml}${type}${detailsHtml}`)}
+      ${renderInfoContent(`${iconHtml}${type}`)}
       ${renderInfoLabel('nature type')}
     </div>
   `;

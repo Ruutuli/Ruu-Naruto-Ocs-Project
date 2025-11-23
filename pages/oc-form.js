@@ -18,6 +18,7 @@ import {
   romanticOrientations,
   allTechniqueTypes,
   getTechniqueTypeLabel,
+  ninjaClassifications,
   generateOptions,
   generateGroupedOptions,
   generateDatalistOptions
@@ -450,7 +451,10 @@ export function renderOCForm(oc = null, onSave) {
         
         <div class="form-group">
           <label class="form-label">Classification (comma-separated)</label>
-          <input type="text" class="form-control" id="classification" value="${(formOC.classification || []).join(', ')}" placeholder="e.g., Genin, Fate Reader, Missing-nin">
+          <input type="text" class="form-control" id="classification" list="classification-datalist" value="${(formOC.classification || []).join(', ')}" placeholder="e.g., Genin, Fate Reader, Missing-nin">
+          <datalist id="classification-datalist">
+            ${generateDatalistOptions(ninjaClassifications)}
+          </datalist>
         </div>
         
         <div class="row">

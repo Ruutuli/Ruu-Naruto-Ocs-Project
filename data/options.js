@@ -299,24 +299,89 @@ export const villages = [
   
   // Ninja Classifications (for "Classification (comma-separated)" helper)
   export const ninjaClassifications = [
+    // Basic Ranks
+    { value: 'Academy Student', label: 'Academy Student' },
     { value: 'Genin', label: 'Genin' },
-    { value: 'Chunin', label: 'Chunin' },
+    { value: 'Chunin', label: 'Chūnin' },
     { value: 'Jonin', label: 'Jōnin' },
     { value: 'Special Jonin', label: 'Special Jōnin' },
     { value: 'Kage', label: 'Kage' },
+    { value: 'S-Rank', label: 'S-Rank (Nukenin / Elite)' },
+    
+    // Specialized Units
     { value: 'ANBU', label: 'ANBU' },
     { value: 'Root ANBU', label: 'Root ANBU' },
-    { value: 'Medical-nin', label: 'Medical-nin' },
-    { value: 'Sensor-nin', label: 'Sensor-nin' },
     { value: 'Hunter-nin', label: 'Hunter-nin' },
-    { value: 'Missing-nin', label: 'Missing-nin' },
+    { value: 'Medical-nin', label: 'Medical-nin (Iryō-nin)' },
+    { value: 'Sensor-nin', label: 'Sensor-nin' },
+    { value: 'Barrier Corps', label: 'Barrier Corps' },
+    { value: 'Intelligence Agent', label: 'Intelligence Agent' },
+    { value: 'Torture & Interrogation', label: 'Torture & Interrogation Specialist' },
+    
+    // Special Titles
+    { value: 'Sannin', label: 'Sannin (Legendary Three)' },
     { value: 'Jinchuriki', label: 'Jinchūriki' },
-    { value: 'Samurai', label: 'Samurai' },
-    { value: 'Monk', label: 'Monk / Temple Guardian' },
+    { value: 'Sage', label: 'Sage (Sage Mode User)' },
+    
+    // Technique Specializations
+    { value: 'Genjutsu Specialist', label: 'Genjutsu Specialist' },
+    { value: 'Taijutsu Specialist', label: 'Taijutsu Specialist' },
+    { value: 'Kenjutsu Specialist', label: 'Kenjutsu Specialist' },
+    { value: 'Puppet Master', label: 'Puppet Master (Kugutsu Specialist)' },
+    { value: 'Sealing Master', label: 'Sealing Master (Fūinjutsu Specialist)' },
+    { value: 'Barrier Master', label: 'Barrier Master (Kekkai Specialist)' },
+    { value: 'Summoner', label: 'Summoner (Kuchiyose Specialist)' },
+    { value: 'Shurikenjutsu Specialist', label: 'Shurikenjutsu Specialist' },
+    { value: 'Bukijutsu Specialist', label: 'Bukijutsu Specialist' },
+    
+    // Status Classifications
+    { value: 'Missing-nin', label: 'Missing-nin (Nukenin)' },
+    { value: 'Ronin', label: 'Ronin (Masterless Ninja)' },
     { value: 'Mercenary', label: 'Mercenary Ninja' },
     { value: 'Spy', label: 'Spy / Infiltrator' },
+    { value: 'Assassin', label: 'Assassin' },
+    { value: 'Bodyguard', label: 'Bodyguard' },
+    
+    // Other Roles
     { value: 'Researcher', label: 'Researcher / Scientist' },
+    { value: 'Samurai', label: 'Samurai' },
+    { value: 'Monk', label: 'Monk / Temple Guardian' },
     { value: 'Civilian', label: 'Civilian' },
+    
+    // Custom / Niche Classifications
+    { value: 'Fate Reader', label: 'Fate Reader' },
+    { value: 'Oracle', label: 'Oracle' },
+    { value: 'Seer', label: 'Seer' },
+    { value: 'Prophet', label: 'Prophet' },
+    { value: 'Diviner', label: 'Diviner' },
+    { value: 'Cursed Child', label: 'Cursed Child' },
+    { value: 'Vessel', label: 'Vessel' },
+    { value: 'Host', label: 'Host' },
+    { value: 'Experiment', label: 'Experiment' },
+    { value: 'Test Subject', label: 'Test Subject' },
+    { value: 'Cursed Seal User', label: 'Cursed Seal User' },
+    { value: 'Cursed Mark Bearer', label: 'Cursed Mark Bearer' },
+    { value: 'Demon Vessel', label: 'Demon Vessel' },
+    { value: 'Spirit Medium', label: 'Spirit Medium' },
+    { value: 'Exorcist', label: 'Exorcist' },
+    { value: 'Priest', label: 'Priest / Priestess' },
+    { value: 'Shrine Maiden', label: 'Shrine Maiden' },
+    { value: 'Miko', label: 'Miko' },
+    { value: 'Onmyoji', label: 'Onmyōji' },
+    { value: 'Yin-Yang Master', label: 'Yin-Yang Master' },
+    { value: 'Cursed Technique User', label: 'Cursed Technique User' },
+    { value: 'Cursed Energy User', label: 'Cursed Energy User' },
+    { value: 'Shaman', label: 'Shaman' },
+    { value: 'Necromancer', label: 'Necromancer' },
+    { value: 'Spirit User', label: 'Spirit User' },
+    { value: 'Demon Slayer', label: 'Demon Slayer' },
+    { value: 'Demon Hunter', label: 'Demon Hunter' },
+    { value: 'Yokai Hunter', label: 'Yōkai Hunter' },
+    { value: 'Oni Slayer', label: 'Oni Slayer' },
+    { value: 'Cursed Tool User', label: 'Cursed Tool User' },
+    { value: 'Cursed Weapon Wielder', label: 'Cursed Weapon Wielder' },
+    { value: 'Seal Master', label: 'Seal Master' },
+    { value: 'Cursed Seal Master', label: 'Cursed Seal Master' },
     { value: 'Other', label: 'Other / Custom Classification' }
   ];
   
