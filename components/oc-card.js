@@ -138,37 +138,47 @@ export function renderOCCard(oc, onClick) {
     }
     
     if (clanIds.length > 0) {
-      // Load clans asynchronously - fetch directly from file
-      (async () => {
+      // Load clans asynchronously
+      Promise.all(clanIds.map(async (clanId) => {
+        // Try storage first
         try {
-          // Load all clans asynchronously
-          const loadPromises = clanIds.map(async (clanId) => {
-            try {
-              const response = await fetch(`data/clans/${clanId}.json`);
-              if (response.ok) {
-                const clanData = await response.json();
-                if (clanData && clanData.name) {
-                  return clanData.name;
-                }
-              }
-            } catch (e) {
-              // File doesn't exist or error loading
-            }
-            return 'Unknown';
-          });
-          
-          const loadedClanNames = await Promise.all(loadPromises);
-          const allClanNames = [...loadedClanNames, ...clanNames];
-          if (clanNameEl) {
-            clanNameEl.textContent = allClanNames.length > 0 ? allClanNames.join(', ') : 'Unknown';
+          const module = await import('../data/storage.js');
+          const storage = module.default;
+          const clan = storage.getClan(clanId);
+          if (clan && clan.name) {
+            return clan.name;
           }
         } catch (e) {
-          console.error('Error loading clans:', e);
-          if (clanNameEl) {
-            clanNameEl.textContent = 'Unknown';
-          }
+          // Storage not available, continue
         }
-      })();
+        
+        // Fallback: fetch directly from file
+        try {
+          const response = await fetch(`data/clans/${clanId}.json`);
+          if (response.ok) {
+            const clanData = await response.json();
+            if (clanData && clanData.name) {
+              return clanData.name;
+            }
+          }
+        } catch (e) {
+          // File doesn't exist or error loading
+        }
+        
+        return 'Unknown';
+      })).then(loadedClanNames => {
+        const allClanNames = [...loadedClanNames, ...clanNames];
+        const element = card.querySelector('.oc-card-clan-name');
+        if (element) {
+          element.textContent = allClanNames.length > 0 ? allClanNames.join(', ') : 'Unknown';
+        }
+      }).catch(e => {
+        console.error('Error loading clans:', e);
+        const element = card.querySelector('.oc-card-clan-name');
+        if (element) {
+          element.textContent = 'Unknown';
+        }
+      });
     } else if (clanNames.length > 0) {
       // Predefined or custom clan names - already displayed in template
       clanNameEl.textContent = clanNames.join(', ');
