@@ -64,26 +64,26 @@
       "fuinjutsu": 1
     },
     "Part II": {
-      "intelligence": 3,
+      "intelligence": 4,
       "stamina": 3,
-      "strength": 3,
+      "strength": 2.5,
       "speed": 3,
-      "ninjutsu": 3,
-      "genjutsu": 3,
+      "ninjutsu": 3.5,
+      "genjutsu": 2.5,
       "taijutsu": 3,
-      "handSeals": 3,
-      "fuinjutsu": 2
+      "handSeals": 4,
+      "fuinjutsu": 3.5
     },
     "Blank Period": {
-      "intelligence": 3,
-      "stamina": 3,
-      "strength": 3,
-      "speed": 3,
-      "ninjutsu": 3,
-      "genjutsu": 3,
-      "taijutsu": 3,
-      "handSeals": 3,
-      "fuinjutsu": 2
+      "intelligence": 0,
+      "stamina": 0,
+      "strength": 0,
+      "speed": 0,
+      "ninjutsu": 0,
+      "genjutsu": 0,
+      "taijutsu": 0,
+      "handSeals": 0,
+      "fuinjutsu": 0
     },
     "Gaiden": {
       "intelligence": 3,
@@ -97,15 +97,15 @@
       "fuinjutsu": 2
     },
     "Boruto": {
-      "intelligence": 3,
-      "stamina": 3,
-      "strength": 3,
-      "speed": 3,
-      "ninjutsu": 3,
-      "genjutsu": 3,
-      "taijutsu": 3,
-      "handSeals": 3,
-      "fuinjutsu": 2
+      "intelligence": 0,
+      "stamina": 0,
+      "strength": 0,
+      "speed": 0,
+      "ninjutsu": 0,
+      "genjutsu": 0,
+      "taijutsu": 0,
+      "handSeals": 0,
+      "fuinjutsu": 0
     }
   },
   "heightByEra": {
@@ -206,7 +206,7 @@
       "Mouth-related jutsu (due to earth-style training incident)"
     ],
     "demeanor": {
-      "friendlyReserved": 5.5,
+      "friendlyReserved": 2.5,
       "politeBlunt": 5.5,
       "cleverFoolish": 5.5,
       "sensitiveTough": 5.5,
@@ -264,7 +264,6 @@
     "adulthood": "### **Life Under Orochimaru**  \nAkene initially found purpose in assisting his research and using his library.  \nBut when her seal weakened, she entered **Madousho Mode**, an uncontrollable state where massive amounts of information flooded her mind, often causing collapse.\n\nTerrified of activation or experimentation, she hid from Orochimaru and Kabuto, often sleeping in **Sasuke’s room** to feel safe.\n\nDuring this period she developed:  \n– codependency  \n– secrecy  \n– emotional repression  \n– loyalty shift from Orochimaru to Sasuke\n\nA year later the seal broke completely, trapping her in madousho mode for days until her body shut down.\n\n### **Team Taka**  \nAfter Orochimaru’s death, Akene suffered a breakdown and followed Sasuke due to lacking any personal anchor.  \nTheir relationship became deeply toxic and co-dependent, intensified by the secrets she was barred from sharing.\n\n### **Truth of the Uchiha Massacre**  \nShe learned the true history through madousho mode but was sealed from speaking it. After Itachi’s death she admitted she had known for some time, causing a violent argument. Obito broke the seal himself and mocked Sasuke for not discovering he could do it.\n\n### **Fourth Shinobi World War**  \nAkene was used repeatedly for **information extraction** about Kaguya by allies and enemies alike, each forced activation further eroding her sanity.\n\nNaruto eventually **forcibly removed the madousho** from her body, freeing her from torment but ending the reincarnation cycle.\n\nHer brother **Kae**, knowing what the halted cycle meant, comforted her during her total mental collapse and ended her life to stop the madousho forever.\n\nHer grave was unmarked.  \nThe world forgot her.  \nThe Chigiri did not."
   },
   "appearance": {
-    "image": "",
     "colors": [
       "#C8A2C8",
       "#6A0F1A",
