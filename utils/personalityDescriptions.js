@@ -53,11 +53,67 @@ export function getMBTIDescription(mbti) {
 }
 
 /**
+ * Get a general explanation of what Enneagram wings mean
+ * @returns {string} - Explanation of wings
+ */
+export function getEnneagramWingExplanation() {
+  return 'Wings are the adjacent types on the Enneagram circle that influence your core type. ' +
+         'Each type can be influenced by one of its two neighboring types, creating unique variations. ' +
+         'For example, a Type 6 with a 5 wing (6w5) combines loyalty with analytical thinking, ' +
+         'while a Type 6 with a 7 wing (6w7) combines loyalty with enthusiasm and spontaneity. ' +
+         'Wings add depth and nuance to the core type, showing how individuals express their type differently.';
+}
+
+/**
  * Get description for Enneagram Type
  * @param {string} enneagram - The enneagram type (e.g., 'Type 6', 'Type 6w5')
  * @returns {string} - Description of the enneagram type
  */
 export function getEnneagramDescription(enneagram) {
+  // Check for wing types first (specific descriptions)
+  const wingDescriptions = {
+    // Type 1 wings
+    'Type 1w9': 'The Idealist - A perfectionist with a 9 wing. More relaxed and less critical than typical Type 1s. Values harmony and avoids confrontation while maintaining high standards. Idealistic and principled but also peace-loving.',
+    'Type 1w2': 'The Advocate - A perfectionist with a 2 wing. More people-oriented and helpful. Combines high moral standards with a desire to serve others. Can be critical but also caring and empathetic.',
+    
+    // Type 2 wings
+    'Type 2w1': 'The Servant - A helper with a 1 wing. More principled and self-controlled. Combines helpfulness with perfectionistic tendencies. Can be critical of themselves and others while being supportive.',
+    'Type 2w3': 'The Host - A helper with a 3 wing. More ambitious and image-conscious. Combines helpfulness with achievement orientation. Charismatic and energetic in serving others.',
+    
+    // Type 3 wings
+    'Type 3w2': 'The Charmer - An achiever with a 2 wing. More people-oriented and empathetic. Combines ambition with a desire to help others. Charismatic and relationship-focused in their pursuit of success.',
+    'Type 3w4': 'The Professional - An achiever with a 4 wing. More individualistic and authentic. Combines ambition with a desire for uniqueness. More introspective and creative in their achievements.',
+    
+    // Type 4 wings
+    'Type 4w3': 'The Aristocrat - An individualist with a 3 wing. More competitive and image-conscious. Combines authenticity with achievement orientation. More social and expressive while maintaining uniqueness.',
+    'Type 4w5': 'The Bohemian - An individualist with a 5 wing. More withdrawn and intellectual. Combines emotional depth with analytical thinking. More private and introspective, less dramatic.',
+    
+    // Type 5 wings
+    'Type 5w4': 'The Iconoclast - An investigator with a 4 wing. More creative and individualistic. Combines intellectualism with emotional depth and artistic expression. More expressive and moody.',
+    'Type 5w6': 'The Problem Solver - An investigator with a 6 wing. More practical and security-focused. Combines intellectualism with loyalty and responsibility. More social and collaborative, less isolated.',
+    
+    // Type 6 wings
+    'Type 6w5': 'The Defender - A loyalist with a 5 wing. More intellectual and withdrawn. Combines loyalty and responsibility with analytical thinking. More independent and less anxious, values expertise and knowledge.',
+    'Type 6w7': 'The Buddy - A loyalist with a 7 wing. More outgoing and optimistic. Combines loyalty with enthusiasm and adventure-seeking. More social and fun-loving, less anxious and more spontaneous.',
+    
+    // Type 7 wings
+    'Type 7w6': 'The Entertainer - An enthusiast with a 6 wing. More responsible and security-focused. Combines spontaneity with loyalty and commitment. More anxious but also more reliable and relationship-oriented.',
+    'Type 7w8': 'The Realist - An enthusiast with an 8 wing. More assertive and direct. Combines spontaneity with power and control. More confrontational and intense, less scattered and more focused.',
+    
+    // Type 8 wings
+    'Type 8w7': 'The Maverick - A challenger with a 7 wing. More spontaneous and fun-loving. Combines assertiveness with enthusiasm and adventure-seeking. More energetic and less serious, quick-tempered but quick to recover.',
+    'Type 8w9': 'The Bear - A challenger with a 9 wing. More calm and receptive. Combines assertiveness with peace-making tendencies. More patient and less confrontational, protective and steady.',
+    
+    // Type 9 wings
+    'Type 9w8': 'The Referee - A peacemaker with an 8 wing. More assertive and energetic. Combines peace-making with occasional assertiveness. More direct and action-oriented, less passive.',
+    'Type 9w1': 'The Dreamer - A peacemaker with a 1 wing. More principled and idealistic. Combines peace-making with perfectionistic tendencies. More critical and purposeful, less complacent.'
+  };
+  
+  // Check if it's a specific wing type
+  if (wingDescriptions[enneagram]) {
+    return wingDescriptions[enneagram];
+  }
+  
   // Extract base type from wing variants (e.g., "Type 6w5" -> "Type 6")
   const baseType = enneagram.match(/Type (\d+)/)?.[0] || enneagram;
   
@@ -75,15 +131,6 @@ export function getEnneagramDescription(enneagram) {
     'Mixed': 'Does not clearly fit into a single type or falls between types.'
   };
   
-  let description = descriptions[baseType] || '';
-  
-  // Add wing information if present
-  const wingMatch = enneagram.match(/w(\d+)/);
-  if (wingMatch && description) {
-    const wingNum = wingMatch[1];
-    description += ` Has a ${wingNum} wing, blending characteristics of both types.`;
-  }
-  
-  return description;
+  return descriptions[baseType] || '';
 }
 

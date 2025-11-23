@@ -16,14 +16,24 @@ export function convertImageUrl(url) {
   const googleDriveMatch = url.match(/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/);
   if (googleDriveMatch) {
     const fileId = googleDriveMatch[1];
-    return `https://drive.google.com/uc?export=view&id=${fileId}`;
+    // Use thumbnail API which is more reliable for embedding
+    // sz parameter controls size: w1000 = width 1000px, w1920 = width 1920px, etc.
+    return `https://drive.google.com/thumbnail?id=${fileId}&sz=w1920`;
   }
   
   // Handle Google Drive short links (format: https://drive.google.com/open?id=FILE_ID)
   const googleDriveShortMatch = url.match(/drive\.google\.com\/open\?id=([a-zA-Z0-9_-]+)/);
   if (googleDriveShortMatch) {
     const fileId = googleDriveShortMatch[1];
-    return `https://drive.google.com/uc?export=view&id=${fileId}`;
+    // Use thumbnail API which is more reliable for embedding
+    return `https://drive.google.com/thumbnail?id=${fileId}&sz=w1920`;
+  }
+  
+  // Handle already converted uc?export=view URLs (fallback to thumbnail)
+  const googleDriveUcMatch = url.match(/drive\.google\.com\/uc\?export=view&id=([a-zA-Z0-9_-]+)/);
+  if (googleDriveUcMatch) {
+    const fileId = googleDriveUcMatch[1];
+    return `https://drive.google.com/thumbnail?id=${fileId}&sz=w1920`;
   }
   
   // Return original URL if it's not a Google Drive link

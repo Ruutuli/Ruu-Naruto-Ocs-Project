@@ -4,7 +4,7 @@ import { natureReleases, getNatureRelease, getClanSymbol, getTechniqueTypeLabel,
 import storage from '../data/storage.js';
 import { renderMarkdown } from '../utils/markdown.js';
 import { convertImageUrl } from '../utils/imageUtils.js';
-import { getMoralAlignmentDescription, getMBTIDescription, getEnneagramDescription } from '../utils/personalityDescriptions.js';
+import { getMoralAlignmentDescription, getMBTIDescription, getEnneagramDescription, getEnneagramWingExplanation } from '../utils/personalityDescriptions.js';
 
 export function renderOCDetail(oc) {
   const container = document.createElement('div');
@@ -1280,6 +1280,12 @@ function renderKnownBehavior(oc) {
               <p style="font-size: 0.85rem; color: var(--color-text-dark-2); margin-left: 1rem; font-style: italic;">
                 ${getEnneagramDescription(oc.enneagram)}
               </p>
+              ${oc.enneagram.includes('w') ? `
+                <p style="font-size: 0.75rem; color: var(--color-text-dark-2); margin-left: 1rem; margin-top: 0.25rem; opacity: 0.8;">
+                  <i class="fas fa-info-circle" style="margin-right: 0.25rem;"></i>
+                  Wings are adjacent Enneagram types that influence the core type, creating unique variations and expressions.
+                </p>
+              ` : ''}
             </div>
           ` : '<p><strong>Enneagram:</strong> Not specified</p>'}
         </div>
