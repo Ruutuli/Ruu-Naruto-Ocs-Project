@@ -151,7 +151,17 @@
       "respectForAuthority": 0
     }
   },
-  "abilities": {},
+  "abilities": {
+    "ninjutsu": [
+      {
+        "style": "Fire Release: Flame Bullet (火遁・炎弾)",
+        "description": "A basic yet versatile Fire Release technique that shoots multiple small fire projectiles. Akene uses it primarily for distraction, coverage, and flushing enemies out rather than raw offense.\n",
+        "rank": "C-Rank",
+        "difficulty": 3,
+        "chakraIntensity": 3
+      }
+    ]
+  },
   "relationships": [],
   "storyArcs": [],
   "recordHistory": {
@@ -229,10 +239,10 @@
     "trainingInfluences": "Chigiri Clan intel training\nFire Branch elemental conditioning\nKonoha Academy fundamentals\nEarth Release discipline from family lineage\nOrochimaru’s research-based training and forbidden knowledge exposure\n"
   },
   "intelligence": {
-    "academicPerformance": "",
-    "analyticalAbility": "",
-    "combatStrategy": "",
-    "leadershipSkill": ""
+    "academicPerformance": "Exceptional; consistently scored at the top of her Academy cohort.  \nEntered early (age 11) and excelled in theory-heavy subjects such as  \ntactics, chakra theory, history, and coded intelligence work.\n",
+    "analyticalAbility": "Very high; quickly identifies patterns, motives, and hidden information.  \nCapable of connecting village secrets, clan histories, and political  \nthreads long before most adults.  \nNotably skilled in reading people, situations, and micro-behaviors.\n",
+    "combatStrategy": "Very high; quickly identifies patterns, motives, and hidden information.  \nCapable of connecting village secrets, clan histories, and political  \nthreads long before most adults.  \nNotably skilled in reading people, situations, and micro-behaviors.\n",
+    "leadershipSkill": "Moderate; not a natural “team commander,” but excels when  \ndirecting information flow, forming plans, or advising others.  \nFunctions best as a tactician or analyst rather than a front-line leader.\n"
   },
   "dojutsu": {
     "name": "",
