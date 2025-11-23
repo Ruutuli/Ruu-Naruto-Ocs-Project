@@ -109,9 +109,10 @@ export const defaultOC = {
   },
   
   // Affiliations
-  village: '',
-  clanId: null,
-  rank: '',
+  village: [], // Can be string (backward compatibility) or array
+  clanId: null, // Can be string, array, or null
+  clanName: null, // Can be string, array, or null
+  rank: [], // Can be string (backward compatibility) or array
   classification: [],
   ninjaRegistrationNumber: '',
   teamNumber: '',

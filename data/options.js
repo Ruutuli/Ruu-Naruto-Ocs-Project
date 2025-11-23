@@ -863,3 +863,95 @@ export const villages = [
     return Object.values(natureReleases).filter(nr => nr.type === type);
   }
   
+  // ============================================================================
+  // Ninja Technique Types - Comprehensive list of all technique categories
+  // ============================================================================
+  
+  // Main Ninjutsu Categories
+  export const ninjutsuTypes = [
+    { value: 'Ninjutsu', label: 'Ninjutsu – Ninja Techniques' },
+    { value: 'Iryō Ninjutsu', label: 'Iryō Ninjutsu – Medical Techniques' },
+    { value: 'Jikūkan Ninjutsu', label: 'Jikūkan Ninjutsu – Space–Time Ninja Techniques' },
+    { value: 'Kuchiyose No Jutsu', label: 'Kuchiyose No Jutsu – Summoning' },
+    { value: 'Fuinjutsu', label: 'Fuinjutsu – Sealing Techniques' },
+    { value: 'Juinjutsu', label: 'Juinjutsu – Cursed Seal Techniques' },
+    { value: 'Jujutsu', label: 'Jujutsu - Curse Technique' },
+    { value: 'Kekkai Ninjutsu', label: 'Kekkai Ninjutsu – Barrier Ninja Techniques' },
+    { value: 'Renkei Ninjutsu', label: 'Renkei Ninjutsu - Collaboration Techniques' },
+    { value: 'Tensei Ninjutsu', label: 'Tensei Ninjutsu - Reincarnation Ninja Technique' }
+  ];
+  
+  // Bukijutsu (Weapon Techniques)
+  export const bukijutsuTypes = [
+    { value: 'Bukijutsu', label: 'Bukijutsu – Weapon Techniques' },
+    { value: 'Bojutsu', label: 'Bojutsu – Staff Techniques' },
+    { value: 'Kayakujutsu', label: 'Kayakujutsu – Gunpowder Technique (Explosive Tags)' },
+    { value: 'Kenjutsu', label: 'Kenjutsu – Sword Technique' },
+    { value: 'Kugutsu No Jutsu', label: 'Kugutsu No Jutsu – Puppet Technique' },
+    { value: 'Kusarigamajutsu', label: 'Kusarigamajutsu – Chain Sickle Technique' },
+    { value: 'Kyujutsu', label: 'Kyujutsu – Bow Technique' },
+    { value: 'Shurikenjutsu', label: 'Shurikenjutsu – Projectile Weapons Techniques' },
+    { value: 'Tessenjutsu', label: 'Tessenjutsu – Iron-fan Technique' }
+  ];
+  
+  // Other Technique Categories
+  export const otherTechniqueTypes = [
+    { value: 'Bunshinjutsu', label: 'Bunshinjutsu – Clone Techniques' },
+    { value: 'Chakra Kyuin Jutsu', label: 'Chakra Kyuin Jutsu - Chakra Absorption Jutsu' },
+    { value: 'Chakura Nagashi', label: 'Chakura Nagashi - Chakra Flow' },
+    { value: 'Genjutsu', label: 'Genjutsu - Illusionary Techniques' },
+    { value: 'Hiden', label: 'Hiden – Secret Technique' },
+    { value: 'Kinjutsu', label: 'Kinjutsu – Forbidden Techniques' },
+    { value: 'Nintaijutsu', label: 'Nintaijutsu – Ninja Body Techniques (Combo of Nin And Tai)' },
+    { value: 'Senjutsu', label: 'Senjutsu – Sage Techniques' },
+    { value: 'Taijutsu', label: 'Taijutsu – Body Techniques' },
+    { value: 'Tonjutsu', label: 'Tonjutsu – Escape Techniques' }
+  ];
+  
+  // Bloodline and Eye Techniques
+  export const bloodlineTypes = [
+    { value: 'Kekkei Genkai', label: 'Kekkei Genkai - Bloodline Limit' },
+    { value: 'Kekkei Tota', label: 'Kekkei Tota – Bloodline Selection' },
+    { value: 'Kekkei Mora', label: 'Kekkei Mora – Bloodline Encompassing' },
+    { value: 'Dojutsu', label: 'Dojutsu – Eye Techniques' }
+  ];
+  
+  // Combined list of all technique types (for dropdowns, etc.)
+  export const allTechniqueTypes = [
+    ...ninjutsuTypes,
+    ...bukijutsuTypes,
+    ...otherTechniqueTypes,
+    ...bloodlineTypes
+  ];
+  
+  // Technique type groups (for organized display)
+  export const techniqueTypeGroups = [
+    {
+      group: 'Ninjutsu Categories',
+      options: ninjutsuTypes
+    },
+    {
+      group: 'Weapon Techniques (Bukijutsu)',
+      options: bukijutsuTypes
+    },
+    {
+      group: 'Other Techniques',
+      options: otherTechniqueTypes
+    },
+    {
+      group: 'Bloodline & Eye Techniques',
+      options: bloodlineTypes
+    }
+  ];
+  
+  // Helper function to get technique type label by value
+  export function getTechniqueTypeLabel(value) {
+    const found = allTechniqueTypes.find(t => t.value === value);
+    return found ? found.label : value;
+  }
+  
+  // Helper function to get all technique type values
+  export function getAllTechniqueTypeValues() {
+    return allTechniqueTypes.map(t => t.value);
+  }
+  

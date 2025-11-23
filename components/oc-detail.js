@@ -1,6 +1,6 @@
 // OC Detail Component - Full Data Book style character sheet renderer
 
-import { natureReleases, getNatureRelease, getClanSymbol } from '../data/options.js';
+import { natureReleases, getNatureRelease, getClanSymbol, getTechniqueTypeLabel, allTechniqueTypes } from '../data/options.js';
 
 export function renderOCDetail(oc) {
   const container = document.createElement('div');
@@ -46,9 +46,9 @@ export function renderOCDetail(oc) {
         }
         
         <div class="oc-badges" id="oc-badges-container">
-          ${renderVillageBadge(oc.village)}
-          ${renderClanBadge(oc.clanId, oc.clanName)}
-          ${renderLandBadge(oc.village)}
+          ${renderVillageBadges(oc.village)}
+          ${renderClanBadges(oc.clanId, oc.clanName)}
+          ${renderLandBadges(oc.village)}
         </div>
         
         <div class="oc-stats">
@@ -337,43 +337,51 @@ export function renderOCDetail(oc) {
     });
   };
   
-  // Load clan badge image if clan exists, otherwise show kunai
+  // Load clan badge images if clans exist, otherwise show kunai
   import('../data/storage.js').then(module => {
-    const clanIdentifier = oc.clanId || oc.clanName || 'none';
-    const badgeContainer = container.querySelector(`#clan-badge-${clanIdentifier}`);
-    if (badgeContainer) {
-      let clanName = '';
+    // Handle backward compatibility: convert single values to arrays
+    const clanIds = Array.isArray(oc.clanId) ? oc.clanId : (oc.clanId ? [oc.clanId] : []);
+    const clanNames = Array.isArray(oc.clanName) ? oc.clanName : (oc.clanName ? [oc.clanName] : []);
+    
+    // Find all clan badge containers
+    const badgeContainers = container.querySelectorAll('[id^="clan-badge-"]');
+    
+    badgeContainers.forEach((badgeContainer, index) => {
+      const clanId = badgeContainer.getAttribute('data-clan-id');
+      const clanName = badgeContainer.getAttribute('data-clan-name');
+      
+      let finalClanName = '';
       let symbolUrl = null;
       
-      if (oc.clanId) {
+      if (clanId) {
         // User-created clan - get from storage
-        const clan = module.default.getClan(oc.clanId);
+        const clan = module.default.getClan(clanId);
         if (clan) {
-          clanName = clan.name;
+          finalClanName = clan.name;
           symbolUrl = clan.symbol;
         }
-      } else if (oc.clanName) {
+      } else if (clanName) {
         // Predefined clan or custom clan name
-        clanName = oc.clanName;
-        const predefinedClan = getClanSymbol(oc.clanName);
+        finalClanName = clanName;
+        const predefinedClan = getClanSymbol(clanName);
         if (predefinedClan) {
           symbolUrl = predefinedClan.symbolUrl;
         }
       }
       
-      if (clanName && symbolUrl) {
-        badgeContainer.innerHTML = `<img src="${symbolUrl}" alt="${clanName}">`;
-        badgeContainer.setAttribute('title', `Clan: ${clanName}`);
-      } else if (clanName) {
+      if (finalClanName && symbolUrl) {
+        badgeContainer.innerHTML = `<img src="${symbolUrl}" alt="${finalClanName}">`;
+        badgeContainer.setAttribute('title', `Clan: ${finalClanName}`);
+      } else if (finalClanName) {
         // Clan name exists but no symbol - use kunai with clan name in title
         badgeContainer.innerHTML = `<img src="images/assets/kunai.png" alt="No Clan Symbol">`;
-        badgeContainer.setAttribute('title', `Clan: ${clanName}`);
+        badgeContainer.setAttribute('title', `Clan: ${finalClanName}`);
       } else {
         // No clan, use kunai
         badgeContainer.innerHTML = `<img src="images/assets/kunai.png" alt="No Clan">`;
         badgeContainer.setAttribute('title', 'No Clan');
       }
-    }
+    });
   });
   
   // Setup gallery lightbox functions
@@ -578,7 +586,14 @@ function renderRankBadge(rank) {
   `;
 }
 
-function renderVillageBadge(village) {
+function renderVillageBadges(village) {
+  // Handle backward compatibility: convert string to array
+  const villages = Array.isArray(village) ? village : (village ? [village] : []);
+  
+  if (villages.length === 0) {
+    return '<div class="oc-badge"></div>';
+  }
+  
   const villageMap = {
     'Konohagakure': 'konoha.png',
     'Konoha': 'konoha.png',
@@ -604,22 +619,43 @@ function renderVillageBadge(village) {
     'Uzushio': 'uzu.png'
   };
   
-  const img = villageMap[village] ? `images/assets/${villageMap[village]}` : null;
+  return villages.map(v => {
+    const img = villageMap[v] ? `images/assets/${villageMap[v]}` : null;
+    return img ? 
+      `<div class="oc-badge" title="Village: ${v}">
+        <img src="${img}" alt="${v}">
+      </div>` 
+      : '';
+  }).join('');
+}
+
+function renderClanBadges(clanId, clanName) {
+  // Handle backward compatibility: convert single values to arrays
+  const clanIds = Array.isArray(clanId) ? clanId : (clanId ? [clanId] : []);
+  const clanNames = Array.isArray(clanName) ? clanName : (clanName ? [clanName] : []);
   
-  return img ? 
-    `<div class="oc-badge" title="Village: ${village}">
-      <img src="${img}" alt="${village}">
-    </div>` 
-    : '<div class="oc-badge"></div>';
+  // Combine all clan identifiers
+  const allClans = [...clanIds.map(id => ({ type: 'id', value: id })), ...clanNames.map(name => ({ type: 'name', value: name }))];
+  
+  if (allClans.length === 0) {
+    return '<div class="oc-badge"></div>';
+  }
+  
+  return allClans.map((clan, index) => {
+    const identifier = clan.value || 'none';
+    const uniqueId = `${identifier}-${index}`;
+    return `<div class="oc-badge" id="clan-badge-${uniqueId}" title="Clan" data-clan-id="${clan.type === 'id' ? clan.value : ''}" data-clan-name="${clan.type === 'name' ? clan.value : ''}"></div>`;
+  }).join('');
 }
 
-function renderClanBadge(clanId, clanName) {
-  // Will be populated dynamically after rendering
-  const identifier = clanId || clanName || 'none';
-  return `<div class="oc-badge" id="clan-badge-${identifier}" title="Clan"></div>`;
-}
-
-function renderLandBadge(village) {
+function renderLandBadges(village) {
+  // Handle backward compatibility: convert string to array
+  const villages = Array.isArray(village) ? village : (village ? [village] : []);
+  
+  if (villages.length === 0) {
+    return '<div class="oc-badge"></div>';
+  }
+  
   const villageToLand = {
     'Konohagakure': { name: 'Land of Fire', kanji: '火の国', bgColor: '#DC143C', textColor: '#FFFFFF' },
     'Konoha': { name: 'Land of Fire', kanji: '火の国', bgColor: '#DC143C', textColor: '#FFFFFF' },
@@ -645,9 +681,12 @@ function renderLandBadge(village) {
     'Uzushio': { name: 'Land of Whirlpools', kanji: '渦の国', bgColor: '#191970', textColor: '#FFFFFF' }
   };
   
-  const land = villageToLand[village];
-  
-  if (land) {
+  // Get unique lands (avoid duplicates)
+  const seenLands = new Set();
+  return villages.map(v => {
+    const land = villageToLand[v];
+    if (!land || seenLands.has(land.name)) return '';
+    seenLands.add(land.name);
     // Extract only the first character (element kanji)
     const elementKanji = land.kanji.charAt(0);
     return `
@@ -655,9 +694,7 @@ function renderLandBadge(village) {
         <span class="land-kanji" style="color: ${land.textColor};">${elementKanji}</span>
       </div>
     `;
-  }
-  
-  return '<div class="oc-badge"></div>';
+  }).join('');
 }
 
 function renderIdentifyingInfo(oc) {
@@ -1191,44 +1228,76 @@ function renderAbilities(oc) {
 function renderAbilitiesOriginal(oc) {
   const abilities = oc.abilities || {};
   
+  // Determine taijutsu-style techniques
+  const taijutsuTypes = ['taijutsu', 'kenjutsu', 'bojutsu', 'kayakujutsu', 'kusarigamajutsu', 
+                         'kyujutsu', 'shurikenjutsu', 'tessenjutsu', 'bukijutsu', 'nintaijutsu'];
+  
+  // Helper to normalize technique keys (same as in form)
+  const normalizeKey = (str) => str.toLowerCase().replace(/\s+/g, '').replace(/[–-]/g, '');
+  
+  // Helper to find technique label from normalized key
+  const findTechniqueLabel = (normalizedKey) => {
+    // Try direct lookup first
+    const directLabel = getTechniqueTypeLabel(normalizedKey);
+    if (directLabel) return directLabel;
+    
+    // Try to find by normalizing all technique values
+    if (typeof allTechniqueTypes !== 'undefined' && Array.isArray(allTechniqueTypes)) {
+      const found = allTechniqueTypes.find(tech => normalizeKey(tech.value) === normalizedKey);
+      if (found) return found.label.split('–')[0].trim();
+    }
+    
+    // Fallback: format the key nicely
+    return normalizedKey.split(/(?=[A-Z])/).map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ') ||
+           normalizedKey.charAt(0).toUpperCase() + normalizedKey.slice(1);
+  };
+  
   let html = '';
   
-  if (abilities.taijutsu && abilities.taijutsu.length > 0) {
-    html += abilities.taijutsu.map(tai => `
-      <div class="ability-section">
-        <h3 class="ability-header">Taijutsu <i class="japanese-header">体術</i></h3>
-        <div class="ability-content">
-          <div class="ability-style">Style: ${tai.style || 'Content'}</div>
-          <div style="font-size: 12px; border-top: 1px solid var(--color-dark-3); padding-top: 0.5rem;">
-            <span>Base Style: ${tai.baseStyle || 'Content'}</span>
+  // Render all ability types dynamically
+  Object.keys(abilities).forEach(type => {
+    if (!Array.isArray(abilities[type]) || abilities[type].length === 0) return;
+    
+    const isTaijutsu = taijutsuTypes.includes(type.toLowerCase());
+    const typeLabel = findTechniqueLabel(type);
+    
+    html += abilities[type].map(ability => {
+      if (isTaijutsu) {
+        return `
+          <div class="ability-section">
+            <h3 class="ability-header">${typeLabel}</h3>
+            <div class="ability-content">
+              <div class="ability-style">Style: ${ability.style || 'Content'}</div>
+              <div style="font-size: 12px; border-top: 1px solid var(--color-dark-3); padding-top: 0.5rem;">
+                <span>Base Style: ${ability.baseStyle || 'Content'}</span>
+              </div>
+              <div style="font-size: 12px; border-bottom: 1px solid var(--color-dark-3); padding: 0.5rem 0;">
+                <span>Mastery: </span>
+                <span>${renderRatingStars(ability.mastery || 3)}</span>
+              </div>
+              <p class="ability-description">${ability.description || ''}</p>
+            </div>
           </div>
-          <div style="font-size: 12px; border-bottom: 1px solid var(--color-dark-3); padding: 0.5rem 0;">
-            <span>Mastery: </span>
-            <span>${renderRatingStars(tai.mastery || 3)}</span>
+        `;
+      } else {
+        return `
+          <div class="ability-section">
+            <h3 class="ability-header">${typeLabel}</h3>
+            <div class="ability-content">
+              <div class="ability-style">Style: ${ability.style || 'Content'} <small style="float: right;">${ability.rank || 'C'}</small></div>
+              <div style="font-size: 12px; border-top: 1px solid var(--color-dark-3); padding-top: 0.5rem;">
+                <span>Difficulty: ${renderRatingStars(ability.difficulty || 3)}</span>
+              </div>
+              <div style="font-size: 12px; border-bottom: 1px solid var(--color-dark-3); padding: 0.5rem 0;">
+                <span>Chakra Intensity: ${renderRatingStars(ability.chakraIntensity || 3)}</span>
+              </div>
+              <p class="ability-description">${ability.description || ''}</p>
+            </div>
           </div>
-          <p class="ability-description">${tai.description || ''}</p>
-        </div>
-      </div>
-    `).join('');
-  }
-  
-  if (abilities.ninjutsu && abilities.ninjutsu.length > 0) {
-    html += abilities.ninjutsu.map(nin => `
-      <div class="ability-section">
-        <h3 class="ability-header">Ninjutsu <i class="japanese-header">忍術</i></h3>
-        <div class="ability-content">
-          <div class="ability-style">Style: ${nin.style || 'Content'} <small style="float: right;">${nin.rank || 'C'}</small></div>
-          <div style="font-size: 12px; border-top: 1px solid var(--color-dark-3); padding-top: 0.5rem;">
-            <span>Difficulty: ${renderRatingStars(nin.difficulty || 3)}</span>
-          </div>
-          <div style="font-size: 12px; border-bottom: 1px solid var(--color-dark-3); padding: 0.5rem 0;">
-            <span>Chakra Intensity: ${renderRatingStars(nin.chakraIntensity || 3)}</span>
-          </div>
-          <p class="ability-description">${nin.description || ''}</p>
-        </div>
-      </div>
-    `).join('');
-  }
+        `;
+      }
+    }).join('');
+  });
   
   return html || '<p>No abilities recorded.</p>';
 }

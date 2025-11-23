@@ -5,8 +5,12 @@ export function renderOCCard(oc, onClick) {
   card.className = 'card-naruto oc-card fade-in';
   card.style.cursor = 'pointer';
   
-  const villageImage = getVillageImage(oc.village);
-  const rankClass = `rank-${oc.rank.toLowerCase().replace('-', '-')}`;
+  // Handle backward compatibility: convert single values to arrays
+  const villages = Array.isArray(oc.village) ? oc.village : (oc.village ? [oc.village] : []);
+  const ranks = Array.isArray(oc.rank) ? oc.rank : (oc.rank ? [oc.rank] : []);
+  const villageImage = villages.length > 0 ? getVillageImage(villages[0]) : null;
+  const rankClass = ranks.length > 0 ? `rank-${ranks[0].toLowerCase().replace('-', '-')}` : '';
+  const villageDisplay = villages.length > 0 ? villages.join(', ') : 'Unknown';
   
   card.innerHTML = `
     <div class="oc-card-image-wrapper">
@@ -29,17 +33,28 @@ export function renderOCCard(oc, onClick) {
         </div>
         ${villageImage ? `
         <div class="oc-card-village">
-          <img src="images/assets/${villageImage}" alt="${oc.village}" class="oc-card-village-icon">
-          <span>${oc.village || 'Unknown'}</span>
+          <img src="images/assets/${villageImage}" alt="${villageDisplay}" class="oc-card-village-icon">
+          <span>${villageDisplay}</span>
         </div>
-        ` : `<div class="oc-card-village"><span>${oc.village || 'Unknown'}</span></div>`}
+        ` : `<div class="oc-card-village"><span>${villageDisplay}</span></div>`}
       </div>
-      ${(oc.clanId || oc.clanName) ? `
+      ${(() => {
+        const clanIds = Array.isArray(oc.clanId) ? oc.clanId : (oc.clanId ? [oc.clanId] : []);
+        const clanNames = Array.isArray(oc.clanName) ? oc.clanName : (oc.clanName ? [oc.clanName] : []);
+        const hasClans = clanIds.length > 0 || clanNames.length > 0;
+        if (!hasClans) return '';
+        
+        const allClanNames = [...clanIds.map(id => 'Loading...'), ...clanNames];
+        const clanDisplay = allClanNames.length > 0 ? allClanNames.join(', ') : 'Loading...';
+        const clanIdStr = clanIds.length > 0 ? clanIds[0] : (clanNames.length > 0 ? clanNames[0] : 'none');
+        
+        return `
         <div class="oc-card-clan">
           <i class="fas fa-users"></i>
-          <span><strong>Clan:</strong> <span id="clan-name-${oc.clanId || oc.clanName || 'none'}" class="oc-card-clan-name">${oc.clanName || 'Loading...'}</span></span>
+          <span><strong>Clan:</strong> <span id="clan-name-${clanIdStr}" class="oc-card-clan-name" data-clan-ids="${JSON.stringify(clanIds)}" data-clan-names="${JSON.stringify(clanNames)}">${clanDisplay}</span></span>
         </div>
-      ` : ''}
+      `;
+      })()}
       <div class="oc-card-actions">
         <button class="btn-naruto" onclick="event.stopPropagation();">
           <i class="fas fa-eye"></i> View Details
@@ -50,21 +65,25 @@ export function renderOCCard(oc, onClick) {
   
   card.addEventListener('click', () => onClick(oc.id));
   
-  // Load clan name if exists
-  if (oc.clanId) {
-    import('../data/storage.js').then(module => {
-      const clan = module.default.getClan(oc.clanId);
-      const clanNameEl = card.querySelector(`#clan-name-${oc.clanId}`);
-      if (clanNameEl && clan) {
-        clanNameEl.textContent = clan.name;
-      } else if (clanNameEl && !clan) {
-        // Clan not found, remove the loading text
-        clanNameEl.textContent = 'Unknown';
-      }
-    });
-  } else if (oc.clanName) {
-    // Predefined or custom clan name - already displayed in template
-    // No need to load anything
+  // Load clan names if exist
+  const clanNameEl = card.querySelector('.oc-card-clan-name');
+  if (clanNameEl) {
+    const clanIds = JSON.parse(clanNameEl.getAttribute('data-clan-ids') || '[]');
+    const clanNames = JSON.parse(clanNameEl.getAttribute('data-clan-names') || '[]');
+    
+    if (clanIds.length > 0) {
+      import('../data/storage.js').then(module => {
+        const loadedClanNames = clanIds.map(clanId => {
+          const clan = module.default.getClan(clanId);
+          return clan ? clan.name : 'Unknown';
+        });
+        const allClanNames = [...loadedClanNames, ...clanNames];
+        clanNameEl.textContent = allClanNames.length > 0 ? allClanNames.join(', ') : 'Unknown';
+      });
+    } else if (clanNames.length > 0) {
+      // Predefined or custom clan names - already displayed in template
+      clanNameEl.textContent = clanNames.join(', ');
+    }
   }
   
   return card;

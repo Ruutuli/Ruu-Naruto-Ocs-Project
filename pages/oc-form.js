@@ -16,6 +16,8 @@ import {
   genders,
   sexualOrientations,
   romanticOrientations,
+  allTechniqueTypes,
+  getTechniqueTypeLabel,
   generateOptions,
   generateGroupedOptions,
   generateDatalistOptions
@@ -29,19 +31,32 @@ export function renderOCForm(oc = null, onSave) {
   // Get predefined clan names from options.js
   const predefinedClanNames = getAllClanNames();
   
-  // Get current clan name for display (either from clanId lookup or stored name)
-  let currentClanName = '';
-  if (formOC.clanId) {
-    const clan = clans.find(c => c.id === formOC.clanId);
+  // Handle backward compatibility: convert single values to arrays
+  const formOCVillages = Array.isArray(formOC.village) ? formOC.village : (formOC.village ? [formOC.village] : []);
+  const formOCRanks = Array.isArray(formOC.rank) ? formOC.rank : (formOC.rank ? [formOC.rank] : []);
+  
+  // Handle clans - support both old format (single clanId/clanName) and new format (arrays)
+  const formOCClanIds = Array.isArray(formOC.clanId) ? formOC.clanId : (formOC.clanId ? [formOC.clanId] : []);
+  const formOCClanNames = Array.isArray(formOC.clanName) ? formOC.clanName : (formOC.clanName ? [formOC.clanName] : []);
+  
+  // Get current clan names for display
+  const currentClanNames = [];
+  // Add clanIds (user-created clans)
+  formOCClanIds.forEach(clanId => {
+    const clan = clans.find(c => c.id === clanId);
     if (clan) {
-      currentClanName = clan.name;
-    } else if (typeof formOC.clanId === 'string' && predefinedClanNames.includes(formOC.clanId)) {
+      currentClanNames.push(clan.name);
+    } else if (typeof clanId === 'string' && predefinedClanNames.includes(clanId)) {
       // If clanId is actually a predefined clan name
-      currentClanName = formOC.clanId;
+      currentClanNames.push(clanId);
     }
-  } else if (formOC.clanName) {
-    currentClanName = formOC.clanName;
-  }
+  });
+  // Add clanNames (predefined or custom clan names)
+  formOCClanNames.forEach(clanName => {
+    if (clanName && !currentClanNames.includes(clanName)) {
+      currentClanNames.push(clanName);
+    }
+  });
   
   // Combine user-created clans and predefined clans for autocomplete
   const allClanOptions = [
@@ -386,29 +401,40 @@ export function renderOCForm(oc = null, onSave) {
           <div class="col-12 col-md-4">
             <div class="form-group">
               <label class="form-label">Village</label>
-              <select class="form-control" id="village" required>
-                <option value="">Select Village</option>
-                ${generateOptions(villages, formOC.village || '')}
+              <select class="form-control" id="village" multiple size="6" required>
+                ${villages.map(village => `
+                  <option value="${village}" ${formOCVillages.includes(village) ? 'selected' : ''}>
+                    ${village}
+                  </option>
+                `).join('')}
               </select>
+              <small style="color: var(--color-text-dark-2);">Hold Ctrl/Cmd to select multiple villages</small>
             </div>
           </div>
           <div class="col-12 col-md-4">
             <div class="form-group">
               <label class="form-label">Rank</label>
-              <select class="form-control" id="rank" required>
-                ${generateOptions(ranks, formOC.rank || '')}
+              <select class="form-control" id="rank" multiple size="6" required>
+                ${ranks.map(rank => `
+                  <option value="${rank}" ${formOCRanks.includes(rank) ? 'selected' : ''}>
+                    ${rank}
+                  </option>
+                `).join('')}
               </select>
+              <small style="color: var(--color-text-dark-2);">Hold Ctrl/Cmd to select multiple ranks</small>
             </div>
           </div>
           <div class="col-12 col-md-4">
             <div class="form-group">
               <label class="form-label">Clan</label>
-              <input type="text" class="form-control" id="clanName" list="clan-list" 
-                     value="${currentClanName}" 
-                     placeholder="Type or select a clan" autocomplete="off">
-              <datalist id="clan-list">
-                ${uniqueClans.map(clan => `<option value="${clan.name}">${clan.name}${clan.type === 'predefined' ? ' (Predefined)' : ''}</option>`).join('')}
-              </datalist>
+              <select class="form-control" id="clanName" multiple size="6">
+                ${uniqueClans.map(clan => `
+                  <option value="${clan.name}" ${currentClanNames.includes(clan.name) ? 'selected' : ''}>
+                    ${clan.name}${clan.type === 'predefined' ? ' (Predefined)' : ''}
+                  </option>
+                `).join('')}
+              </select>
+              <small style="color: var(--color-text-dark-2);">Hold Ctrl/Cmd to select multiple clans</small>
             </div>
           </div>
         </div>
@@ -594,44 +620,41 @@ export function renderOCForm(oc = null, onSave) {
           <div class="card-naruto" style="padding: 1rem; margin-bottom: 1rem;">
             <div id="abilities-container">
               ${(() => {
-                const abilities = formOC.abilities || { taijutsu: [], ninjutsu: [], genjutsu: [], fuinjutsu: [], kenjutsu: [], senjutsu: [], medical: [], other: [] };
+                // Initialize abilities object with all technique types
+                const defaultAbilities = {};
+                allTechniqueTypes.forEach(tech => {
+                  const key = tech.value.toLowerCase().replace(/\s+/g, '').replace(/[–-]/g, '');
+                  defaultAbilities[key] = [];
+                });
+                // Keep backward compatibility with old types
+                const oldTypes = ['taijutsu', 'ninjutsu', 'genjutsu', 'fuinjutsu', 'kenjutsu', 'senjutsu', 'medical', 'other'];
+                oldTypes.forEach(type => {
+                  if (!defaultAbilities[type]) {
+                    defaultAbilities[type] = [];
+                  }
+                });
+                
+                const abilities = formOC.abilities || defaultAbilities;
                 let html = '';
-                abilities.taijutsu?.forEach((ability, index) => {
-                  html += renderAbilityEditor('taijutsu', ability, index);
+                
+                // Render all technique types
+                Object.keys(abilities).forEach(type => {
+                  if (Array.isArray(abilities[type])) {
+                    abilities[type].forEach((ability, index) => {
+                      html += renderAbilityEditor(type, ability, index);
+                    });
+                  }
                 });
-                abilities.ninjutsu?.forEach((ability, index) => {
-                  html += renderAbilityEditor('ninjutsu', ability, index);
-                });
-                abilities.genjutsu?.forEach((ability, index) => {
-                  html += renderAbilityEditor('genjutsu', ability, index);
-                });
-                abilities.fuinjutsu?.forEach((ability, index) => {
-                  html += renderAbilityEditor('fuinjutsu', ability, index);
-                });
-                abilities.kenjutsu?.forEach((ability, index) => {
-                  html += renderAbilityEditor('kenjutsu', ability, index);
-                });
-                abilities.senjutsu?.forEach((ability, index) => {
-                  html += renderAbilityEditor('senjutsu', ability, index);
-                });
-                abilities.medical?.forEach((ability, index) => {
-                  html += renderAbilityEditor('medical', ability, index);
-                });
-                abilities.other?.forEach((ability, index) => {
-                  html += renderAbilityEditor('other', ability, index);
-                });
+                
                 return html || '<p class="text-muted">No abilities added yet. Click a button below to add abilities.</p>';
               })()}
             </div>
             <div class="mt-2" style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
-              <button type="button" class="btn-naruto btn-naruto-secondary" onclick="addAbility('taijutsu')">+ Add Taijutsu</button>
-              <button type="button" class="btn-naruto btn-naruto-secondary" onclick="addAbility('ninjutsu')">+ Add Ninjutsu</button>
-              <button type="button" class="btn-naruto btn-naruto-secondary" onclick="addAbility('genjutsu')">+ Add Genjutsu</button>
-              <button type="button" class="btn-naruto btn-naruto-secondary" onclick="addAbility('fuinjutsu')">+ Add Fūinjutsu</button>
-              <button type="button" class="btn-naruto btn-naruto-secondary" onclick="addAbility('kenjutsu')">+ Add Kenjutsu</button>
-              <button type="button" class="btn-naruto btn-naruto-secondary" onclick="addAbility('senjutsu')">+ Add Senjutsu</button>
-              <button type="button" class="btn-naruto btn-naruto-secondary" onclick="addAbility('medical')">+ Add Medical</button>
-              <button type="button" class="btn-naruto btn-naruto-secondary" onclick="addAbility('other')">+ Add Other</button>
+              ${allTechniqueTypes.map(tech => {
+                const key = tech.value.toLowerCase().replace(/\s+/g, '').replace(/[–-]/g, '');
+                const label = tech.label.split('–')[0].trim(); // Get short name before the dash
+                return `<button type="button" class="btn-naruto btn-naruto-secondary" onclick="addAbility('${key}')">+ Add ${label}</button>`;
+              }).join('')}
             </div>
           </div>
         </div>
@@ -1183,46 +1206,58 @@ export function renderOCForm(oc = null, onSave) {
         const selected = Array.from(select.selectedOptions).map(option => option.value);
         return selected.length > 0 ? (selected.length === 1 ? selected[0] : selected) : '';
       })(),
-      village: document.getElementById('village').value,
-      rank: document.getElementById('rank').value,
+      village: (() => {
+        const select = document.getElementById('village');
+        const selected = Array.from(select.selectedOptions).map(option => option.value);
+        return selected.length > 0 ? (selected.length === 1 ? selected[0] : selected) : [];
+      })(),
+      rank: (() => {
+        const select = document.getElementById('rank');
+        const selected = Array.from(select.selectedOptions).map(option => option.value);
+        return selected.length > 0 ? (selected.length === 1 ? selected[0] : selected) : [];
+      })(),
       clanId: (() => {
-        const clanNameInput = document.getElementById('clanName');
-        const enteredName = clanNameInput ? clanNameInput.value.trim() : '';
-        if (!enteredName) return null;
+        const clanSelect = document.getElementById('clanName');
+        const selectedNames = Array.from(clanSelect.selectedOptions).map(option => option.value);
+        const clanIds = [];
         
-        // Check if it matches a user-created clan
-        const userClan = clans.find(c => c.name === enteredName);
-        if (userClan) {
-          return userClan.id;
-        }
+        selectedNames.forEach(enteredName => {
+          if (!enteredName) return;
+          
+          // Check if it matches a user-created clan
+          const userClan = clans.find(c => c.name === enteredName);
+          if (userClan) {
+            clanIds.push(userClan.id);
+          }
+        });
         
-        // Check if it matches a predefined clan
-        if (predefinedClanNames.includes(enteredName)) {
-          // Store predefined clan name in clanName field, keep clanId as null
-          return null;
-        }
-        
-        // If it doesn't match anything, still store it (user might be creating a new clan)
-        return null;
+        return clanIds.length > 0 ? (clanIds.length === 1 ? clanIds[0] : clanIds) : null;
       })(),
       clanName: (() => {
-        const clanNameInput = document.getElementById('clanName');
-        const enteredName = clanNameInput ? clanNameInput.value.trim() : '';
-        if (!enteredName) return null;
+        const clanSelect = document.getElementById('clanName');
+        const selectedNames = Array.from(clanSelect.selectedOptions).map(option => option.value);
+        const clanNames = [];
         
-        // Check if it matches a predefined clan
-        if (predefinedClanNames.includes(enteredName)) {
-          return enteredName;
-        }
+        selectedNames.forEach(enteredName => {
+          if (!enteredName) return;
+          
+          // Check if it matches a predefined clan
+          if (predefinedClanNames.includes(enteredName)) {
+            clanNames.push(enteredName);
+            return;
+          }
+          
+          // Check if it matches a user-created clan (we'll use clanId for that, so skip)
+          const userClan = clans.find(c => c.name === enteredName);
+          if (userClan) {
+            return; // Use clanId instead
+          }
+          
+          // If it doesn't match anything, store it as a custom clan name
+          clanNames.push(enteredName);
+        });
         
-        // Check if it matches a user-created clan (we'll use clanId for that)
-        const userClan = clans.find(c => c.name === enteredName);
-        if (userClan) {
-          return null; // Use clanId instead
-        }
-        
-        // If it doesn't match anything, store it as a custom clan name
-        return enteredName;
+        return clanNames.length > 0 ? (clanNames.length === 1 ? clanNames[0] : clanNames) : null;
       })(),
       stats: (() => {
         // Default stats (use Part I if available, otherwise default values)
@@ -1326,8 +1361,13 @@ export function renderOCForm(oc = null, onSave) {
       },
       abilities: (() => {
         const container = document.getElementById('abilities-container');
-        if (!container) return { taijutsu: [], ninjutsu: [], genjutsu: [], fuinjutsu: [], kenjutsu: [], senjutsu: [], medical: [], other: [] };
-        const abilities = { taijutsu: [], ninjutsu: [], genjutsu: [], fuinjutsu: [], kenjutsu: [], senjutsu: [], medical: [], other: [] };
+        if (!container) return {};
+        const abilities = {};
+        
+        // Determine taijutsu-style techniques
+        const taijutsuTypes = ['taijutsu', 'kenjutsu', 'bojutsu', 'kayakujutsu', 'kusarigamajutsu', 
+                               'kyujutsu', 'shurikenjutsu', 'tessenjutsu', 'bukijutsu', 'nintaijutsu'];
+        
         container.querySelectorAll('.ability-editor-item').forEach(item => {
           const type = item.dataset.type;
           const index = item.dataset.index;
@@ -1341,7 +1381,9 @@ export function renderOCForm(oc = null, onSave) {
             description: descInput.value || ''
           };
           
-          if (type === 'taijutsu' || type === 'kenjutsu') {
+          const isTaijutsu = taijutsuTypes.includes(type.toLowerCase());
+          
+          if (isTaijutsu) {
             const baseStyleInput = container.querySelector(`[name="ability-baseStyle-${type}-${index}"]`);
             const masteryInput = container.querySelector(`[name="ability-mastery-${type}-${index}"]`);
             ability.baseStyle = baseStyleInput?.value || '';
@@ -1627,18 +1669,15 @@ function renderStatInput(name, value) {
 
 // Ability editor helper functions
 function renderAbilityEditor(type, ability = {}, index) {
-  const isTaijutsu = type === 'taijutsu' || type === 'kenjutsu';
-  const typeNames = {
-    taijutsu: 'Taijutsu',
-    ninjutsu: 'Ninjutsu',
-    genjutsu: 'Genjutsu',
-    fuinjutsu: 'Fūinjutsu',
-    kenjutsu: 'Kenjutsu',
-    senjutsu: 'Senjutsu',
-    medical: 'Medical',
-    other: 'Other'
-  };
-  const typeName = typeNames[type] || type.charAt(0).toUpperCase() + type.slice(1);
+  // Determine if this is a taijutsu-style technique (body/weapon techniques)
+  const taijutsuTypes = ['taijutsu', 'kenjutsu', 'bojutsu', 'kayakujutsu', 'kusarigamajutsu', 
+                         'kyujutsu', 'shurikenjutsu', 'tessenjutsu', 'bukijutsu', 'nintaijutsu'];
+  const isTaijutsu = taijutsuTypes.includes(type.toLowerCase());
+  
+  // Get type name from options or use formatted version
+  const typeName = getTechniqueTypeLabel(type) || 
+                   type.split(/(?=[A-Z])/).map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ') ||
+                   type.charAt(0).toUpperCase() + type.slice(1);
   return `
     <div class="ability-editor-item mb-3" data-type="${type}" data-index="${index}" style="border: 1px solid var(--color-border-2); padding: 1rem; border-radius: 4px;">
       <div class="d-flex justify-content-between align-items-center mb-2">
@@ -1795,7 +1834,13 @@ if (typeof window !== 'undefined') {
     const container = document.getElementById('abilities-container');
     const items = container.querySelectorAll(`[data-type="${type}"]`);
     const index = items.length;
-    const newAbility = (type === 'taijutsu' || type === 'kenjutsu')
+    
+    // Determine if this is a taijutsu-style technique
+    const taijutsuTypes = ['taijutsu', 'kenjutsu', 'bojutsu', 'kayakujutsu', 'kusarigamajutsu', 
+                           'kyujutsu', 'shurikenjutsu', 'tessenjutsu', 'bukijutsu', 'nintaijutsu'];
+    const isTaijutsu = taijutsuTypes.includes(type.toLowerCase());
+    
+    const newAbility = isTaijutsu
       ? { style: '', baseStyle: '', mastery: 3, description: '' }
       : { style: '', rank: '', difficulty: 3, chakraIntensity: 3, description: '' };
     container.innerHTML += renderAbilityEditor(type, newAbility, index);

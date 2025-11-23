@@ -5,7 +5,12 @@ export function renderCompactOCCard(oc, onClick) {
   card.className = 'compact-preview-card compact-oc-card';
   card.style.cursor = 'pointer';
   
-  const villageImage = getVillageImage(oc.village);
+  // Handle backward compatibility: convert single values to arrays
+  const villages = Array.isArray(oc.village) ? oc.village : (oc.village ? [oc.village] : []);
+  const ranks = Array.isArray(oc.rank) ? oc.rank : (oc.rank ? [oc.rank] : []);
+  const villageImage = villages.length > 0 ? getVillageImage(villages[0]) : null;
+  const villageDisplay = villages.length > 0 ? villages.join(', ') : 'Unknown';
+  const rankDisplay = ranks.length > 0 ? ranks.join(', ') : '';
   
   card.innerHTML = `
     <div class="compact-card-image">
@@ -20,9 +25,9 @@ export function renderCompactOCCard(oc, onClick) {
       <div class="compact-card-type-badge">OC</div>
       <h4 class="compact-card-title">${oc.lastName || ''} ${oc.firstName || ''}</h4>
       <div class="compact-card-meta">
-        ${villageImage ? `<img src="images/assets/${villageImage}" alt="${oc.village}" class="compact-village-icon">` : ''}
-        <span>${oc.village || 'Unknown'}</span>
-        ${oc.rank ? `<span class="compact-card-separator">•</span><span>${oc.rank}</span>` : ''}
+        ${villageImage ? `<img src="images/assets/${villageImage}" alt="${villageDisplay}" class="compact-village-icon">` : ''}
+        <span>${villageDisplay}</span>
+        ${rankDisplay ? `<span class="compact-card-separator">•</span><span>${rankDisplay}</span>` : ''}
       </div>
     </div>
   `;
