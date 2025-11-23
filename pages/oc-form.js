@@ -96,7 +96,7 @@ export function renderOCForm(oc = null, onSave) {
           <div class="col-12 col-md-6">
             <div class="form-group">
               <label class="form-label">Last Name 名字 <small style="font-weight: normal; color: var(--color-text-dark-2);">(e.g., Chigiri)</small></label>
-              <input type="text" class="form-control" id="lastName" value="${formOC.lastName || ''}" required>
+              <input type="text" class="form-control" id="lastName" value="${formOC.lastName || ''}">
             </div>
           </div>
           <div class="col-12 col-md-6">
@@ -401,10 +401,10 @@ export function renderOCForm(oc = null, onSave) {
           <div class="col-12 col-md-4">
             <div class="form-group">
               <label class="form-label">Village</label>
-              <select class="form-control" id="village" multiple size="6" required>
+              <select class="form-control" id="village" multiple size="6">
                 ${villages.map(village => `
-                  <option value="${village}" ${formOCVillages.includes(village) ? 'selected' : ''}>
-                    ${village}
+                  <option value="${village.value}" ${formOCVillages.includes(village.value) ? 'selected' : ''}>
+                    ${village.label}
                   </option>
                 `).join('')}
               </select>
@@ -414,10 +414,10 @@ export function renderOCForm(oc = null, onSave) {
           <div class="col-12 col-md-4">
             <div class="form-group">
               <label class="form-label">Rank</label>
-              <select class="form-control" id="rank" multiple size="6" required>
+              <select class="form-control" id="rank" multiple size="6">
                 ${ranks.map(rank => `
-                  <option value="${rank}" ${formOCRanks.includes(rank) ? 'selected' : ''}>
-                    ${rank}
+                  <option value="${rank.value}" ${formOCRanks.includes(rank.value) ? 'selected' : ''}>
+                    ${rank.label}
                   </option>
                 `).join('')}
               </select>
@@ -613,6 +613,35 @@ export function renderOCForm(oc = null, onSave) {
               <textarea class="form-control" id="leadershipSkill" rows="2">${formOC.intelligence?.leadershipSkill || ''}</textarea>
             </div>
           </div>
+        </div>
+        
+        <!-- Dōjutsu -->
+        <h4 class="mb-3 mt-4">Dōjutsu <i class="japanese-header">瞳術</i></h4>
+        <div class="row">
+          <div class="col-12 col-md-6">
+            <div class="form-group">
+              <label class="form-label">Dōjutsu Name</label>
+              <input type="text" class="form-control" id="dojutsuName" value="${formOC.dojutsu?.name || ''}" placeholder="e.g., Sharingan">
+            </div>
+          </div>
+          <div class="col-12 col-md-6">
+            <div class="form-group">
+              <label class="form-label">Dōjutsu Type</label>
+              <input type="text" class="form-control" id="dojutsuType" value="${formOC.dojutsu?.type || ''}" placeholder="e.g., Eye Technique">
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Development</label>
+          <textarea class="form-control" id="dojutsuDevelopment" rows="3" placeholder="How the dōjutsu was developed or awakened...">${formOC.dojutsu?.development || ''}</textarea>
+        </div>
+        <div id="dojutsu-stages-editor" class="mb-3">
+          <label class="form-label mb-2">Stages (one per line)</label>
+          <textarea class="form-control" id="dojutsuStages" rows="4" placeholder="e.g., 1 Tomoe&#10;2 Tomoe&#10;3 Tomoe&#10;Mangekyō Sharingan">${(formOC.dojutsu?.stages || []).join('\n')}</textarea>
+        </div>
+        <div id="dojutsu-abilities-editor" class="mb-3">
+          <label class="form-label mb-2">Special Abilities (one per line)</label>
+          <textarea class="form-control" id="dojutsuSpecialAbilities" rows="4" placeholder="e.g., Genjutsu casting&#10;Chakra sight&#10;Predicting movement">${(formOC.dojutsu?.specialAbilities || []).join('\n')}</textarea>
         </div>
         
         <div id="abilities-editor" class="mt-3 mb-3">
@@ -1534,6 +1563,13 @@ export function renderOCForm(oc = null, onSave) {
         analyticalAbility: document.getElementById('analyticalAbility').value,
         combatStrategy: document.getElementById('combatStrategy').value,
         leadershipSkill: document.getElementById('leadershipSkill').value
+      },
+      dojutsu: {
+        name: document.getElementById('dojutsuName').value,
+        type: document.getElementById('dojutsuType').value,
+        development: document.getElementById('dojutsuDevelopment').value,
+        stages: document.getElementById('dojutsuStages').value.split('\n').filter(s => s.trim()),
+        specialAbilities: document.getElementById('dojutsuSpecialAbilities').value.split('\n').filter(a => a.trim())
       },
       themeSong: document.getElementById('themeSong').value,
       themeSongLink: document.getElementById('themeSongLink').value,

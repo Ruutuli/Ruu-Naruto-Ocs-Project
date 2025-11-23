@@ -49,6 +49,7 @@ export function renderOCDetail(oc) {
           ${renderVillageBadges(oc.village)}
           ${renderClanBadges(oc.clanId, oc.clanName)}
           ${renderLandBadges(oc.village)}
+          ${renderRankBadges(oc.rank)}
         </div>
         
         <div class="oc-stats">
@@ -112,55 +113,53 @@ export function renderOCDetail(oc) {
       ${renderHistoryEntry('Adulthood', oc.recordHistory?.adulthood || '')}
     </div>
     
-    ${oc.appearance ? `
-      <div class="appearance-section">
-        <h1>Appearance & Gear <i class="japanese-header">外見と装備</i></h1>
-        ${oc.appearance.image ? `<div class="appearance-image-container"><img src="${oc.appearance.image}" alt="Appearance" class="appearance-image"></div>` : ''}
-        ${oc.appearance.colors && oc.appearance.colors.length > 0 ? `
-          <div class="color-palette">
-            ${oc.appearance.colors.map(color => `<div class="color-swatch" style="background-color: ${color};"></div>`).join('')}
-          </div>
-        ` : ''}
-        ${oc.appearance.gear && oc.appearance.gear.length > 0 ? `
-          <div class="gear-grid">
-            ${oc.appearance.gear.map(gear => {
-              // Handle both string and object formats
-              if (typeof gear === 'string') {
-                return renderGearItem({ name: gear, category: 'Item', material: '', use: '', information: [] });
+    <div class="appearance-section">
+      <h1>Appearance & Gear <i class="japanese-header">外見と装備</i></h1>
+      ${oc.appearance?.image ? `<div class="appearance-image-container"><img src="${oc.appearance.image}" alt="Appearance" class="appearance-image"></div>` : ''}
+      ${oc.appearance?.colors && oc.appearance.colors.length > 0 ? `
+        <div class="color-palette">
+          ${oc.appearance.colors.map(color => `<div class="color-swatch" style="background-color: ${color};"></div>`).join('')}
+        </div>
+      ` : ''}
+      ${oc.appearance?.gear && oc.appearance.gear.length > 0 ? `
+        <div class="gear-grid">
+          ${oc.appearance.gear.map(gear => {
+            // Handle both string and object formats
+            if (typeof gear === 'string') {
+              return renderGearItem({ name: gear, category: 'Item', material: '', use: '', information: [] });
+            }
+            return renderGearItem(gear);
+          }).join('')}
+        </div>
+      ` : (!oc.appearance?.gear || oc.appearance.gear.length === 0 ? '<p style="color: var(--color-text-dark-2); font-style: italic; padding: 1rem;">No gear items recorded.</p>' : '')}
+      ${(() => {
+        const eras = ['Part I', 'Part II', 'Blank Period', 'Gaiden', 'Boruto'];
+        const hasAppearanceByEra = oc.appearanceByEra && eras.some(era => {
+          const eraApp = oc.appearanceByEra[era];
+          return eraApp && (eraApp.description || eraApp.clothing || eraApp.accessories || eraApp.visualMotifs);
+        });
+        return hasAppearanceByEra ? `
+          <div style="margin-top: 2rem;">
+            <h3>Appearance by Era <i class="japanese-header">時代別の外見</i></h3>
+            ${eras.map(era => {
+              const eraApp = oc.appearanceByEra?.[era];
+              if (!eraApp || (!eraApp.description && !eraApp.clothing && !eraApp.accessories && !eraApp.visualMotifs)) {
+                return '';
               }
-              return renderGearItem(gear);
-            }).join('')}
+              return `
+                <div style="margin-bottom: 2rem; padding: 1rem; border: 1px solid var(--color-border-2); border-radius: 4px;">
+                  <h4 style="color: var(--color-accent-2); margin-bottom: 1rem;">${era}</h4>
+                  ${eraApp.description ? `<p><strong>Description:</strong> ${eraApp.description}</p>` : ''}
+                  ${eraApp.clothing ? `<p><strong>Signature Clothing:</strong> ${eraApp.clothing}</p>` : ''}
+                  ${eraApp.accessories ? `<p><strong>Accessories:</strong> ${eraApp.accessories}</p>` : ''}
+                  ${eraApp.visualMotifs ? `<p><strong>Visual Motifs:</strong> ${eraApp.visualMotifs}</p>` : ''}
+                </div>
+              `;
+            }).filter(html => html).join('')}
           </div>
-        ` : ''}
-        ${oc.appearanceByEra ? (() => {
-          const eras = ['Part I', 'Part II', 'Blank Period', 'Gaiden', 'Boruto'];
-          const hasAppearanceByEra = eras.some(era => {
-            const eraApp = oc.appearanceByEra[era];
-            return eraApp && (eraApp.description || eraApp.clothing || eraApp.accessories || eraApp.visualMotifs);
-          });
-          return hasAppearanceByEra ? `
-            <div style="margin-top: 2rem;">
-              <h3>Appearance by Era <i class="japanese-header">時代別の外見</i></h3>
-              ${eras.map(era => {
-                const eraApp = oc.appearanceByEra[era];
-                if (!eraApp || (!eraApp.description && !eraApp.clothing && !eraApp.accessories && !eraApp.visualMotifs)) {
-                  return '';
-                }
-                return `
-                  <div style="margin-bottom: 2rem; padding: 1rem; border: 1px solid var(--color-border-2); border-radius: 4px;">
-                    <h4 style="color: var(--color-accent-2); margin-bottom: 1rem;">${era}</h4>
-                    ${eraApp.description ? `<p><strong>Description:</strong> ${eraApp.description}</p>` : ''}
-                    ${eraApp.clothing ? `<p><strong>Signature Clothing:</strong> ${eraApp.clothing}</p>` : ''}
-                    ${eraApp.accessories ? `<p><strong>Accessories:</strong> ${eraApp.accessories}</p>` : ''}
-                    ${eraApp.visualMotifs ? `<p><strong>Visual Motifs:</strong> ${eraApp.visualMotifs}</p>` : ''}
-                  </div>
-                `;
-              }).filter(html => html).join('')}
-            </div>
-          ` : '';
-        })() : ''}
-      </div>
-    ` : ''}
+        ` : '';
+      })()}
+    </div>
     
       ${oc.storyArcs && oc.storyArcs.length > 0 ? `
       <div id="story-arcs-collapse" class="collapsible-section">
@@ -243,7 +242,6 @@ export function renderOCDetail(oc) {
         ` : '';
       })() : ''}
       
-      ${oc.themeSong || oc.themeSongLink || oc.voiceActors?.japanese || oc.voiceActors?.english || (oc.quotes && oc.quotes.length > 0) || oc.trivia ? `
       <div class="media-section">
         <h3>Miscellaneous <i class="japanese-header">その他</i></h3>
         ${oc.themeSong || oc.themeSongLink ? `
@@ -274,8 +272,8 @@ export function renderOCDetail(oc) {
         </div>
         ` : ''}
       </div>
-      ` : ''}
       
+    ${oc.gallery && oc.gallery.length > 0 ? `
     <div id="gallery-collapse" class="collapsible-section">
       <div class="collapsible-header" onclick="toggleCollapse('gallery-content')">
         Gallery <i class="japanese-header">ギャラリー</i>
@@ -285,6 +283,7 @@ export function renderOCDetail(oc) {
         ${renderGallery(oc)}
       </div>
     </div>
+    ` : ''}
       <div class="oc-sheet-footer">
         <div>authorized personnel only<br>shinobi registration file</div>
       </div>
@@ -571,19 +570,33 @@ function renderStat(name, value, iconType) {
   `;
 }
 
-function renderRankBadge(rank) {
+function renderRankBadges(rank) {
+  // Handle backward compatibility: convert string to array
+  const ranks = Array.isArray(rank) ? rank : (rank ? [rank] : []);
+  
+  if (ranks.length === 0) {
+    return '';
+  }
+  
   const rankLetters = {
     'Genin': 'G',
     'Chunin': 'C',
     'Jonin': 'J',
-    'S-Rank': 'S'
+    'S-Rank': 'S',
+    'Kage': 'K',
+    'Anbu': 'A',
+    'Medical Ninja': 'M',
+    'Academy Student': 'AS'
   };
   
-  return `
-    <div class="oc-badge" title="Rank: ${rank}">
-      <span style="font-weight: bold; font-size: 1.2rem;">${rankLetters[rank] || '?'}</span>
-    </div>
-  `;
+  return ranks.map(r => {
+    const letter = rankLetters[r] || r.charAt(0).toUpperCase();
+    return `
+      <div class="oc-badge rank-badge-display" title="Rank: ${r}">
+        <span style="font-weight: bold; font-size: 1.2rem;">${letter}</span>
+      </div>
+    `;
+  }).join('');
 }
 
 function renderVillageBadges(village) {
@@ -766,6 +779,7 @@ function renderIdentifyingInfo(oc) {
         ${oc.ninjaRegistrationNumber ? renderInfoRow('Ninja Registration Number', oc.ninjaRegistrationNumber) : ''}
         ${oc.academyGraduationAge ? renderInfoRow('Academy Graduation Age', oc.academyGraduationAge) : ''}
         ${oc.classification && oc.classification.length > 0 ? renderInfoRow('Classification', oc.classification.join(', ')) : ''}
+        ${oc.rank && (Array.isArray(oc.rank) ? oc.rank.length > 0 : oc.rank) ? renderInfoRow('Rank', Array.isArray(oc.rank) ? oc.rank.join(', ') : oc.rank) : ''}
         ${oc.teamNumber ? renderInfoRow('Team Number', oc.teamNumber) : ''}
         ${oc.teammates && oc.teammates.length > 0 ? renderInfoRow('Teammates', oc.teammates.join(', ')) : ''}
         ${oc.sensei ? renderInfoRow('Sensei', oc.sensei) : ''}

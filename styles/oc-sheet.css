@@ -83,6 +83,12 @@
   line-height: 1;
 }
 
+.oc-badge.rank-badge-display {
+  background-color: var(--color-dark-1);
+  color: var(--color-text-light);
+  font-weight: bold;
+}
+
 /* Stats Section */
 .oc-stats {
   background-color: var(--color-dark-3);
