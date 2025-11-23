@@ -2,8 +2,7 @@
 
 import { defaultOC, generateId } from '../data/default-data.js';
 import storage from '../data/storage.js';
-import { natureReleases, getAllNatureReleaseNames } from '../data/nature-releases.js';
-import { getAllClanNames, getClanSymbol } from '../data/clan-symbols.js';
+import { natureReleases, getAllNatureReleaseNames, getAllClanNames, getClanSymbol } from '../data/options.js';
 import { 
   villages, 
   ranks, 
@@ -13,6 +12,10 @@ import {
   enneagramTypes, 
   months, 
   days,
+  bloodTypes,
+  genders,
+  sexualOrientations,
+  romanticOrientations,
   generateOptions,
   generateGroupedOptions,
   generateDatalistOptions
@@ -23,7 +26,7 @@ export function renderOCForm(oc = null, onSave) {
   const formOC = oc || { ...defaultOC, id: generateId() };
   const clans = storage.getAllClans();
   
-  // Get predefined clan names from clan-symbols.js
+  // Get predefined clan names from options.js
   const predefinedClanNames = getAllClanNames();
   
   // Get current clan name for display (either from clanId lookup or stored name)
@@ -128,6 +131,60 @@ export function renderOCForm(oc = null, onSave) {
           <input type="text" class="form-control" id="profileImage" value="${formOC.profileImage || ''}" placeholder="Enter image URL">
         </div>
         
+        <!-- Debut Information -->
+        <h3 class="mb-3 mt-4">Debut Information</h3>
+        <div class="row">
+          <div class="col-12 col-md-6">
+            <div class="form-group">
+              <label class="form-label">Debut (Manga)</label>
+              <input type="text" class="form-control" id="debutManga" value="${formOC.debut?.manga || ''}" placeholder="e.g., Chapter 1">
+            </div>
+          </div>
+          <div class="col-12 col-md-6">
+            <div class="form-group">
+              <label class="form-label">Debut (Anime)</label>
+              <input type="text" class="form-control" id="debutAnime" value="${formOC.debut?.anime || ''}" placeholder="e.g., Episode 1">
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12 col-md-6">
+            <div class="form-group">
+              <label class="form-label">Debut (Novel)</label>
+              <input type="text" class="form-control" id="debutNovel" value="${formOC.debut?.novel || ''}" placeholder="e.g., Novel Title">
+            </div>
+          </div>
+          <div class="col-12 col-md-6">
+            <div class="form-group">
+              <label class="form-label">Debut (Movie)</label>
+              <input type="text" class="form-control" id="debutMovie" value="${formOC.debut?.movie || ''}" placeholder="e.g., Movie Title">
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12 col-md-6">
+            <div class="form-group">
+              <label class="form-label">Debut (Game)</label>
+              <input type="text" class="form-control" id="debutGame" value="${formOC.debut?.game || ''}" placeholder="e.g., Game Title">
+            </div>
+          </div>
+          <div class="col-12 col-md-6">
+            <div class="form-group">
+              <label class="form-label">Appears In</label>
+              <div style="margin-top: 0.5rem;">
+                ${['Anime', 'Manga', 'Novel', 'Game', 'Movie'].map(media => `
+                  <label style="display: inline-block; margin-right: 1rem; margin-bottom: 0.5rem;">
+                    <input type="checkbox" value="${media}" 
+                           ${(formOC.appearsIn || []).includes(media) ? 'checked' : ''}
+                           id="appearsIn-${media}">
+                    ${media}
+                  </label>
+                `).join('')}
+              </div>
+            </div>
+          </div>
+        </div>
+        
         <!-- Personal Information -->
         <h3 class="mb-3 mt-4">Personal Information <i class="japanese-header">個人情報</i></h3>
         <div class="row">
@@ -217,16 +274,19 @@ export function renderOCForm(oc = null, onSave) {
           <div class="col-12 col-md-4">
             <div class="form-group">
               <label class="form-label">Blood Type</label>
-              <input type="text" class="form-control" id="bloodType" value="${formOC.bloodType || ''}">
+              <select class="form-control" id="bloodType">
+                <option value="">Select Blood Type</option>
+                ${generateOptions(bloodTypes, formOC.bloodType || '')}
+              </select>
             </div>
           </div>
           <div class="col-12 col-md-4">
             <div class="form-group">
               <label class="form-label">Zodiac Sign</label>
-              <input type="text" class="form-control" id="zodiac" list="zodiac-signs" value="${formOC.zodiac || ''}" placeholder="Type or select a zodiac sign" autocomplete="off">
-              <datalist id="zodiac-signs">
-                ${generateDatalistOptions(zodiacSigns)}
-              </datalist>
+              <select class="form-control" id="zodiac">
+                <option value="">Select Zodiac Sign</option>
+                ${generateOptions(zodiacSigns, formOC.zodiac || '')}
+              </select>
             </div>
           </div>
         </div>
@@ -235,19 +295,59 @@ export function renderOCForm(oc = null, onSave) {
           <div class="col-12 col-md-4">
             <div class="form-group">
               <label class="form-label">Gender</label>
-              <input type="text" class="form-control" id="gender" value="${formOC.gender || ''}">
+              <select class="form-control" id="gender">
+                <option value="">Select Gender</option>
+                ${generateOptions(genders, formOC.gender || '')}
+              </select>
             </div>
           </div>
           <div class="col-12 col-md-4">
             <div class="form-group">
               <label class="form-label">Sexual Orientation</label>
-              <input type="text" class="form-control" id="sexualOrientation" value="${formOC.sexualOrientation || ''}">
+              <select class="form-control" id="sexualOrientation">
+                <option value="">Select Sexual Orientation</option>
+                ${generateOptions(sexualOrientations, formOC.sexualOrientation || '')}
+              </select>
             </div>
           </div>
           <div class="col-12 col-md-4">
             <div class="form-group">
               <label class="form-label">Romantic Orientation</label>
-              <input type="text" class="form-control" id="romanticOrientation" value="${formOC.romanticOrientation || ''}">
+              <select class="form-control" id="romanticOrientation">
+                <option value="">Select Romantic Orientation</option>
+                ${generateOptions(romanticOrientations, formOC.romanticOrientation || '')}
+              </select>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Family Information -->
+        <h3 class="mb-3 mt-4">Family Information</h3>
+        <div class="row">
+          <div class="col-12 col-md-6">
+            <div class="form-group">
+              <label class="form-label">Father</label>
+              <input type="text" class="form-control" id="familyFather" value="${formOC.family?.father || ''}" placeholder="e.g., Father's Name">
+            </div>
+          </div>
+          <div class="col-12 col-md-6">
+            <div class="form-group">
+              <label class="form-label">Mother</label>
+              <input type="text" class="form-control" id="familyMother" value="${formOC.family?.mother || ''}" placeholder="e.g., Mother's Name">
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12 col-md-6">
+            <div class="form-group">
+              <label class="form-label">Siblings (one per line)</label>
+              <textarea class="form-control" id="familySiblings" rows="4" placeholder="e.g., Older Brother&#10;Younger Sister">${(formOC.family?.siblings || []).join('\n')}</textarea>
+            </div>
+          </div>
+          <div class="col-12 col-md-6">
+            <div class="form-group">
+              <label class="form-label">Other Relatives (one per line)</label>
+              <textarea class="form-control" id="familyOtherRelatives" rows="4" placeholder="e.g., Uncle&#10;Aunt&#10;Cousin">${(formOC.family?.otherRelatives || []).join('\n')}</textarea>
             </div>
           </div>
         </div>
@@ -413,12 +513,88 @@ export function renderOCForm(oc = null, onSave) {
           </div>
         </div>
         
+        <!-- Chakra & Physical Prowess -->
+        <h4 class="mb-3 mt-4">Chakra & Physical Prowess</h4>
+        <div class="row">
+          <div class="col-12 col-md-6">
+            <div class="form-group">
+              <label class="form-label">Chakra Reserves</label>
+              <textarea class="form-control" id="chakraReserves" rows="2">${formOC.chakraPhysicalProwess?.chakraReserves || ''}</textarea>
+            </div>
+          </div>
+          <div class="col-12 col-md-6">
+            <div class="form-group">
+              <label class="form-label">Chakra Control</label>
+              <textarea class="form-control" id="chakraControl" rows="2">${formOC.chakraPhysicalProwess?.chakraControl || ''}</textarea>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12 col-md-6">
+            <div class="form-group">
+              <label class="form-label">Strength Feats</label>
+              <textarea class="form-control" id="strengthFeats" rows="2">${formOC.chakraPhysicalProwess?.strengthFeats || ''}</textarea>
+            </div>
+          </div>
+          <div class="col-12 col-md-6">
+            <div class="form-group">
+              <label class="form-label">Speed Feats</label>
+              <textarea class="form-control" id="speedFeats" rows="2">${formOC.chakraPhysicalProwess?.speedFeats || ''}</textarea>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12 col-md-6">
+            <div class="form-group">
+              <label class="form-label">Taijutsu Skill</label>
+              <textarea class="form-control" id="taijutsuSkill" rows="2">${formOC.chakraPhysicalProwess?.taijutsuSkill || ''}</textarea>
+            </div>
+          </div>
+          <div class="col-12 col-md-6">
+            <div class="form-group">
+              <label class="form-label">Training Influences</label>
+              <textarea class="form-control" id="trainingInfluences" rows="2">${formOC.chakraPhysicalProwess?.trainingInfluences || ''}</textarea>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Intelligence -->
+        <h4 class="mb-3 mt-4">Intelligence</h4>
+        <div class="row">
+          <div class="col-12 col-md-6">
+            <div class="form-group">
+              <label class="form-label">Academic Performance</label>
+              <textarea class="form-control" id="academicPerformance" rows="2">${formOC.intelligence?.academicPerformance || ''}</textarea>
+            </div>
+          </div>
+          <div class="col-12 col-md-6">
+            <div class="form-group">
+              <label class="form-label">Analytical Ability</label>
+              <textarea class="form-control" id="analyticalAbility" rows="2">${formOC.intelligence?.analyticalAbility || ''}</textarea>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12 col-md-6">
+            <div class="form-group">
+              <label class="form-label">Combat Strategy</label>
+              <textarea class="form-control" id="combatStrategy" rows="2">${formOC.intelligence?.combatStrategy || ''}</textarea>
+            </div>
+          </div>
+          <div class="col-12 col-md-6">
+            <div class="form-group">
+              <label class="form-label">Leadership Skill</label>
+              <textarea class="form-control" id="leadershipSkill" rows="2">${formOC.intelligence?.leadershipSkill || ''}</textarea>
+            </div>
+          </div>
+        </div>
+        
         <div id="abilities-editor" class="mt-3 mb-3">
           <label class="form-label mb-2">Abilities & Techniques</label>
           <div class="card-naruto" style="padding: 1rem; margin-bottom: 1rem;">
             <div id="abilities-container">
               ${(() => {
-                const abilities = formOC.abilities || { taijutsu: [], ninjutsu: [] };
+                const abilities = formOC.abilities || { taijutsu: [], ninjutsu: [], genjutsu: [], fuinjutsu: [], kenjutsu: [], senjutsu: [], medical: [], other: [] };
                 let html = '';
                 abilities.taijutsu?.forEach((ability, index) => {
                   html += renderAbilityEditor('taijutsu', ability, index);
@@ -426,12 +602,36 @@ export function renderOCForm(oc = null, onSave) {
                 abilities.ninjutsu?.forEach((ability, index) => {
                   html += renderAbilityEditor('ninjutsu', ability, index);
                 });
-                return html || '<p class="text-muted">No abilities added yet. Click "Add Taijutsu" or "Add Ninjutsu" to add abilities.</p>';
+                abilities.genjutsu?.forEach((ability, index) => {
+                  html += renderAbilityEditor('genjutsu', ability, index);
+                });
+                abilities.fuinjutsu?.forEach((ability, index) => {
+                  html += renderAbilityEditor('fuinjutsu', ability, index);
+                });
+                abilities.kenjutsu?.forEach((ability, index) => {
+                  html += renderAbilityEditor('kenjutsu', ability, index);
+                });
+                abilities.senjutsu?.forEach((ability, index) => {
+                  html += renderAbilityEditor('senjutsu', ability, index);
+                });
+                abilities.medical?.forEach((ability, index) => {
+                  html += renderAbilityEditor('medical', ability, index);
+                });
+                abilities.other?.forEach((ability, index) => {
+                  html += renderAbilityEditor('other', ability, index);
+                });
+                return html || '<p class="text-muted">No abilities added yet. Click a button below to add abilities.</p>';
               })()}
             </div>
-            <div class="mt-2">
-              <button type="button" class="btn-naruto btn-naruto-secondary" onclick="addAbility('taijutsu')" style="margin-right: 0.5rem;">+ Add Taijutsu</button>
+            <div class="mt-2" style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+              <button type="button" class="btn-naruto btn-naruto-secondary" onclick="addAbility('taijutsu')">+ Add Taijutsu</button>
               <button type="button" class="btn-naruto btn-naruto-secondary" onclick="addAbility('ninjutsu')">+ Add Ninjutsu</button>
+              <button type="button" class="btn-naruto btn-naruto-secondary" onclick="addAbility('genjutsu')">+ Add Genjutsu</button>
+              <button type="button" class="btn-naruto btn-naruto-secondary" onclick="addAbility('fuinjutsu')">+ Add Fūinjutsu</button>
+              <button type="button" class="btn-naruto btn-naruto-secondary" onclick="addAbility('kenjutsu')">+ Add Kenjutsu</button>
+              <button type="button" class="btn-naruto btn-naruto-secondary" onclick="addAbility('senjutsu')">+ Add Senjutsu</button>
+              <button type="button" class="btn-naruto btn-naruto-secondary" onclick="addAbility('medical')">+ Add Medical</button>
+              <button type="button" class="btn-naruto btn-naruto-secondary" onclick="addAbility('other')">+ Add Other</button>
             </div>
           </div>
         </div>
@@ -743,8 +943,8 @@ export function renderOCForm(oc = null, onSave) {
           <textarea class="form-control" id="appearanceColors" rows="3" placeholder="#FF5733&#10;#33FF57&#10;blue">${(formOC.appearance?.colors || []).join('\n')}</textarea>
         </div>
         <div class="form-group">
-          <label class="form-label">Gear Items <small style="font-weight: normal; color: var(--color-text-dark-2);">(JSON format - one item per line, or simple text one per line)</small></label>
-          <textarea class="form-control" id="appearanceGear" rows="6" placeholder='{"name": "Kunai", "category": "Weapon", "material": "Steel", "use": "Throwing weapon", "info": ["Standard issue", "Can be used for melee"]}&#10;{"name": "Shuriken", "category": "Weapon", "material": "Steel", "use": "Throwing weapon", "info": []}' style="font-family: monospace; font-size: 0.9rem;">${(() => {
+          <label class="form-label">Gear Items <small style="font-weight: normal; color: var(--color-text-dark-2);">(one item per line)</small></label>
+          <textarea class="form-control" id="appearanceGear" rows="6" placeholder="Kunai&#10;Shuriken&#10;Ninja Wire&#10;Explosive Tags">${(() => {
             // Format gear for display - handle both array of objects and array of strings
             if (!formOC.appearance?.gear || formOC.appearance.gear.length === 0) {
               return '';
@@ -753,12 +953,70 @@ export function renderOCForm(oc = null, onSave) {
               if (typeof gear === 'string') {
                 return gear;
               }
-              return JSON.stringify(gear, null, 2);
-            }).join('\n\n');
+              // If it's an object, extract the name or format it nicely
+              if (gear && typeof gear === 'object') {
+                const parts = [];
+                if (gear.name) parts.push(gear.name);
+                if (gear.category) parts.push(`(${gear.category})`);
+                if (gear.material) parts.push(`- ${gear.material}`);
+                if (gear.use) parts.push(`- ${gear.use}`);
+                if (gear.info && Array.isArray(gear.info) && gear.info.length > 0) {
+                  parts.push(`- ${gear.info.join(', ')}`);
+                }
+                return parts.join(' ');
+              }
+              return String(gear);
+            }).join('\n');
           })()}</textarea>
           <small style="color: var(--color-text-dark-2); font-size: 0.85rem; display: block; margin-top: 0.25rem;">
-            Tip: You can enter simple text (one item per line) or JSON objects for detailed gear information.
+            Enter one gear item per line. Examples: "Kunai", "Shuriken", "Ninja Wire", "Explosive Tags"
           </small>
+        </div>
+        
+        <!-- Appearance by Era -->
+        <h3 class="mb-3 mt-4">Appearance by Era</h3>
+        <div class="appearance-era-container">
+          <div class="appearance-era-tabs" style="display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap;">
+            ${['Part I', 'Part II', 'Blank Period', 'Gaiden', 'Boruto'].map((era, index) => `
+              <button type="button" class="btn-naruto btn-naruto-secondary appearance-era-tab ${index === 0 ? 'active' : ''}" 
+                      onclick="switchAppearanceEraTab('${era}')" 
+                      data-era="${era}"
+                      style="font-size: 0.85rem; padding: 0.5rem 1rem;">
+                ${era}
+              </button>
+            `).join('')}
+          </div>
+          <div class="appearance-era-content">
+            ${['Part I', 'Part II', 'Blank Period', 'Gaiden', 'Boruto'].map((era, index) => {
+              const eraAppearance = formOC.appearanceByEra?.[era] || { description: '', clothing: '', accessories: '', visualMotifs: '' };
+              const isActive = index === 0 ? 'active' : '';
+              return `
+                <div class="appearance-era-panel ${isActive}" id="appearance-era-panel-${era.replace(/\s+/g, '-')}" 
+                     style="${index !== 0 ? 'display: none;' : ''}">
+                  <div class="form-group">
+                    <label class="form-label">Description</label>
+                    <textarea class="form-control" id="appearanceEra-${era}-description" rows="3" 
+                              placeholder="Hair, eyes, build...">${eraAppearance.description || ''}</textarea>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Signature Clothing</label>
+                    <textarea class="form-control" id="appearanceEra-${era}-clothing" rows="2" 
+                              placeholder="Clothing description for ${era}...">${eraAppearance.clothing || ''}</textarea>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Accessories</label>
+                    <textarea class="form-control" id="appearanceEra-${era}-accessories" rows="2" 
+                              placeholder="Accessories for ${era}...">${eraAppearance.accessories || ''}</textarea>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Visual Motifs</label>
+                    <textarea class="form-control" id="appearanceEra-${era}-visualMotifs" rows="2" 
+                              placeholder="Distinctive visual traits for ${era}...">${eraAppearance.visualMotifs || ''}</textarea>
+                  </div>
+                </div>
+              `;
+            }).join('')}
+          </div>
         </div>
         
         <!-- Background & History -->
@@ -777,6 +1035,59 @@ export function renderOCForm(oc = null, onSave) {
             </div>
             <button type="button" class="btn-naruto btn-naruto-secondary mt-2" onclick="addRelationship()">+ Add Relationship</button>
           </div>
+        </div>
+        
+        <!-- Story Arcs / Timeline -->
+        <h3 class="mb-3 mt-4">Story Arcs / Timeline</h3>
+        <div id="story-arcs-editor" class="mb-4">
+          <label class="form-label mb-2">Story Arcs</label>
+          <div class="card-naruto" style="padding: 1rem; margin-bottom: 1rem;">
+            <div id="story-arcs-container">
+              ${(() => {
+                const storyArcs = formOC.storyArcs || [];
+                if (storyArcs.length === 0) {
+                  return '<p class="text-muted">No story arcs added yet.</p>';
+                }
+                return storyArcs.map((arc, index) => renderStoryArcEditor(arc, index)).join('');
+              })()}
+            </div>
+            <button type="button" class="btn-naruto btn-naruto-secondary mt-2" onclick="addStoryArc()">+ Add Story Arc</button>
+          </div>
+        </div>
+        
+        <!-- Other Media -->
+        <h3 class="mb-3 mt-4">In Other Media</h3>
+        <div class="row">
+          <div class="col-12 col-md-6">
+            <div class="form-group">
+              <label class="form-label">Novel Appearances (one per line)</label>
+              <textarea class="form-control" id="otherMediaNovel" rows="3" placeholder="e.g., Novel Title 1&#10;Novel Title 2">${(formOC.otherMedia?.novel || []).join('\n')}</textarea>
+            </div>
+          </div>
+          <div class="col-12 col-md-6">
+            <div class="form-group">
+              <label class="form-label">Game Appearances (one per line)</label>
+              <textarea class="form-control" id="otherMediaGame" rows="3" placeholder="e.g., Game Title 1&#10;Game Title 2">${(formOC.otherMedia?.game || []).join('\n')}</textarea>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12 col-md-6">
+            <div class="form-group">
+              <label class="form-label">OVA Appearances (one per line)</label>
+              <textarea class="form-control" id="otherMediaOVA" rows="3" placeholder="e.g., OVA Title 1">${(formOC.otherMedia?.ova || []).join('\n')}</textarea>
+            </div>
+          </div>
+          <div class="col-12 col-md-6">
+            <div class="form-group">
+              <label class="form-label">Movie Appearances (one per line)</label>
+              <textarea class="form-control" id="otherMediaMovies" rows="3" placeholder="e.g., Movie Title 1">${(formOC.otherMedia?.movies || []).join('\n')}</textarea>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Non-Canon Events (one per line)</label>
+          <textarea class="form-control" id="otherMediaNonCanon" rows="3" placeholder="e.g., Filler arc name">${(formOC.otherMedia?.nonCanon || []).join('\n')}</textarea>
         </div>
         
         <!-- Miscellaneous -->
@@ -838,6 +1149,17 @@ export function renderOCForm(oc = null, onSave) {
         return '';
       })(),
       aliases: document.getElementById('aliases').value.split(',').map(a => a.trim()).filter(a => a),
+      debut: {
+        manga: document.getElementById('debutManga').value,
+        anime: document.getElementById('debutAnime').value,
+        novel: document.getElementById('debutNovel').value,
+        movie: document.getElementById('debutMovie').value,
+        game: document.getElementById('debutGame').value
+      },
+      appearsIn: (() => {
+        const checkboxes = document.querySelectorAll('input[id^="appearsIn-"]:checked');
+        return Array.from(checkboxes).map(cb => cb.value);
+      })(),
       dob: (() => {
         const month = document.getElementById('dobMonth').value;
         const day = document.getElementById('dobDay').value;
@@ -1004,8 +1326,8 @@ export function renderOCForm(oc = null, onSave) {
       },
       abilities: (() => {
         const container = document.getElementById('abilities-container');
-        if (!container) return { taijutsu: [], ninjutsu: [] };
-        const abilities = { taijutsu: [], ninjutsu: [] };
+        if (!container) return { taijutsu: [], ninjutsu: [], genjutsu: [], fuinjutsu: [], kenjutsu: [], senjutsu: [], medical: [], other: [] };
+        const abilities = { taijutsu: [], ninjutsu: [], genjutsu: [], fuinjutsu: [], kenjutsu: [], senjutsu: [], medical: [], other: [] };
         container.querySelectorAll('.ability-editor-item').forEach(item => {
           const type = item.dataset.type;
           const index = item.dataset.index;
@@ -1019,7 +1341,7 @@ export function renderOCForm(oc = null, onSave) {
             description: descInput.value || ''
           };
           
-          if (type === 'taijutsu') {
+          if (type === 'taijutsu' || type === 'kenjutsu') {
             const baseStyleInput = container.querySelector(`[name="ability-baseStyle-${type}-${index}"]`);
             const masteryInput = container.querySelector(`[name="ability-mastery-${type}-${index}"]`);
             ability.baseStyle = baseStyleInput?.value || '';
@@ -1034,6 +1356,7 @@ export function renderOCForm(oc = null, onSave) {
           }
           
           if (ability.style || ability.description) {
+            if (!abilities[type]) abilities[type] = [];
             abilities[type].push(ability);
           }
         });
@@ -1067,6 +1390,30 @@ export function renderOCForm(oc = null, onSave) {
         });
         return relationships;
       })(),
+      storyArcs: (() => {
+        const container = document.getElementById('story-arcs-container');
+        if (!container) return [];
+        const storyArcs = [];
+        container.querySelectorAll('.story-arc-editor-item').forEach(item => {
+          const index = item.dataset.index;
+          const nameInput = container.querySelector(`[name="story-arc-name-${index}"]`);
+          const summaryInput = container.querySelector(`[name="story-arc-summary-${index}"]`);
+          const keyEventsInput = container.querySelector(`[name="story-arc-keyEvents-${index}"]`);
+          
+          if (!nameInput && !summaryInput) return;
+          
+          const arc = {
+            name: nameInput?.value || '',
+            summary: summaryInput?.value || '',
+            keyEvents: keyEventsInput?.value.split('\n').filter(e => e.trim()) || []
+          };
+          
+          if (arc.name || arc.summary) {
+            storyArcs.push(arc);
+          }
+        });
+        return storyArcs;
+      })(),
       recordHistory: {
         childhood: document.getElementById('recordHistoryChildhood').value,
         adolescence: document.getElementById('recordHistoryAdolescence').value,
@@ -1082,85 +1429,82 @@ export function renderOCForm(oc = null, onSave) {
           const gearText = document.getElementById('appearanceGear').value.trim();
           if (!gearText) return [];
           
-          // Try to parse as JSON array first
-          try {
-            const parsed = JSON.parse(gearText);
-            if (Array.isArray(parsed)) {
-              return parsed;
-            }
-          } catch (e) {
-            // Not a JSON array, continue with line-by-line parsing
-          }
-          
-          // Parse line by line - each line can be JSON or simple text
+          // Simple line-by-line parsing - one item per line
           const lines = gearText.split('\n');
           const gear = [];
-          let currentJson = '';
-          let braceCount = 0;
           
           lines.forEach(line => {
             const trimmed = line.trim();
-            if (!trimmed) return;
-            
-            // Check if this line starts a JSON object
-            if (trimmed.startsWith('{')) {
-              currentJson = trimmed;
-              braceCount = (trimmed.match(/{/g) || []).length - (trimmed.match(/}/g) || []).length;
-              
-              if (braceCount === 0) {
-                // Complete JSON object on one line
-                try {
-                  gear.push(JSON.parse(currentJson));
-                } catch (e) {
-                  gear.push(trimmed); // Fallback to string
-                }
-                currentJson = '';
-              }
-            } else if (currentJson) {
-              // Continue building JSON object
-              currentJson += '\n' + trimmed;
-              braceCount += (trimmed.match(/{/g) || []).length - (trimmed.match(/}/g) || []).length;
-              
-              if (braceCount === 0) {
-                // Complete JSON object
-                try {
-                  gear.push(JSON.parse(currentJson));
-                } catch (e) {
-                  gear.push(currentJson); // Fallback to string
-                }
-                currentJson = '';
-              }
-            } else {
-              // Simple text line
+            if (trimmed) {
+              // Just store as simple string - no JSON parsing needed
               gear.push(trimmed);
             }
           });
           
-          // Handle any remaining JSON
-          if (currentJson) {
-            try {
-              gear.push(JSON.parse(currentJson));
-            } catch (e) {
-              gear.push(currentJson);
-            }
-          }
-          
           return gear;
         })()
       },
+      appearanceByEra: (() => {
+        const eras = ['Part I', 'Part II', 'Blank Period', 'Gaiden', 'Boruto'];
+        const appearanceByEra = {};
+        eras.forEach(era => {
+          const eraId = era.replace(/\s+/g, '-');
+          const descEl = document.getElementById(`appearanceEra-${era}-description`);
+          const clothingEl = document.getElementById(`appearanceEra-${era}-clothing`);
+          const accessoriesEl = document.getElementById(`appearanceEra-${era}-accessories`);
+          const visualMotifsEl = document.getElementById(`appearanceEra-${era}-visualMotifs`);
+          
+          if (descEl || clothingEl || accessoriesEl || visualMotifsEl) {
+            appearanceByEra[era] = {
+              description: descEl?.value || '',
+              clothing: clothingEl?.value || '',
+              accessories: accessoriesEl?.value || '',
+              visualMotifs: visualMotifsEl?.value || ''
+            };
+          }
+        });
+        return Object.keys(appearanceByEra).length > 0 ? appearanceByEra : undefined;
+      })(),
       profileImage: document.getElementById('profileImage').value,
       zodiac: document.getElementById('zodiac').value,
       sexualOrientation: document.getElementById('sexualOrientation').value,
       romanticOrientation: document.getElementById('romanticOrientation').value,
+      family: {
+        father: document.getElementById('familyFather').value,
+        mother: document.getElementById('familyMother').value,
+        siblings: document.getElementById('familySiblings').value.split('\n').filter(s => s.trim()),
+        otherRelatives: document.getElementById('familyOtherRelatives').value.split('\n').filter(r => r.trim())
+      },
       ninjaRegistrationNumber: document.getElementById('ninjaRegistrationNumber').value,
       academyGraduationAge: document.getElementById('academyGraduationAge').value,
       classification: document.getElementById('classification').value.split(',').map(c => c.trim()).filter(c => c),
       kekkeiGenkai: document.getElementById('kekkeiGenkai').value,
+      chakraPhysicalProwess: {
+        chakraReserves: document.getElementById('chakraReserves').value,
+        chakraControl: document.getElementById('chakraControl').value,
+        strengthFeats: document.getElementById('strengthFeats').value,
+        speedFeats: document.getElementById('speedFeats').value,
+        taijutsuSkill: document.getElementById('taijutsuSkill').value,
+        trainingInfluences: document.getElementById('trainingInfluences').value
+      },
+      intelligence: {
+        academicPerformance: document.getElementById('academicPerformance').value,
+        analyticalAbility: document.getElementById('analyticalAbility').value,
+        combatStrategy: document.getElementById('combatStrategy').value,
+        leadershipSkill: document.getElementById('leadershipSkill').value
+      },
       themeSong: document.getElementById('themeSong').value,
       themeSongLink: document.getElementById('themeSongLink').value,
       voiceActors: {
         japanese: document.getElementById('voiceActorJP').value,
         english: document.getElementById('voiceActorEN').value
+      },
+      otherMedia: {
+        novel: document.getElementById('otherMediaNovel').value.split('\n').filter(m => m.trim()),
+        game: document.getElementById('otherMediaGame').value.split('\n').filter(m => m.trim()),
+        ova: document.getElementById('otherMediaOVA').value.split('\n').filter(m => m.trim()),
+        movies: document.getElementById('otherMediaMovies').value.split('\n').filter(m => m.trim()),
+        nonCanon: document.getElementById('otherMediaNonCanon').value.split('\n').filter(m => m.trim())
       },
       quotes: document.getElementById('quotes').value.split('\n').filter(q => q.trim()),
       trivia: document.getElementById('trivia').value,
@@ -1283,11 +1627,22 @@ function renderStatInput(name, value) {
 
 // Ability editor helper functions
 function renderAbilityEditor(type, ability = {}, index) {
-  const isTaijutsu = type === 'taijutsu';
+  const isTaijutsu = type === 'taijutsu' || type === 'kenjutsu';
+  const typeNames = {
+    taijutsu: 'Taijutsu',
+    ninjutsu: 'Ninjutsu',
+    genjutsu: 'Genjutsu',
+    fuinjutsu: 'Fūinjutsu',
+    kenjutsu: 'Kenjutsu',
+    senjutsu: 'Senjutsu',
+    medical: 'Medical',
+    other: 'Other'
+  };
+  const typeName = typeNames[type] || type.charAt(0).toUpperCase() + type.slice(1);
   return `
     <div class="ability-editor-item mb-3" data-type="${type}" data-index="${index}" style="border: 1px solid var(--color-border-2); padding: 1rem; border-radius: 4px;">
       <div class="d-flex justify-content-between align-items-center mb-2">
-        <strong>${isTaijutsu ? 'Taijutsu' : 'Ninjutsu'}</strong>
+        <strong>${typeName}</strong>
         <button type="button" class="btn-naruto btn-naruto-secondary" onclick="removeAbility('${type}', ${index})" style="padding: 0.25rem 0.5rem; font-size: 0.85rem;">Remove</button>
       </div>
       <div class="row">
@@ -1411,13 +1766,36 @@ function renderGalleryItem(item = {}, index) {
   `;
 }
 
+function renderStoryArcEditor(arc = {}, index) {
+  return `
+    <div class="story-arc-editor-item mb-3" data-index="${index}" style="border: 1px solid var(--color-border-2); padding: 1rem; border-radius: 4px;">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <strong>Story Arc ${index + 1}</strong>
+        <button type="button" class="btn-naruto btn-naruto-secondary" onclick="removeStoryArc(${index})" style="padding: 0.25rem 0.5rem; font-size: 0.85rem;">Remove</button>
+      </div>
+      <div class="form-group">
+        <label>Arc Name</label>
+        <input type="text" class="form-control" name="story-arc-name-${index}" value="${arc.name || ''}" placeholder="e.g., Land of Waves Arc">
+      </div>
+      <div class="form-group">
+        <label>Summary</label>
+        <textarea class="form-control" name="story-arc-summary-${index}" rows="3" placeholder="Short paragraph explaining what happens to the character...">${arc.summary || ''}</textarea>
+      </div>
+      <div class="form-group">
+        <label>Key Events (one per line)</label>
+        <textarea class="form-control" name="story-arc-keyEvents-${index}" rows="4" placeholder="Event 1&#10;Event 2&#10;Event 3">${(arc.keyEvents || []).join('\n')}</textarea>
+      </div>
+    </div>
+  `;
+}
+
 // Make helper functions globally available
 if (typeof window !== 'undefined') {
   window.addAbility = function(type) {
     const container = document.getElementById('abilities-container');
     const items = container.querySelectorAll(`[data-type="${type}"]`);
     const index = items.length;
-    const newAbility = type === 'taijutsu' 
+    const newAbility = (type === 'taijutsu' || type === 'kenjutsu')
       ? { style: '', baseStyle: '', mastery: 3, description: '' }
       : { style: '', rank: '', difficulty: 3, chakraIntensity: 3, description: '' };
     container.innerHTML += renderAbilityEditor(type, newAbility, index);
@@ -1467,6 +1845,44 @@ if (typeof window !== 'undefined') {
     updateGalleryIndices();
   };
   
+  window.addStoryArc = function() {
+    const container = document.getElementById('story-arcs-container');
+    const items = container.querySelectorAll('.story-arc-editor-item');
+    const index = items.length;
+    container.innerHTML += renderStoryArcEditor({}, index);
+    if (container.querySelector('.text-muted')) {
+      container.querySelector('.text-muted').remove();
+    }
+  };
+  
+  window.removeStoryArc = function(index) {
+    const container = document.getElementById('story-arcs-container');
+    const item = container.querySelector(`[data-index="${index}"]`);
+    if (item) item.remove();
+    updateStoryArcIndices();
+  };
+  
+  window.switchAppearanceEraTab = function(era) {
+    const tabs = document.querySelectorAll('.appearance-era-tab');
+    tabs.forEach(tab => {
+      if (tab.dataset.era === era) {
+        tab.classList.add('active');
+      } else {
+        tab.classList.remove('active');
+      }
+    });
+    
+    const panels = document.querySelectorAll('.appearance-era-panel');
+    const eraId = era.replace(/\s+/g, '-');
+    panels.forEach(panel => {
+      if (panel.id === `appearance-era-panel-${eraId}`) {
+        panel.style.display = '';
+      } else {
+        panel.style.display = 'none';
+      }
+    });
+  };
+  
   function updateAbilityIndices() {
     const container = document.getElementById('abilities-container');
     container.querySelectorAll('.ability-editor-item').forEach((item, index) => {
@@ -1498,6 +1914,18 @@ if (typeof window !== 'undefined') {
       });
       item.querySelector('strong').textContent = `Gallery Image ${index + 1}`;
       item.querySelector('button').setAttribute('onclick', `removeGalleryItem(${index})`);
+    });
+  }
+  
+  function updateStoryArcIndices() {
+    const container = document.getElementById('story-arcs-container');
+    container.querySelectorAll('.story-arc-editor-item').forEach((item, index) => {
+      item.setAttribute('data-index', index);
+      item.querySelectorAll('input, textarea').forEach(input => {
+        input.name = input.name.replace(/-\d+$/, `-${index}`);
+      });
+      item.querySelector('strong').textContent = `Story Arc ${index + 1}`;
+      item.querySelector('button').setAttribute('onclick', `removeStoryArc(${index})`);
     });
   }
   

@@ -1,7 +1,6 @@
 // OC Detail Component - Full Data Book style character sheet renderer
 
-import { natureReleases, getNatureRelease } from '../data/nature-releases.js';
-import { getClanSymbol } from '../data/clan-symbols.js';
+import { natureReleases, getNatureRelease, getClanSymbol } from '../data/options.js';
 
 export function renderOCDetail(oc) {
   const container = document.createElement('div');
@@ -133,9 +132,117 @@ export function renderOCDetail(oc) {
             }).join('')}
           </div>
         ` : ''}
+        ${oc.appearanceByEra ? (() => {
+          const eras = ['Part I', 'Part II', 'Blank Period', 'Gaiden', 'Boruto'];
+          const hasAppearanceByEra = eras.some(era => {
+            const eraApp = oc.appearanceByEra[era];
+            return eraApp && (eraApp.description || eraApp.clothing || eraApp.accessories || eraApp.visualMotifs);
+          });
+          return hasAppearanceByEra ? `
+            <div style="margin-top: 2rem;">
+              <h3>Appearance by Era <i class="japanese-header">時代別の外見</i></h3>
+              ${eras.map(era => {
+                const eraApp = oc.appearanceByEra[era];
+                if (!eraApp || (!eraApp.description && !eraApp.clothing && !eraApp.accessories && !eraApp.visualMotifs)) {
+                  return '';
+                }
+                return `
+                  <div style="margin-bottom: 2rem; padding: 1rem; border: 1px solid var(--color-border-2); border-radius: 4px;">
+                    <h4 style="color: var(--color-accent-2); margin-bottom: 1rem;">${era}</h4>
+                    ${eraApp.description ? `<p><strong>Description:</strong> ${eraApp.description}</p>` : ''}
+                    ${eraApp.clothing ? `<p><strong>Signature Clothing:</strong> ${eraApp.clothing}</p>` : ''}
+                    ${eraApp.accessories ? `<p><strong>Accessories:</strong> ${eraApp.accessories}</p>` : ''}
+                    ${eraApp.visualMotifs ? `<p><strong>Visual Motifs:</strong> ${eraApp.visualMotifs}</p>` : ''}
+                  </div>
+                `;
+              }).filter(html => html).join('')}
+            </div>
+          ` : '';
+        })() : ''}
       </div>
     ` : ''}
     
+      ${oc.storyArcs && oc.storyArcs.length > 0 ? `
+      <div id="story-arcs-collapse" class="collapsible-section">
+        <div class="collapsible-header" onclick="toggleCollapse('story-arcs-content')">
+          Story Arcs / Timeline <i class="japanese-header">ストーリーアーク/タイムライン</i>
+          <i class="fas fa-chevron-down bounce-arrow"></i>
+        </div>
+        <div id="story-arcs-content" class="collapsible-content">
+          ${oc.storyArcs.map(arc => `
+            <div class="story-arc-entry" style="margin-bottom: 2rem; padding-bottom: 2rem; border-bottom: 1px solid var(--color-border-2);">
+              <h3 style="color: var(--color-accent-2); margin-bottom: 0.5rem;">${arc.name || 'Unnamed Arc'}</h3>
+              ${arc.summary ? `<p style="margin-bottom: 1rem;">${arc.summary}</p>` : ''}
+              ${arc.keyEvents && arc.keyEvents.length > 0 ? `
+                <h4 style="margin-bottom: 0.5rem;">Key Events:</h4>
+                <ul style="list-style-type: disc; padding-left: 1.5rem;">
+                  ${arc.keyEvents.map(event => `<li style="margin-bottom: 0.25rem;">${event}</li>`).join('')}
+                </ul>
+              ` : ''}
+            </div>
+          `).join('')}
+        </div>
+      </div>
+      ` : ''}
+      
+      ${oc.otherMedia ? (() => {
+        const hasOtherMedia = (oc.otherMedia.novel && oc.otherMedia.novel.length > 0) ||
+                              (oc.otherMedia.game && oc.otherMedia.game.length > 0) ||
+                              (oc.otherMedia.ova && oc.otherMedia.ova.length > 0) ||
+                              (oc.otherMedia.movies && oc.otherMedia.movies.length > 0) ||
+                              (oc.otherMedia.nonCanon && oc.otherMedia.nonCanon.length > 0);
+        return hasOtherMedia ? `
+          <div id="other-media-collapse" class="collapsible-section">
+            <div class="collapsible-header" onclick="toggleCollapse('other-media-content')">
+              In Other Media <i class="japanese-header">その他のメディア</i>
+              <i class="fas fa-chevron-down bounce-arrow"></i>
+            </div>
+            <div id="other-media-content" class="collapsible-content">
+              ${oc.otherMedia.novel && oc.otherMedia.novel.length > 0 ? `
+                <div style="margin-bottom: 1rem;">
+                  <h4>Novel Appearances</h4>
+                  <ul style="list-style-type: disc; padding-left: 1.5rem;">
+                    ${oc.otherMedia.novel.map(novel => `<li>${novel}</li>`).join('')}
+                  </ul>
+                </div>
+              ` : ''}
+              ${oc.otherMedia.game && oc.otherMedia.game.length > 0 ? `
+                <div style="margin-bottom: 1rem;">
+                  <h4>Game Appearances</h4>
+                  <ul style="list-style-type: disc; padding-left: 1.5rem;">
+                    ${oc.otherMedia.game.map(game => `<li>${game}</li>`).join('')}
+                  </ul>
+                </div>
+              ` : ''}
+              ${oc.otherMedia.ova && oc.otherMedia.ova.length > 0 ? `
+                <div style="margin-bottom: 1rem;">
+                  <h4>OVA Appearances</h4>
+                  <ul style="list-style-type: disc; padding-left: 1.5rem;">
+                    ${oc.otherMedia.ova.map(ova => `<li>${ova}</li>`).join('')}
+                  </ul>
+                </div>
+              ` : ''}
+              ${oc.otherMedia.movies && oc.otherMedia.movies.length > 0 ? `
+                <div style="margin-bottom: 1rem;">
+                  <h4>Movie Appearances</h4>
+                  <ul style="list-style-type: disc; padding-left: 1.5rem;">
+                    ${oc.otherMedia.movies.map(movie => `<li>${movie}</li>`).join('')}
+                  </ul>
+                </div>
+              ` : ''}
+              ${oc.otherMedia.nonCanon && oc.otherMedia.nonCanon.length > 0 ? `
+                <div style="margin-bottom: 1rem;">
+                  <h4>Non-Canon Events</h4>
+                  <ul style="list-style-type: disc; padding-left: 1.5rem;">
+                    ${oc.otherMedia.nonCanon.map(nonCanon => `<li>${nonCanon}</li>`).join('')}
+                  </ul>
+                </div>
+              ` : ''}
+            </div>
+          </div>
+        ` : '';
+      })() : ''}
+      
       ${oc.themeSong || oc.themeSongLink || oc.voiceActors?.japanese || oc.voiceActors?.english || (oc.quotes && oc.quotes.length > 0) || oc.trivia ? `
       <div class="media-section">
         <h3>Miscellaneous <i class="japanese-header">その他</i></h3>
@@ -627,6 +734,24 @@ function renderIdentifyingInfo(oc) {
         ${oc.sensei ? renderInfoRow('Sensei', oc.sensei) : ''}
         ${oc.madeGenin ? renderInfoRow('Made Genin', oc.madeGenin) : ''}
         ${oc.madeChunin ? renderInfoRow('Made Chunin', oc.madeChunin) : ''}
+        ${oc.debut ? (() => {
+          const debuts = [];
+          if (oc.debut.manga) debuts.push(`Manga: ${oc.debut.manga}`);
+          if (oc.debut.anime) debuts.push(`Anime: ${oc.debut.anime}`);
+          if (oc.debut.novel) debuts.push(`Novel: ${oc.debut.novel}`);
+          if (oc.debut.movie) debuts.push(`Movie: ${oc.debut.movie}`);
+          if (oc.debut.game) debuts.push(`Game: ${oc.debut.game}`);
+          return debuts.length > 0 ? renderInfoRow('Debut', debuts.join('<br>')) : '';
+        })() : ''}
+        ${oc.appearsIn && oc.appearsIn.length > 0 ? renderInfoRow('Appears In', oc.appearsIn.join(', ')) : ''}
+        ${oc.family ? (() => {
+          const familyInfo = [];
+          if (oc.family.father) familyInfo.push(`Father: ${oc.family.father}`);
+          if (oc.family.mother) familyInfo.push(`Mother: ${oc.family.mother}`);
+          if (oc.family.siblings && oc.family.siblings.length > 0) familyInfo.push(`Siblings: ${oc.family.siblings.join(', ')}`);
+          if (oc.family.otherRelatives && oc.family.otherRelatives.length > 0) familyInfo.push(`Other Relatives: ${oc.family.otherRelatives.join(', ')}`);
+          return familyInfo.length > 0 ? renderInfoRow('Family', familyInfo.join('<br>')) : '';
+        })() : ''}
         ${renderInfoRow('Body Type', info.bodyType || 'Unknown')}
         ${oc.eyeColor ? renderInfoRow('Eye Color', oc.eyeColor) : ''}
         ${oc.hairColor ? renderInfoRow('Hair Color', oc.hairColor) : ''}
@@ -988,6 +1113,82 @@ function renderDemeanor(oc) {
 }
 
 function renderAbilities(oc) {
+  const hasChakraPhysical = oc.chakraPhysicalProwess && (
+    oc.chakraPhysicalProwess.chakraReserves || 
+    oc.chakraPhysicalProwess.chakraControl || 
+    oc.chakraPhysicalProwess.strengthFeats || 
+    oc.chakraPhysicalProwess.speedFeats || 
+    oc.chakraPhysicalProwess.taijutsuSkill || 
+    oc.chakraPhysicalProwess.trainingInfluences
+  );
+  
+  const hasDojutsu = oc.dojutsu && (
+    oc.dojutsu.name || 
+    oc.dojutsu.type || 
+    oc.dojutsu.development || 
+    (oc.dojutsu.stages && oc.dojutsu.stages.length > 0) || 
+    (oc.dojutsu.specialAbilities && oc.dojutsu.specialAbilities.length > 0)
+  );
+  
+  const hasIntelligence = oc.intelligence && (
+    oc.intelligence.academicPerformance || 
+    oc.intelligence.analyticalAbility || 
+    oc.intelligence.combatStrategy || 
+    oc.intelligence.leadershipSkill
+  );
+  
+  return `
+    ${hasChakraPhysical ? `
+    <div class="ability-category" style="margin-bottom: 2rem;">
+      <h3>Chakra & Physical Prowess <i class="japanese-header">チャクラと体力</i></h3>
+      ${oc.chakraPhysicalProwess.chakraReserves ? `<p><strong>Chakra Reserves:</strong> ${oc.chakraPhysicalProwess.chakraReserves}</p>` : ''}
+      ${oc.chakraPhysicalProwess.chakraControl ? `<p><strong>Chakra Control:</strong> ${oc.chakraPhysicalProwess.chakraControl}</p>` : ''}
+      ${oc.chakraPhysicalProwess.strengthFeats ? `<p><strong>Strength Feats:</strong> ${oc.chakraPhysicalProwess.strengthFeats}</p>` : ''}
+      ${oc.chakraPhysicalProwess.speedFeats ? `<p><strong>Speed Feats:</strong> ${oc.chakraPhysicalProwess.speedFeats}</p>` : ''}
+      ${oc.chakraPhysicalProwess.taijutsuSkill ? `<p><strong>Taijutsu Skill:</strong> ${oc.chakraPhysicalProwess.taijutsuSkill}</p>` : ''}
+      ${oc.chakraPhysicalProwess.trainingInfluences ? `<p><strong>Training Influences:</strong> ${oc.chakraPhysicalProwess.trainingInfluences}</p>` : ''}
+    </div>
+    ` : ''}
+    
+    ${hasDojutsu ? `
+    <div class="ability-category" style="margin-bottom: 2rem;">
+      <h3>Dōjutsu <i class="japanese-header">瞳術</i></h3>
+      ${oc.dojutsu.name ? `<p><strong>Name:</strong> ${oc.dojutsu.name}</p>` : ''}
+      ${oc.dojutsu.type ? `<p><strong>Type:</strong> ${oc.dojutsu.type}</p>` : ''}
+      ${oc.dojutsu.development ? `<p><strong>Development:</strong> ${oc.dojutsu.development}</p>` : ''}
+      ${oc.dojutsu.stages && oc.dojutsu.stages.length > 0 ? `
+        <div style="margin-top: 1rem;">
+          <h4>Stages</h4>
+          <ul style="list-style-type: disc; padding-left: 1.5rem;">
+            ${oc.dojutsu.stages.map(stage => `<li>${stage}</li>`).join('')}
+          </ul>
+        </div>
+      ` : ''}
+      ${oc.dojutsu.specialAbilities && oc.dojutsu.specialAbilities.length > 0 ? `
+        <div style="margin-top: 1rem;">
+          <h4>Special Abilities</h4>
+          <ul style="list-style-type: disc; padding-left: 1.5rem;">
+            ${oc.dojutsu.specialAbilities.map(ability => `<li>${ability}</li>`).join('')}
+          </ul>
+        </div>
+      ` : ''}
+    </div>
+    ` : ''}
+    
+    ${hasIntelligence ? `
+    <div class="ability-category" style="margin-bottom: 2rem;">
+      <h3>Intelligence <i class="japanese-header">知性</i></h3>
+      ${oc.intelligence.academicPerformance ? `<p><strong>Academic Performance:</strong> ${oc.intelligence.academicPerformance}</p>` : ''}
+      ${oc.intelligence.analyticalAbility ? `<p><strong>Analytical Ability:</strong> ${oc.intelligence.analyticalAbility}</p>` : ''}
+      ${oc.intelligence.combatStrategy ? `<p><strong>Combat Strategy:</strong> ${oc.intelligence.combatStrategy}</p>` : ''}
+      ${oc.intelligence.leadershipSkill ? `<p><strong>Leadership Skill:</strong> ${oc.intelligence.leadershipSkill}</p>` : ''}
+    </div>
+    ` : ''}
+    
+  ` + renderAbilitiesOriginal(oc);
+}
+
+function renderAbilitiesOriginal(oc) {
   const abilities = oc.abilities || {};
   
   let html = '';

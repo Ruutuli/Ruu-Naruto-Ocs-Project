@@ -1,5 +1,9 @@
-// Default template structures for Naruto OC Website
+// ============================================================================
+// ------------------- Default Template Structures -------------------
+// ============================================================================
 
+// ------------------- Default OC Template ------------------
+// Template structure for Original Character data
 export const defaultOC = {
   // Basic Information
   id: '',
@@ -11,6 +15,16 @@ export const defaultOC = {
   nameMeaning: '',
   aliases: [],
   profileImage: '',
+  
+  // Debut Information
+  debut: {
+    manga: '',
+    anime: '',
+    novel: '',
+    movie: '',
+    game: ''
+  },
+  appearsIn: [], // Array of strings: 'Anime', 'Manga', 'Novel', 'Game', 'Movie'
   
   // Personal Information
   dob: '',
@@ -26,6 +40,14 @@ export const defaultOC = {
   sexualOrientation: '',
   romanticOrientation: '',
   zodiac: '',
+  
+  // Family Information
+  family: {
+    father: '',
+    mother: '',
+    siblings: [],
+    otherRelatives: []
+  },
   
   // Physical Appearance
   identifyingInfo: {
@@ -53,6 +75,38 @@ export const defaultOC = {
     colors: [],
     gear: []
   },
+  appearanceByEra: {
+    'Part I': {
+      description: '',
+      clothing: '',
+      accessories: '',
+      visualMotifs: ''
+    },
+    'Part II': {
+      description: '',
+      clothing: '',
+      accessories: '',
+      visualMotifs: ''
+    },
+    'Blank Period': {
+      description: '',
+      clothing: '',
+      accessories: '',
+      visualMotifs: ''
+    },
+    'Gaiden': {
+      description: '',
+      clothing: '',
+      accessories: '',
+      visualMotifs: ''
+    },
+    'Boruto': {
+      description: '',
+      clothing: '',
+      accessories: '',
+      visualMotifs: ''
+    }
+  },
   
   // Affiliations
   village: '',
@@ -68,11 +122,34 @@ export const defaultOC = {
   madeChunin: '',
   
   // Abilities & Powers
-  natureType: '',
+  natureType: '', // Can be string or array for multiple natures
   kekkeiGenkai: '',
   abilities: {
     taijutsu: [],
-    ninjutsu: []
+    ninjutsu: [],
+    genjutsu: [],
+    fuinjutsu: []
+  },
+  chakraPhysicalProwess: {
+    chakraReserves: '',
+    chakraControl: '',
+    strengthFeats: '',
+    speedFeats: '',
+    taijutsuSkill: '',
+    trainingInfluences: ''
+  },
+  dojutsu: {
+    name: '',
+    type: '',
+    development: '',
+    stages: [],
+    specialAbilities: []
+  },
+  intelligence: {
+    academicPerformance: '',
+    analyticalAbility: '',
+    combatStrategy: '',
+    leadershipSkill: ''
   },
   stats: {
     intelligence: 0,
@@ -190,6 +267,16 @@ export const defaultOC = {
     adulthood: ''
   },
   relationships: [],
+  storyArcs: [], // Array of { name: '', summary: '', keyEvents: [] }
+  
+  // Other Media
+  otherMedia: {
+    novel: [],
+    game: [],
+    ova: [],
+    movies: [],
+    nonCanon: []
+  },
   
   // Miscellaneous
   themeSong: '',
@@ -203,6 +290,8 @@ export const defaultOC = {
   gallery: []
 };
 
+// ------------------- Default Clan Template ------------------
+// Template structure for Clan data
 export const defaultClan = {
   id: '',
   name: '',
@@ -309,6 +398,8 @@ export const defaultClan = {
   moodBoardImages: []
 };
 
+// ------------------- Default Story Template ------------------
+// Template structure for Story data
 export const defaultStory = {
   id: '',
   title: '',
@@ -321,6 +412,8 @@ export const defaultStory = {
   updatedAt: ''
 };
 
+// ------------------- Default Lore Template ------------------
+// Template structure for Lore data
 export const defaultLore = {
   id: '',
   title: '',
@@ -330,8 +423,12 @@ export const defaultLore = {
   relatedClans: []
 };
 
-// Helper to generate unique IDs with prefix
-// New format: prefix + Name (e.g., "clanChigiri", "ocAkene", "storyName")
+// ============================================================================
+// ------------------- Helper Functions -------------------
+// ============================================================================
+
+// ------------------- Generate ID ------------------
+// Generates unique IDs with prefix (e.g., "clanChigiri", "ocAkene", "storyName")
 export function generateId(prefix = '', name = '') {
   if (prefix && name) {
     const cleanName = name.replace(/[^a-zA-Z0-9]/g, ''); // Remove special characters
@@ -340,144 +437,3 @@ export function generateId(prefix = '', name = '') {
   // Fallback: temporary ID for forms (will be replaced when saved)
   return 'temp' + Date.now().toString(36) + Math.random().toString(36).substr(2);
 }
-
-// Migration helper to convert old OC data format to new format
-export function migrateOCData(oldOC) {
-  if (!oldOC) return oldOC;
-  
-  const migrated = { ...oldOC };
-  
-  // Migrate age: convert string format to ageByEra object
-  if (typeof migrated.age === 'string' && migrated.age && (!migrated.ageByEra || Object.keys(migrated.ageByEra).length === 0)) {
-    const eras = ['Part I', 'Part II', 'Blank Period', 'Gaiden', 'Boruto'];
-    migrated.ageByEra = migrated.ageByEra || {};
-    
-    // Try to parse age string like "Part I: 12-13, Part II: 15-17"
-    eras.forEach(era => {
-      const escapedEra = era.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-      const match = migrated.age.match(new RegExp(`${escapedEra}:\\s*([^,]+)`));
-      if (match && match[1]) {
-        migrated.ageByEra[era] = match[1].trim();
-      }
-    });
-    
-    // If ageByEra is still empty, try to parse common formats
-    if (Object.keys(migrated.ageByEra).length === 0 && migrated.age) {
-      // Simple fallback - store as Part I age if single value
-      migrated.ageByEra['Part I'] = migrated.age.toString();
-    }
-  }
-  
-  // Migrate height/weight: convert from identifyingInfo.height/weight strings to heightByEra/weightByEra
-  if (migrated.identifyingInfo) {
-    // Migrate height
-    if (typeof migrated.identifyingInfo.height === 'string' && migrated.identifyingInfo.height && 
-        (!migrated.heightByEra || Object.keys(migrated.heightByEra).length === 0)) {
-      const eras = ['Part I', 'Part II', 'Blank Period', 'Gaiden', 'Boruto'];
-      migrated.heightByEra = migrated.heightByEra || {};
-      
-      eras.forEach(era => {
-        const escapedEra = era.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-        // Try format: "148.5 cm (Part I), 161 cm (Part II)"
-        const match1 = migrated.identifyingInfo.height.match(new RegExp(`([^,]+)\\s*\\(${escapedEra}\\)`));
-        // Try format: "Part I: 148.5 cm, Part II: 161 cm"
-        const match2 = migrated.identifyingInfo.height.match(new RegExp(`${escapedEra}:\\s*([^,]+)`));
-        
-        if (match1 && match1[1]) {
-          migrated.heightByEra[era] = match1[1].trim();
-        } else if (match2 && match2[1]) {
-          migrated.heightByEra[era] = match2[1].trim();
-        }
-      });
-    }
-    
-    // Migrate weight
-    if (typeof migrated.identifyingInfo.weight === 'string' && migrated.identifyingInfo.weight &&
-        (!migrated.weightByEra || Object.keys(migrated.weightByEra).length === 0)) {
-      const eras = ['Part I', 'Part II', 'Blank Period', 'Gaiden', 'Boruto'];
-      migrated.weightByEra = migrated.weightByEra || {};
-      
-      eras.forEach(era => {
-        const escapedEra = era.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-        const match1 = migrated.identifyingInfo.weight.match(new RegExp(`([^,]+)\\s*\\(${escapedEra}\\)`));
-        const match2 = migrated.identifyingInfo.weight.match(new RegExp(`${escapedEra}:\\s*([^,]+)`));
-        
-        if (match1 && match1[1]) {
-          migrated.weightByEra[era] = match1[1].trim();
-        } else if (match2 && match2[1]) {
-          migrated.weightByEra[era] = match2[1].trim();
-        }
-      });
-    }
-    
-    // Migrate madeGenin/madeChunin from identifyingInfo to top level
-    if (migrated.identifyingInfo.madeGenin && !migrated.madeGenin) {
-      migrated.madeGenin = migrated.identifyingInfo.madeGenin;
-    }
-    if (migrated.identifyingInfo.madeChunin && !migrated.madeChunin) {
-      migrated.madeChunin = migrated.identifyingInfo.madeChunin;
-    }
-    
-    // Clean up identifyingInfo - remove old height/weight strings if they've been migrated
-    if (migrated.heightByEra && Object.keys(migrated.heightByEra).length > 0) {
-      delete migrated.identifyingInfo.height;
-    }
-    if (migrated.weightByEra && Object.keys(migrated.weightByEra).length > 0) {
-      delete migrated.identifyingInfo.weight;
-    }
-    if (migrated.madeGenin) {
-      delete migrated.identifyingInfo.madeGenin;
-    }
-    if (migrated.madeChunin) {
-      delete migrated.identifyingInfo.madeChunin;
-    }
-  }
-  
-  // Migrate knownAssociates to relationships
-  if (migrated.knownAssociates && migrated.knownAssociates.length > 0) {
-    if (!migrated.relationships) {
-      migrated.relationships = [];
-    }
-    
-    // Merge knownAssociates into relationships if they don't already exist
-    migrated.knownAssociates.forEach(assoc => {
-      const exists = migrated.relationships.some(rel => 
-        (rel.name || rel.character || rel.fullName) === (assoc.name || assoc.character || assoc.fullName)
-      );
-      
-      if (!exists) {
-        // Convert knownAssociate format to relationship format
-        migrated.relationships.push({
-          name: assoc.name || assoc.character || assoc.fullName || '',
-          relationshipType: assoc.relationshipType || assoc.type || 'Associate',
-          image: assoc.image || assoc.icon || '',
-          heartChart: assoc.heartChart || '',
-          description: assoc.description || ''
-        });
-      }
-    });
-    
-    // Remove knownAssociates after migration
-    delete migrated.knownAssociates;
-  }
-  
-  // Migrate chakraType to natureType
-  if (migrated.chakraType && !migrated.natureType) {
-    migrated.natureType = migrated.chakraType;
-    delete migrated.chakraType;
-  }
-  
-  // Ensure new fields exist with defaults
-  if (!migrated.eyeColor) migrated.eyeColor = '';
-  if (!migrated.hairColor) migrated.hairColor = '';
-  if (!migrated.distinguishingFeatures) migrated.distinguishingFeatures = [];
-  if (!migrated.teamNumber) migrated.teamNumber = '';
-  if (!migrated.teammates) migrated.teammates = [];
-  if (!migrated.sensei) migrated.sensei = '';
-  if (!migrated.quotes) migrated.quotes = [];
-  if (!migrated.trivia) migrated.trivia = '';
-  if (!migrated.relationships) migrated.relationships = [];
-  
-  return migrated;
-}
-

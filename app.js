@@ -295,28 +295,53 @@ window.adminClearAll = async function() {
 window.adminAddOC = function() {
   if (!requireAdminAuth()) return;
   window.location.hash = 'ocs/new';
-  showOCForm();
+  if (window.showOCForm) {
+    window.showOCForm();
+  } else {
+    // Function not ready yet, wait for it
+    setTimeout(() => {
+      if (window.showOCForm) window.showOCForm();
+    }, 100);
+  }
 };
 
 // Admin add clan
 window.adminAddClan = function() {
   if (!requireAdminAuth()) return;
   window.location.hash = 'clans/new';
-  showClanForm();
+  if (window.showClanForm) {
+    window.showClanForm();
+  } else {
+    setTimeout(() => {
+      if (window.showClanForm) window.showClanForm();
+    }, 100);
+  }
 };
 
 // Admin add story
 window.adminAddStory = function() {
   if (!requireAdminAuth()) return;
   window.location.hash = 'stories/new';
-  showStoryForm();
+  if (window.showStoryForm) {
+    window.showStoryForm();
+  } else {
+    setTimeout(() => {
+      if (window.showStoryForm) window.showStoryForm();
+    }, 100);
+  }
 };
 
 // Admin add lore
 window.adminAddLore = function() {
   if (!requireAdminAuth()) return;
   window.location.hash = 'lore/new';
-  showLoreForm();
+  if (window.showLoreForm) {
+    window.showLoreForm();
+  } else {
+    setTimeout(() => {
+      if (window.showLoreForm) window.showLoreForm();
+    }, 100);
+  }
 };
 
 // ============================================================================
@@ -388,10 +413,10 @@ window.loadAdminEditSection = function(type, clickedElement) {
   import('./data/storage.js').then(module => {
     const storage = module.default;
     const typeConfig = {
-      'ocs': { getItems: () => storage.getAllOCs(), editFunction: 'editOC' },
-      'clans': { getItems: () => storage.getAllClans(), editFunction: 'editClan' },
-      'stories': { getItems: () => storage.getAllStories(), editFunction: 'editStory' },
-      'lore': { getItems: () => storage.getAllLore(), editFunction: 'editLore' }
+      'ocs': { getItems: () => storage.getAllOCs(), editFunction: 'editOC', deleteFunction: 'deleteOC' },
+      'clans': { getItems: () => storage.getAllClans(), editFunction: 'editClan', deleteFunction: 'deleteClan' },
+      'stories': { getItems: () => storage.getAllStories(), editFunction: 'editStory', deleteFunction: 'deleteStory' },
+      'lore': { getItems: () => storage.getAllLore(), editFunction: 'editLore', deleteFunction: 'deleteLore' }
     };
     
     const config = typeConfig[type];
@@ -419,9 +444,14 @@ window.loadAdminEditSection = function(type, clickedElement) {
                 <div style="font-weight: 600; color: var(--color-dark-2); margin-bottom: 0.25rem;">${displayName}</div>
                 ${metadata ? `<div style="font-size: 0.85rem; color: var(--color-text-dark-2);">${metadata}</div>` : ''}
               </div>
-              <button class="btn-naruto" onclick="window.${config.editFunction}('${item.id}')" style="margin-left: 1rem; white-space: nowrap;">
-                <i class="fas fa-edit"></i> Edit
-              </button>
+              <div style="display: flex; gap: 0.5rem; margin-left: 1rem;">
+                <button class="btn-naruto" onclick="window.${config.editFunction}('${item.id}')" style="white-space: nowrap;">
+                  <i class="fas fa-edit"></i> Edit
+                </button>
+                <button class="btn-naruto" onclick="window.${config.deleteFunction}('${item.id}', '${type}')" style="white-space: nowrap; background: var(--color-error, #d32f2f); border-color: var(--color-error, #d32f2f);">
+                  <i class="fas fa-trash"></i> Delete
+                </button>
+              </div>
             </div>
           `;
         }).join('')}
@@ -493,13 +523,41 @@ function loadUserInfo() {
 // Setup navigation event listeners
 function setupNavigation() {
   const navLinks = document.querySelectorAll('.nav-link[data-page]');
+  console.log('[app.js] Setting up navigation listeners, found', navLinks.length, 'nav links');
+  
+  if (navLinks.length === 0) {
+    console.error('[app.js] No navigation links found!');
+    // Try again after a short delay
+    setTimeout(() => {
+      const retryLinks = document.querySelectorAll('.nav-link[data-page]');
+      console.log('[app.js] Retry: found', retryLinks.length, 'nav links');
+      if (retryLinks.length > 0) {
+        retryLinks.forEach(link => {
+          const page = link.getAttribute('data-page');
+          link.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log('[app.js] Nav link clicked:', page);
+            navigateTo(page);
+          });
+        });
+      }
+    }, 100);
+    return;
+  }
+  
   navLinks.forEach(link => {
+    const page = link.getAttribute('data-page');
+    console.log('[app.js] Attaching listener to link:', page);
     link.addEventListener('click', (e) => {
       e.preventDefault();
-      const page = link.getAttribute('data-page');
+      e.stopPropagation();
+      console.log('[app.js] Nav link clicked:', page);
       navigateTo(page);
     });
   });
+  
+  console.log('[app.js] Navigation listeners attached successfully');
 }
 
 // Setup hash-based routing
@@ -509,14 +567,27 @@ function setupRouting() {
 }
 
 // Initialize app
-document.addEventListener('DOMContentLoaded', () => {
+function initializeApp() {
+  console.log('[app.js] Initializing app...');
+  console.log('[app.js] Document ready state:', document.readyState);
+  
   setupNavigation();
   setupRouting();
   loadUserInfo();
   loadHomePage();
   updateCounts();
   updatePageTitle('home');
-});
+  
+  console.log('[app.js] App initialized');
+}
+
+// For ES modules, DOM is usually already ready when module executes
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initializeApp);
+} else {
+  // DOM is already ready
+  initializeApp();
+}
 
 // ============================================================================
 // ------------------- Routing -------------------
@@ -525,17 +596,33 @@ document.addEventListener('DOMContentLoaded', () => {
 // Handle route for a specific type (ocs, clans, stories, lore)
 function handleTypeRoute(type, hash, parts) {
   const routeConfig = {
-    'ocs': { listPage: 'ocs', showForm: showOCForm, showDetail: showOCDetail },
-    'clans': { listPage: 'clans', showForm: showClanForm, showDetail: showClanDetail },
-    'stories': { listPage: 'stories', showForm: showStoryForm, showDetail: showStoryDetail },
-    'lore': { listPage: 'lore', showForm: showLoreForm, showDetail: showLoreDetail }
+    'ocs': { 
+      listPage: 'ocs', 
+      showForm: () => window.showOCForm(), 
+      showDetail: (id) => window.showOCDetail(id) 
+    },
+    'clans': { 
+      listPage: 'clans', 
+      showForm: () => window.showClanForm(), 
+      showDetail: (id) => window.showClanDetail(id) 
+    },
+    'stories': { 
+      listPage: 'stories', 
+      showForm: () => window.showStoryForm(), 
+      showDetail: (id) => window.showStoryDetail(id) 
+    },
+    'lore': { 
+      listPage: 'lore', 
+      showForm: () => window.showLoreForm(), 
+      showDetail: (id) => window.showLoreDetail(id) 
+    }
   };
   
   const config = routeConfig[type];
   if (!config) return false;
   
   if (hash === type) {
-    navigateTo(config.listPage);
+    navigateTo(config.listPage, true); // Skip hash update since we're already handling hash change
     return true;
   }
   
@@ -566,12 +653,12 @@ function handleHashChange() {
   const hash = window.location.hash.substring(1);
   
   if (!hash || hash === 'home') {
-    navigateTo('home');
+    navigateTo('home', true); // Skip hash update since we're already handling hash change
     return;
   }
   
   if (hash === 'admin') {
-    navigateTo('admin');
+    navigateTo('admin', true); // Skip hash update since we're already handling hash change
     return;
   }
   
@@ -584,7 +671,7 @@ function handleHashChange() {
   }
   
   // Fallback to generic navigation
-  navigateTo(hash);
+  navigateTo(hash, true); // Skip hash update since we're already handling hash change
 }
 
 // ============================================================================
@@ -666,21 +753,47 @@ function getPageLoader(page) {
   return loaders[page];
 }
 
-// Navigation function
-window.navigateTo = function(page) {
-  document.querySelectorAll('.page-section').forEach(section => {
+// Navigation function - define it here so it's available immediately
+// This is the main navigation function used throughout the app
+function navigateTo(page, skipHashUpdate = false) {
+  console.log('[app.js] navigateTo called:', page, 'skipHashUpdate:', skipHashUpdate, 'currentPage:', currentPage);
+  
+  // If already on this page, just reload it
+  if (currentPage === page && !skipHashUpdate) {
+    console.log('[app.js] Already on page, reloading:', page);
+    const loader = getPageLoader(page);
+    if (loader) loader();
+    // Still update hash if it's not correct
+    if (window.location.hash !== `#${page}`) {
+      window.location.hash = page;
+    }
+    return;
+  }
+  
+  console.log('[app.js] Navigating to:', page);
+  
+  // Hide all page sections
+  const allSections = document.querySelectorAll('.page-section');
+  console.log('[app.js] Found', allSections.length, 'page sections');
+  allSections.forEach(section => {
     section.classList.remove('active');
   });
   
   const targetPage = document.getElementById(`${page}-page`);
   if (!targetPage) {
-    console.error('[app.js]❌ Page not found:', page);
+    console.error('[app.js]❌ Page not found:', page, 'Looking for:', `${page}-page`);
+    console.error('[app.js] Available page sections:', Array.from(allSections).map(s => s.id));
     return;
   }
   
+  console.log('[app.js] Found target page, activating:', page);
   targetPage.classList.add('active');
   currentPage = page;
-  window.location.hash = page;
+  
+  // Only update hash if not skipping (to avoid triggering hashchange when already handling it)
+  if (!skipHashUpdate && window.location.hash !== `#${page}`) {
+    window.location.hash = page;
+  }
   
   updatePageTitle(page);
   
@@ -694,8 +807,20 @@ window.navigateTo = function(page) {
   updateBackButton(page);
   
   const loader = getPageLoader(page);
-  if (loader) loader();
-};
+  if (loader) {
+    console.log('[app.js] Calling page loader for:', page);
+    try {
+      loader();
+    } catch (error) {
+      console.error('[app.js] Error loading page:', page, error);
+    }
+  } else {
+    console.warn('[app.js] No page loader found for:', page);
+  }
+}
+
+// Make navigateTo available on window for inline event handlers and debugging
+window.navigateTo = navigateTo;
 
 // Handle back button click
 window.handleNavBack = function() {
@@ -951,16 +1076,75 @@ window.editOC = function(id) {
   window.location.hash = `ocs/edit/${id}`;
 };
 
-window.deleteOC = function(id) {
+window.deleteOC = async function(id, type = 'ocs') {
   if (!adminAuthenticated) {
     alert('You must be logged into the admin panel to delete data.');
     navigateTo('admin');
     return;
   }
   if (confirm('Are you sure you want to delete this OC? This action cannot be undone.')) {
-    storage.deleteOC(id);
-    navigateTo('ocs');
+    await storage.deleteOC(id);
     updateCounts();
+    // Refresh admin edit section if we're on admin page
+    if (currentPage === 'admin') {
+      loadAdminEditSection('ocs');
+    } else {
+      navigateTo('ocs');
+    }
+  }
+};
+
+window.deleteClan = async function(id, type = 'clans') {
+  if (!adminAuthenticated) {
+    alert('You must be logged into the admin panel to delete data.');
+    navigateTo('admin');
+    return;
+  }
+  if (confirm('Are you sure you want to delete this clan? This action cannot be undone.')) {
+    await storage.deleteClan(id);
+    updateCounts();
+    // Refresh admin edit section if we're on admin page
+    if (currentPage === 'admin') {
+      loadAdminEditSection('clans');
+    } else {
+      navigateTo('clans');
+    }
+  }
+};
+
+window.deleteStory = async function(id, type = 'stories') {
+  if (!adminAuthenticated) {
+    alert('You must be logged into the admin panel to delete data.');
+    navigateTo('admin');
+    return;
+  }
+  if (confirm('Are you sure you want to delete this story? This action cannot be undone.')) {
+    await storage.deleteStory(id);
+    updateCounts();
+    // Refresh admin edit section if we're on admin page
+    if (currentPage === 'admin') {
+      loadAdminEditSection('stories');
+    } else {
+      navigateTo('stories');
+    }
+  }
+};
+
+window.deleteLore = async function(id, type = 'lore') {
+  if (!adminAuthenticated) {
+    alert('You must be logged into the admin panel to delete data.');
+    navigateTo('admin');
+    return;
+  }
+  if (confirm('Are you sure you want to delete this lore entry? This action cannot be undone.')) {
+    await storage.deleteLore(id);
+    updateCounts();
+    // Refresh admin edit section if we're on admin page
+    if (currentPage === 'admin') {
+      loadAdminEditSection('lore');
+    } else {
+      navigateTo('lore');
+    }
   }
 };
 

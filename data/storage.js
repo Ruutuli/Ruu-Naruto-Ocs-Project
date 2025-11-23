@@ -3,7 +3,13 @@
 // Files are saved to data/clans/, data/ocs/, etc. in your GitHub repo
 
 import { githubConfig, getGitHubToken, saveGitHubToken } from './github-config.js';
-import { migrateOCData } from './default-data.js';
+
+// Simple migration function for OC data (returns data as-is for now)
+function migrateOCData(data) {
+  // If migration is needed in the future, add it here
+  // For now, just return the data as-is
+  return data;
+}
 
 class Storage {
   constructor() {

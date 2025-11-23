@@ -593,23 +593,186 @@ body {
   box-shadow: 0 0 0 3px rgba(227, 94, 63, 0.1);
 }
 
+/* Select dropdown styling - improved for long options */
+select.form-control {
+  padding: 0.5rem 2.5rem 0.5rem 0.75rem;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23E35E3F' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 12px;
+  cursor: pointer;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  box-sizing: border-box;
+}
+
+/* Selected value display - truncate long text */
+select.form-control {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+/* Option styling - note: limited browser support, but helps where available */
+select.form-control option {
+  padding: 0.5rem 0.75rem;
+  background-color: var(--color-bg-1);
+  color: var(--color-text-dark-2);
+  font-size: 0.95rem;
+  line-height: 1.5;
+  max-width: 90vw; /* Prevent dropdown from being too wide */
+  word-wrap: break-word;
+  white-space: normal;
+  overflow-wrap: break-word;
+  /* Truncate very long options but allow wrapping */
+  text-overflow: ellipsis;
+}
+
+select.form-control option:hover {
+  background-color: var(--color-accent-2);
+  color: var(--color-text-light);
+}
+
+select.form-control option:checked,
+select.form-control option:focus {
+  background-color: var(--color-accent-2);
+  color: var(--color-text-light);
+  font-weight: 600;
+}
+
+/* Improve dropdown appearance on different browsers */
+select.form-control::-ms-expand {
+  display: none;
+}
+
+/* Limit dropdown width to prevent overflow */
+select.form-control {
+  max-width: 100%;
+}
+
+/* For very long option labels, ensure they don't break the layout */
+select.form-control optgroup {
+  max-width: 90vw;
+}
+
+select.form-control optgroup option {
+  max-width: 90vw;
+  padding-left: 1rem;
+}
+
 /* Multi-select styling */
 select.form-control[multiple] {
   min-height: 120px;
   padding: 0.5rem;
   overflow-y: auto;
+  background-image: none;
+  padding-right: 0.5rem;
 }
 
 select.form-control[multiple] option {
   padding: 0.5rem;
   margin: 0.25rem 0;
   border-radius: 2px;
+  white-space: normal;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  max-width: 100%;
 }
 
 select.form-control[multiple] option:checked {
   background-color: var(--color-accent-2);
   color: var(--color-text-light);
   font-weight: 600;
+}
+
+/* Datalist autocomplete styling */
+input[list] {
+  position: relative;
+}
+
+/* Improve datalist dropdown appearance - note: datalist styling is limited by browser */
+/* The browser controls the dropdown appearance, but we can style the input */
+input[list].form-control {
+  padding-right: 2.5rem;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23E35E3F' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 12px;
+  cursor: pointer;
+}
+
+/* Datalist suggestions are rendered by browser, limited styling control */
+/* But we can ensure the input itself handles long text well */
+input[list].form-control {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+/* Improve datalist input focus state */
+input[list].form-control:focus {
+  border-color: var(--color-accent-2);
+  box-shadow: 0 0 0 0.2rem rgba(227, 94, 63, 0.25);
+  outline: none;
+}
+
+/* Ensure long option text doesn't break layout */
+.form-group {
+  position: relative;
+  overflow: visible;
+  max-width: 100%;
+}
+
+/* Container for select with long options */
+.select-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+}
+
+.select-wrapper select {
+  width: 100%;
+  max-width: 100%;
+}
+
+/* Prevent form controls from overflowing containers */
+.form-control,
+select.form-control,
+input.form-control,
+textarea.form-control {
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* Better handling for long text in form controls */
+.form-control {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+/* For select elements, ensure selected text is truncated */
+select.form-control {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Mobile: Ensure dropdowns don't cause horizontal scroll */
+@media (max-width: 768px) {
+  select.form-control,
+  input[list].form-control {
+    max-width: 100%;
+    width: 100%;
+  }
+  
+  /* Prevent dropdown from extending beyond viewport */
+  select.form-control option {
+    max-width: calc(100vw - 2rem);
+  }
 }
 
 /* Ensure select elements are touch-friendly on mobile */
@@ -1544,6 +1707,72 @@ select.form-control[multiple] option:checked {
   textarea {
     font-size: 16px !important;
   }
+}
+
+/* Additional improvements for dropdowns with long options */
+
+/* Constrain dropdown width to prevent viewport overflow */
+select.form-control {
+  min-width: 0; /* Allow flex shrinking */
+}
+
+/* Better text handling in selects */
+select.form-control {
+  direction: ltr; /* Ensure text direction is consistent */
+}
+
+/* For selects with very long option text, add a title attribute via JS if needed */
+/* This CSS ensures the select itself displays properly */
+select.form-control[title] {
+  cursor: help;
+}
+
+/* Improve appearance of select when it has a long selected value */
+select.form-control:not([multiple]) {
+  padding-right: 2.5rem; /* Space for dropdown arrow */
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+/* Ensure optgroups don't cause issues */
+select.form-control optgroup {
+  font-weight: 600;
+  font-style: normal;
+  color: var(--color-dark-2);
+  padding: 0.25rem 0;
+}
+
+/* Better spacing for options in optgroups */
+select.form-control optgroup option {
+  padding-left: 1.25rem;
+  font-weight: normal;
+}
+
+/* Improve multi-select appearance */
+select.form-control[multiple] {
+  min-height: 120px;
+  max-height: 300px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* Custom scrollbar for multi-select (webkit browsers) */
+select.form-control[multiple]::-webkit-scrollbar {
+  width: 8px;
+}
+
+select.form-control[multiple]::-webkit-scrollbar-track {
+  background: var(--color-bg-2);
+  border-radius: 4px;
+}
+
+select.form-control[multiple]::-webkit-scrollbar-thumb {
+  background: var(--color-accent-2);
+  border-radius: 4px;
+}
+
+select.form-control[multiple]::-webkit-scrollbar-thumb:hover {
+  background: var(--color-accent-3);
 }
 
 /* Admin Panel Mobile Styles */
