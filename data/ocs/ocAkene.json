@@ -41,7 +41,7 @@
   "clanId": null,
   "clanName": null,
   "stats": {
-    "intelligence": 4,
+    "intelligence": 2.5,
     "stamina": 3,
     "strength": 3,
     "speed": 3,
@@ -49,11 +49,11 @@
     "genjutsu": 3,
     "taijutsu": 3,
     "handSeals": 3,
-    "fuinjutsu": 1
+    "fuinjutsu": 2
   },
   "statsByEra": {
     "Part I": {
-      "intelligence": 4,
+      "intelligence": 2.5,
       "stamina": 3,
       "strength": 3,
       "speed": 3,
@@ -61,7 +61,7 @@
       "genjutsu": 3,
       "taijutsu": 3,
       "handSeals": 3,
-      "fuinjutsu": 1
+      "fuinjutsu": 2
     },
     "Part II": {
       "intelligence": 3,
@@ -72,7 +72,7 @@
       "genjutsu": 3,
       "taijutsu": 3,
       "handSeals": 3,
-      "fuinjutsu": 1
+      "fuinjutsu": 2
     },
     "Blank Period": {
       "intelligence": 3,
@@ -83,7 +83,7 @@
       "genjutsu": 3,
       "taijutsu": 3,
       "handSeals": 3,
-      "fuinjutsu": 1
+      "fuinjutsu": 2
     },
     "Gaiden": {
       "intelligence": 3,
@@ -94,7 +94,7 @@
       "genjutsu": 3,
       "taijutsu": 3,
       "handSeals": 3,
-      "fuinjutsu": 1
+      "fuinjutsu": 2
     },
     "Boruto": {
       "intelligence": 3,
@@ -105,7 +105,7 @@
       "genjutsu": 3,
       "taijutsu": 3,
       "handSeals": 3,
-      "fuinjutsu": 1
+      "fuinjutsu": 2
     }
   },
   "heightByEra": {
@@ -149,8 +149,62 @@
     "notableAbilities": "• Earth Release: Inner Decapitation Jutsu – ambush tactic and immobilizer  \n• Fire Release: Flame Bullet & Phoenix Sage Fire – controlled, low-chakra offense  \n• Chakra String Manipulation – silent tool control for intel and traps  \n• Kusarigamajutsu (Chain Sickle Technique) – bone weapon gifted by her family  \n• High Chakra Control – precise molding for infiltration and divination  \n• Madousho Vessel Traits – passive absorption of information; involuntary mode activation  \n"
   },
   "personality": {
-    "likes": [],
-    "dislikes": [],
+    "overview": "Akene is sharp, structured, inquisitive, and driven by the Chigiri clan’s rigid traditions surrounding fate and information. In Part I she appears confident, disciplined, and composed—believing that fulfilling one’s destined role is the key to success. Beneath that structure, she is analytical, observant, and naturally strategic, often reading people and situations faster than her peers. As she grows older, disillusionment with the Leaf and her clan’s demands turns her increasingly cynical, guarded, and emotionally detached. She remains an intel-first shinobi who values knowledge, purpose, and order, yet struggles deeply with sudden change, incompetence, and losing control of her path.",
+    "positiveTraits": [
+      "Disciplined",
+      "Analytical",
+      "Quick-thinking",
+      "Strategic",
+      "Observant",
+      "Loyal (to individuals, not systems)",
+      "Structured",
+      "Rational",
+      "High emotional intelligence (when she wants to be)",
+      "Composed under pressure"
+    ],
+    "negativeTraits": [
+      "Manipulative (subconsciously)",
+      "Rigid in her worldview",
+      "Dislikes drastic change",
+      "Judgmental toward incompetence",
+      "Cynical (especially in Part II)",
+      "Emotionally withdrawn",
+      "Stubborn",
+      "Distrustful",
+      "Holds grudges"
+    ],
+    "neutralTraits": [
+      "Blunt",
+      "Straightforward",
+      "Highly structured thinking",
+      "Goal-oriented",
+      "Perfectionistic",
+      "Formal",
+      "Intense focus",
+      "Secretive",
+      "Detached problem-solving style"
+    ],
+    "likes": [
+      "Structure and routine",
+      "Information gathering",
+      "Solving complex problems",
+      "Competence in others",
+      "Learning new techniques",
+      "Stealth work and concealment",
+      "Chigiri traditions related to knowledge",
+      "Kusarigamajutsu practice"
+    ],
+    "dislikes": [
+      "Lazy people",
+      "Incompetence",
+      "Sudden or drastic change",
+      "People who waste their potential",
+      "Flashy or chakra-draining jutsu",
+      "Senseless violence",
+      "Being out of the loop",
+      "Direct involvement in others’ fates (clan taboo)",
+      "Mouth-related jutsu (due to earth-style training incident)"
+    ],
     "demeanor": {
       "charisma": 0,
       "extraversion": 0,
@@ -185,21 +239,77 @@
   },
   "appearance": {
     "image": "",
-    "colors": [],
-    "gear": []
+    "colors": [
+      "#C8A2C8   (Chigiri lavender-purple)",
+      "#6A0F1A   (maroon collar / obi accents)",
+      "#3B1F2B   (dark purple / rope obi)",
+      "#000000   (leotards, gloves, boots)",
+      "#C0C0C0   (silver hair)",
+      "#FF8FB4   (pink eyes)"
+    ],
+    "gear": [
+      {
+        "name": "Bone Chain Sickle (Kusarigama)",
+        "category": "Item"
+      },
+      {
+        "name": "Kunai",
+        "category": "Item"
+      },
+      {
+        "name": "Shuriken",
+        "category": "Item"
+      },
+      {
+        "name": "Ninja Wire",
+        "category": "Item"
+      },
+      {
+        "name": "Tool Pouch (waist)",
+        "category": "Item"
+      },
+      {
+        "name": "Leg Pouch (right thigh)",
+        "category": "Item"
+      },
+      {
+        "name": "Small Hoop Earrings (worn outside combat)",
+        "category": "Item"
+      },
+      {
+        "name": "Protective Wire Mesh Undergarment",
+        "category": "Item"
+      },
+      {
+        "name": "Weighted Arm Gloves (Part II)",
+        "category": "Item"
+      },
+      {
+        "name": "Weighted Leg Warmers (Part II)",
+        "category": "Item"
+      },
+      {
+        "name": "Standard Shinobi Sandals / Boots",
+        "category": "Item"
+      },
+      {
+        "name": "Thigh-high protective socks (Part I)",
+        "category": "Item"
+      }
+    ]
   },
   "appearanceByEra": {
     "Part I": {
-      "description": "",
-      "clothing": "",
-      "accessories": "",
-      "visualMotifs": ""
+      "description": "Long, silver fluffy hair; pink eyes; medium skin with a pinkish-red undertone.  \nLean, athletic, feminine hourglass build with a shorter torso and long legs.  \nWears her hair down outside combat, tied back for missions or sparring.\n",
+      "clothing": "Black leotard zipped up the back, worn under a purple kimono-style top  \nwith a maroon collar and long sleeves bound with sode-kukuri.  \nKimono dips lower in the back; leotard peeks out at the front.  \nThigh-high durable socks, standard shinobi sandals, protective wire mesh underneath.  \nA wide obi-style band fastened at the back.\n",
+      "accessories": "Purple forehead protector  \nSmall hoop earrings (removed during combat)  \nMaroon hair ornament  \nWaist pouch and right-leg pouch  \n",
+      "visualMotifs": "Soft purple palette layered with maroon accents  \nFlowing kimono over tight combatwear  \nShort, round eyebrows (Chigiri trait)  \nBlend of elegance + tactical mobility  \n"
     },
     "Part II": {
-      "description": "",
-      "clothing": "",
-      "accessories": "",
-      "visualMotifs": ""
+      "description": "Longer silver hair, usually kept loose unless fighting.  \nSame lean hourglass build; looks more mature and defined.  \nPink eyes remain her most striking feature.\n",
+      "clothing": "Form-fitting, long-sleeved purple leotard zipped in the front,  \nzipper ending just below the navel.  \nMaroon hakama-style pants cut at the sides to reveal mesh-covered thighs.  \nWire mesh bodysuit underneath (sleeveless, ending at the knees).  \nKnee-length black boots and off-white, armpit-length weighted gloves.  \nLayered obi: black bow-tied obi + purple rope-style obi reminiscent of Orochimaru.\n",
+      "accessories": "Hair tied back for combat  \nWaist pouches  \nWeighted gloves and leg warmers (later)  \nBlack gloves + long black socks after Orochimaru’s death  \n",
+      "visualMotifs": "More mature, tactical silhouette  \nPurple and maroon palette deepens  \nMix of traditional shinobi aesthetics with Oto influence  \nWeighting added to limbs for training  \n"
     },
     "Blank Period": {
       "description": "",
@@ -258,7 +368,7 @@
     "combatStrategy": "Very high; quickly identifies patterns, motives, and hidden information.  \nCapable of connecting village secrets, clan histories, and political  \nthreads long before most adults.  \nNotably skilled in reading people, situations, and micro-behaviors.\n",
     "leadershipSkill": "Moderate; not a natural “team commander,” but excels when  \ndirecting information flow, forming plans, or advising others.  \nFunctions best as a tactician or analyst rather than a front-line leader.\n"
   },
-  "themeSong": "\"There’s No Ending\" by RUANN",
+  "themeSong": "",
   "themeSongLink": "",
   "voiceActors": {
     "japanese": "Ami Koshimizu",
