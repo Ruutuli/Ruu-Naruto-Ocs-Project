@@ -987,42 +987,63 @@ export function renderOCForm(oc = null, onSave) {
         <!-- Appearance & Gear -->
         <h3 class="mb-3 mt-4">Appearance & Gear <i class="japanese-header">外見と装備</i></h3>
         <div class="form-group">
-          <label class="form-label">Appearance Image URL</label>
-          <input type="url" class="form-control" id="appearanceImage" value="${formOC.appearance?.image || ''}" placeholder="https://...">
+          <label class="form-label">Appearance Image / Icon</label>
+          <div style="display: flex; gap: 0.5rem; margin-bottom: 0.5rem; flex-wrap: wrap;">
+            <button type="button" class="btn-naruto btn-naruto-secondary" onclick="showImageUpload()" style="flex: 1; min-width: 120px;">
+              <i class="fas fa-upload"></i> Upload Image
+            </button>
+            <button type="button" class="btn-naruto btn-naruto-secondary" onclick="showIconPicker()" style="flex: 1; min-width: 120px;">
+              <i class="fas fa-icons"></i> Pick Icon
+            </button>
+          </div>
+          <input type="file" id="appearanceImageUpload" accept="image/*" style="display: none;" onchange="handleImageUpload(event)">
+          <div id="icon-picker-container" style="display: none; margin-bottom: 0.5rem;">
+            <div style="margin-bottom: 0.5rem;">
+              <input type="text" class="form-control" id="iconSearch" placeholder="Search Font Awesome icons (e.g., sword, ninja, fire, lightning, dragon...)" onkeyup="filterIcons(this.value)" style="font-size: 0.85rem;" autocomplete="off">
+              <small style="color: var(--color-text-dark-2); font-size: 0.75rem; display: block; margin-top: 0.25rem;">
+                Search by icon name or keywords. Try: weapon, ninja, element, animal, symbol, etc.
+              </small>
+            </div>
+            <div id="icon-picker-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(50px, 1fr)); gap: 0.5rem; max-height: 300px; overflow-y: auto; padding: 0.5rem; background-color: var(--color-bg-1); border: 1px solid var(--color-border-2); border-radius: 4px;">
+              ${(() => {
+                // This will be populated dynamically when icon picker is shown
+                return '<div style="grid-column: 1 / -1; text-align: center; padding: 1rem; color: var(--color-text-dark-2);">Loading icons...</div>';
+              })()}
+            </div>
+          </div>
+          <input type="text" class="form-control" id="appearanceImage" value="${formOC.appearance?.image || ''}" placeholder="Image URL or Font Awesome icon class (e.g., fas fa-user-ninja)">
+          <div id="appearanceImagePreview" style="margin-top: 0.5rem; text-align: center; min-height: 60px;">
+            ${formOC.appearance?.image ? (
+              formOC.appearance.image.startsWith('fa-') || formOC.appearance.image.startsWith('fas ') || formOC.appearance.image.startsWith('far ') || formOC.appearance.image.startsWith('fab ') ?
+                `<div style="font-size: 3rem; color: var(--color-accent-2);"><i class="${formOC.appearance.image}"></i></div>` :
+                `<img src="${formOC.appearance.image}" alt="Preview" style="max-width: 200px; max-height: 200px; border: 1px solid var(--color-border-2); border-radius: 4px;">`
+            ) : ''}
+          </div>
         </div>
         <div class="form-group">
           <label class="form-label">Color Palette <small style="font-weight: normal; color: var(--color-text-dark-2);">(one color per line, hex codes or color names)</small></label>
           <textarea class="form-control" id="appearanceColors" rows="3" placeholder="#FF5733&#10;#33FF57&#10;blue">${(formOC.appearance?.colors || []).join('\n')}</textarea>
         </div>
-        <div class="form-group">
-          <label class="form-label">Gear Items <small style="font-weight: normal; color: var(--color-text-dark-2);">(one item per line)</small></label>
-          <textarea class="form-control" id="appearanceGear" rows="6" placeholder="Kunai&#10;Shuriken&#10;Ninja Wire&#10;Explosive Tags">${(() => {
-            // Format gear for display - handle both array of objects and array of strings
-            if (!formOC.appearance?.gear || formOC.appearance.gear.length === 0) {
-              return '';
-            }
-            return formOC.appearance.gear.map(gear => {
-              if (typeof gear === 'string') {
-                return gear;
-              }
-              // If it's an object, extract the name or format it nicely
-              if (gear && typeof gear === 'object') {
-                const parts = [];
-                if (gear.name) parts.push(gear.name);
-                if (gear.category) parts.push(`(${gear.category})`);
-                if (gear.material) parts.push(`- ${gear.material}`);
-                if (gear.use) parts.push(`- ${gear.use}`);
-                if (gear.info && Array.isArray(gear.info) && gear.info.length > 0) {
-                  parts.push(`- ${gear.info.join(', ')}`);
+        <div id="gear-editor" class="mt-3 mb-3">
+          <label class="form-label mb-2">Gear Items</label>
+          <div class="card-naruto" style="padding: 1rem; margin-bottom: 1rem;">
+            <div id="gear-container">
+              ${(() => {
+                const gear = formOC.appearance?.gear || [];
+                if (gear.length === 0) {
+                  return '<p class="text-muted">No gear items added yet. Click "Add Item" below to add gear.</p>';
                 }
-                return parts.join(' ');
-              }
-              return String(gear);
-            }).join('\n');
-          })()}</textarea>
-          <small style="color: var(--color-text-dark-2); font-size: 0.85rem; display: block; margin-top: 0.25rem;">
-            Enter one gear item per line. Examples: "Kunai", "Shuriken", "Ninja Wire", "Explosive Tags"
-          </small>
+                return gear.map((item, index) => {
+                  // Handle both string and object formats
+                  const gearItem = typeof item === 'string' 
+                    ? { name: item, category: 'Item', icon: '', material: '', use: '', info: [] }
+                    : { name: item.name || '', category: item.category || 'Item', icon: item.icon || '', material: item.material || '', use: item.use || '', info: item.info || item.information || [] };
+                  return renderGearEditor(gearItem, index);
+                }).join('');
+              })()}
+            </div>
+            <button type="button" class="btn-naruto btn-naruto-secondary mt-2" onclick="addGearItem()">+ Add Item</button>
+          </div>
         </div>
         
         <!-- Appearance by Era -->
@@ -1298,7 +1319,7 @@ export function renderOCForm(oc = null, onSave) {
           ['intelligence', 'stamina', 'strength', 'speed', 'ninjutsu', 'genjutsu', 'taijutsu', 'handSeals', 'fuinjutsu'].forEach(stat => {
             const element = document.getElementById(`${stat}-${era}`);
             if (element) {
-              eraStats[stat] = parseInt(element.value) || 0;
+              eraStats[stat] = parseFloat(element.value) || 0;
             }
           });
           if (era === 'Part I' && Object.keys(eraStats).length > 0) {
@@ -1326,7 +1347,7 @@ export function renderOCForm(oc = null, onSave) {
           ['intelligence', 'stamina', 'strength', 'speed', 'ninjutsu', 'genjutsu', 'taijutsu', 'handSeals', 'fuinjutsu'].forEach(stat => {
             const element = document.getElementById(`${stat}-${era}`);
             if (element) {
-              const value = parseInt(element.value) || 0;
+              const value = parseFloat(element.value) || 0;
               if (value > 0) {
                 eraStats[stat] = value;
               }
@@ -1501,18 +1522,38 @@ export function renderOCForm(oc = null, onSave) {
           return colorsText.split('\n').map(c => c.trim()).filter(c => c);
         })(),
         gear: (() => {
-          const gearText = document.getElementById('appearanceGear').value.trim();
-          if (!gearText) return [];
+          const container = document.getElementById('gear-container');
+          if (!container) return [];
           
-          // Simple line-by-line parsing - one item per line
-          const lines = gearText.split('\n');
           const gear = [];
-          
-          lines.forEach(line => {
-            const trimmed = line.trim();
-            if (trimmed) {
-              // Just store as simple string - no JSON parsing needed
-              gear.push(trimmed);
+          container.querySelectorAll('.gear-editor-item').forEach(item => {
+            const index = item.dataset.index;
+            const nameInput = container.querySelector(`[name="gear-name-${index}"]`);
+            const categoryInput = container.querySelector(`[name="gear-category-${index}"]`);
+            const iconInput = container.querySelector(`[name="gear-icon-${index}"]`);
+            const materialInput = container.querySelector(`[name="gear-material-${index}"]`);
+            const useInput = container.querySelector(`[name="gear-use-${index}"]`);
+            const infoInput = container.querySelector(`[name="gear-info-${index}"]`);
+            
+            const name = nameInput?.value || '';
+            const category = categoryInput?.value || 'Item';
+            const icon = iconInput?.value || '';
+            const material = materialInput?.value || '';
+            const use = useInput?.value || '';
+            const infoText = infoInput?.value || '';
+            const info = infoText.split('\n').filter(i => i.trim());
+            
+            // Only add if name is provided
+            if (name.trim()) {
+              const gearItem = {
+                name: name.trim(),
+                category: category.trim() || 'Item',
+                ...(icon ? { icon: icon.trim() } : {}),
+                ...(material ? { material: material.trim() } : {}),
+                ...(use ? { use: use.trim() } : {}),
+                ...(info.length > 0 ? { info: info } : {})
+              };
+              gear.push(gearItem);
             }
           });
           
@@ -1649,6 +1690,281 @@ export function renderOCForm(oc = null, onSave) {
     }
   }, 0);
   
+  // Appearance image upload and icon picker functions
+  window.showImageUpload = function() {
+    document.getElementById('appearanceImageUpload').click();
+  };
+  
+  window.handleImageUpload = function(event) {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const imageInput = document.getElementById('appearanceImage');
+        imageInput.value = e.target.result;
+        updateAppearancePreview(e.target.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+  
+  window.showIconPicker = function() {
+    const container = document.getElementById('icon-picker-container');
+    const grid = document.getElementById('icon-picker-grid');
+    const isVisible = container.style.display !== 'none';
+    
+    if (!isVisible) {
+      // Load icons when showing picker
+      if (!grid.dataset.loaded) {
+        const allIcons = window.getAllFontAwesomeIcons();
+        grid.innerHTML = allIcons.map(icon => `
+          <button type="button" class="icon-picker-btn" onclick="selectIcon('${icon.class}')" 
+                  data-keywords="${icon.keywords || ''}"
+                  style="padding: 0.5rem; border: 1px solid var(--color-border-2); background: var(--color-bg-transparent); cursor: pointer; border-radius: 4px; transition: all 0.2s;" 
+                  onmouseover="this.style.background='var(--color-accent-2)'; this.style.color='white';" 
+                  onmouseout="this.style.background='var(--color-bg-transparent)'; this.style.color='';"
+                  title="${icon.class.replace('fas ', '')}">
+            <i class="${icon.class}" style="font-size: 1.5rem;"></i>
+          </button>
+        `).join('');
+        grid.dataset.loaded = 'true';
+      }
+      container.style.display = 'block';
+    } else {
+      container.style.display = 'none';
+    }
+  };
+  
+  window.selectIcon = function(iconClass) {
+    const imageInput = document.getElementById('appearanceImage');
+    imageInput.value = iconClass;
+    updateAppearancePreview(iconClass);
+    document.getElementById('icon-picker-container').style.display = 'none';
+  };
+  
+  window.filterIcons = function(searchTerm) {
+    const buttons = document.querySelectorAll('.icon-picker-btn');
+    const term = searchTerm.toLowerCase().trim();
+    
+    if (term === '') {
+      buttons.forEach(btn => btn.style.display = 'block');
+      return;
+    }
+    
+    // Search through icon classes and keywords
+    buttons.forEach(btn => {
+      const icon = btn.querySelector('i');
+      const iconClass = icon ? icon.className : '';
+      const keywords = btn.dataset.keywords || '';
+      
+      // Extract icon name from class (e.g., "fas fa-user-ninja" -> "user-ninja")
+      const iconName = iconClass.replace(/^(fas|far|fab|fal|fad)\s+fa-/, '').replace(/\s+/g, '-');
+      
+      // Search in icon class, icon name, and keywords
+      const searchableText = `${iconClass} ${iconName} ${keywords}`.toLowerCase();
+      
+      if (searchableText.includes(term)) {
+        btn.style.display = 'block';
+      } else {
+        btn.style.display = 'none';
+      }
+    });
+  };
+  
+  // Get comprehensive list of Font Awesome icons with keywords
+  // Make it available globally
+  if (!window.getAllFontAwesomeIcons) {
+    window.getAllFontAwesomeIcons = function() {
+    return [
+      // Weapons & Combat
+      { class: 'fas fa-sword', keywords: 'weapon blade katana combat' },
+      { class: 'fas fa-knife', keywords: 'weapon blade combat' },
+      { class: 'fas fa-shield', keywords: 'defense protection combat' },
+      { class: 'fas fa-shield-alt', keywords: 'defense protection' },
+      { class: 'fas fa-crosshairs', keywords: 'target aim weapon' },
+      { class: 'fas fa-bow-arrow', keywords: 'weapon bow arrow' },
+      { class: 'fas fa-hammer', keywords: 'weapon tool' },
+      { class: 'fas fa-axe', keywords: 'weapon tool' },
+      { class: 'fas fa-mace', keywords: 'weapon combat' },
+      
+      // Ninja & Stealth
+      { class: 'fas fa-user-ninja', keywords: 'ninja shinobi stealth assassin' },
+      { class: 'fas fa-user-secret', keywords: 'spy stealth secret ninja' },
+      { class: 'fas fa-mask', keywords: 'mask disguise ninja' },
+      { class: 'fas fa-eye', keywords: 'eye vision sharingan byakugan' },
+      { class: 'fas fa-eye-slash', keywords: 'blind hidden' },
+      { class: 'fas fa-low-vision', keywords: 'vision sight' },
+      
+      // Nature Elements
+      { class: 'fas fa-fire', keywords: 'fire flame katon fire release' },
+      { class: 'fas fa-water', keywords: 'water suiton water release' },
+      { class: 'fas fa-mountain', keywords: 'earth stone doton earth release' },
+      { class: 'fas fa-wind', keywords: 'wind fuuton wind release' },
+      { class: 'fas fa-bolt', keywords: 'lightning raiton lightning release' },
+      { class: 'fas fa-snowflake', keywords: 'ice snow hyoton ice release' },
+      { class: 'fas fa-leaf', keywords: 'leaf wood mokuton wood release' },
+      { class: 'fas fa-tree', keywords: 'tree wood nature' },
+      { class: 'fas fa-seedling', keywords: 'plant growth nature' },
+      
+      // Celestial
+      { class: 'fas fa-sun', keywords: 'sun light day' },
+      { class: 'fas fa-moon', keywords: 'moon night lunar' },
+      { class: 'fas fa-star', keywords: 'star celestial' },
+      { class: 'fas fa-stars', keywords: 'stars constellation' },
+      
+      // Animals
+      { class: 'fas fa-dragon', keywords: 'dragon summon beast' },
+      { class: 'fas fa-snake', keywords: 'snake orochimaru summon' },
+      { class: 'fas fa-frog', keywords: 'frog toad summon jiraiya' },
+      { class: 'fas fa-spider', keywords: 'spider summon' },
+      { class: 'fas fa-crow', keywords: 'crow bird summon itachi' },
+      { class: 'fas fa-dove', keywords: 'dove bird peace' },
+      { class: 'fas fa-wolf', keywords: 'wolf summon kiba' },
+      { class: 'fas fa-cat', keywords: 'cat summon' },
+      { class: 'fas fa-dog', keywords: 'dog summon kiba' },
+      { class: 'fas fa-horse', keywords: 'horse summon' },
+      { class: 'fas fa-fish', keywords: 'fish summon' },
+      
+      // Body & Actions
+      { class: 'fas fa-hand-sparkles', keywords: 'hand jutsu seal' },
+      { class: 'fas fa-fist-raised', keywords: 'fist punch taijutsu' },
+      { class: 'fas fa-hand-rock', keywords: 'hand fist' },
+      { class: 'fas fa-running', keywords: 'run speed movement' },
+      { class: 'fas fa-walking', keywords: 'walk movement' },
+      { class: 'fas fa-dumbbell', keywords: 'strength training' },
+      
+      // Objects & Tools
+      { class: 'fas fa-scroll', keywords: 'scroll jutsu seal technique' },
+      { class: 'fas fa-book', keywords: 'book knowledge technique' },
+      { class: 'fas fa-gem', keywords: 'gem crystal jewel' },
+      { class: 'fas fa-ring', keywords: 'ring jewelry' },
+      { class: 'fas fa-crown', keywords: 'crown royalty leader' },
+      { class: 'fas fa-hat-wizard', keywords: 'wizard hat magic' },
+      { class: 'fas fa-feather-alt', keywords: 'feather light' },
+      { class: 'fas fa-key', keywords: 'key unlock' },
+      { class: 'fas fa-lock', keywords: 'lock seal security' },
+      { class: 'fas fa-unlock', keywords: 'unlock release' },
+      
+      // Characters & People
+      { class: 'fas fa-user', keywords: 'user person character' },
+      { class: 'fas fa-user-astronaut', keywords: 'user space unique' },
+      { class: 'fas fa-user-shield', keywords: 'user protection guard' },
+      { class: 'fas fa-user-graduate', keywords: 'user student academy' },
+      { class: 'fas fa-user-injured', keywords: 'user hurt wounded' },
+      { class: 'fas fa-user-tie', keywords: 'user formal leader' },
+      { class: 'fas fa-user-friends', keywords: 'users team group' },
+      { class: 'fas fa-users', keywords: 'users team group' },
+      { class: 'fas fa-user-plus', keywords: 'user add new' },
+      { class: 'fas fa-user-minus', keywords: 'user remove' },
+      
+      // Spiritual & Mystical
+      { class: 'fas fa-ghost', keywords: 'ghost spirit edo tensei' },
+      { class: 'fas fa-skull', keywords: 'skull death' },
+      { class: 'fas fa-cross', keywords: 'cross religion' },
+      { class: 'fas fa-yin-yang', keywords: 'yin yang balance' },
+      { class: 'fas fa-star-and-crescent', keywords: 'moon star symbol' },
+      
+      // Symbols & Shapes
+      { class: 'fas fa-circle', keywords: 'circle round' },
+      { class: 'fas fa-square', keywords: 'square' },
+      { class: 'fas fa-triangle', keywords: 'triangle' },
+      { class: 'fas fa-hexagon', keywords: 'hexagon' },
+      { class: 'fas fa-pentagon', keywords: 'pentagon' },
+      
+      // Medical & Healing
+      { class: 'fas fa-heart', keywords: 'heart life health' },
+      { class: 'fas fa-heartbeat', keywords: 'heartbeat life' },
+      { class: 'fas fa-plus-circle', keywords: 'heal medical' },
+      { class: 'fas fa-band-aid', keywords: 'heal medical' },
+      
+      // Communication
+      { class: 'fas fa-comments', keywords: 'talk communication' },
+      { class: 'fas fa-comment', keywords: 'talk message' },
+      { class: 'fas fa-envelope', keywords: 'message letter' },
+      { class: 'fas fa-bell', keywords: 'alert notification' },
+      
+      // Time & History
+      { class: 'fas fa-clock', keywords: 'time clock' },
+      { class: 'fas fa-hourglass', keywords: 'time hourglass' },
+      { class: 'fas fa-calendar', keywords: 'date calendar' },
+      { class: 'fas fa-history', keywords: 'history past' },
+      
+      // Location & Travel
+      { class: 'fas fa-map', keywords: 'map location' },
+      { class: 'fas fa-map-marker-alt', keywords: 'location marker' },
+      { class: 'fas fa-home', keywords: 'home village' },
+      { class: 'fas fa-village', keywords: 'village home' },
+      { class: 'fas fa-route', keywords: 'path route journey' },
+      
+      // Energy & Power
+      { class: 'fas fa-battery-full', keywords: 'energy power chakra' },
+      { class: 'fas fa-bolt', keywords: 'energy lightning power' },
+      { class: 'fas fa-magic', keywords: 'magic jutsu technique' },
+      { class: 'fas fa-wand-magic', keywords: 'magic wand jutsu' },
+      
+      // Status & States
+      { class: 'fas fa-check-circle', keywords: 'success complete' },
+      { class: 'fas fa-times-circle', keywords: 'fail cancel' },
+      { class: 'fas fa-exclamation-circle', keywords: 'warning alert' },
+      { class: 'fas fa-question-circle', keywords: 'question unknown' },
+      { class: 'fas fa-info-circle', keywords: 'info information' },
+      
+      // Additional popular icons
+      { class: 'fas fa-anchor', keywords: 'anchor stability' },
+      { class: 'fas fa-archway', keywords: 'gate entrance' },
+      { class: 'fas fa-bahai', keywords: 'symbol peace' },
+      { class: 'fas fa-bomb', keywords: 'explosive tag bomb' },
+      { class: 'fas fa-campfire', keywords: 'fire camp' },
+      { class: 'fas fa-castle', keywords: 'castle building' },
+      { class: 'fas fa-compass', keywords: 'direction navigation' },
+      { class: 'fas fa-dice', keywords: 'dice game chance' },
+      { class: 'fas fa-flag', keywords: 'flag village symbol' },
+      { class: 'fas fa-flask', keywords: 'potion medicine' },
+      { class: 'fas fa-graduation-cap', keywords: 'academy graduation' },
+      { class: 'fas fa-landmark', keywords: 'building important' },
+      { class: 'fas fa-medal', keywords: 'achievement rank' },
+      { class: 'fas fa-paw', keywords: 'animal summon' },
+      { class: 'fas fa-peace', keywords: 'peace harmony' },
+      { class: 'fas fa-puzzle-piece', keywords: 'puzzle mystery' },
+      { class: 'fas fa-ribbon', keywords: 'ribbon decoration' },
+      { class: 'fas fa-rocket', keywords: 'speed fast' },
+      { class: 'fas fa-torch', keywords: 'fire light' },
+      { class: 'fas fa-trophy', keywords: 'achievement victory' },
+      { class: 'fas fa-umbrella', keywords: 'protection shield' },
+      { class: 'fas fa-vial', keywords: 'potion medicine' },
+      { class: 'fas fa-volcano', keywords: 'fire earth lava' },
+      { class: 'fas fa-wind', keywords: 'wind air' },
+      { class: 'fas fa-yin-yang', keywords: 'balance harmony' }
+    ];
+    };
+  }
+  
+  window.updateAppearancePreview = function(value) {
+    const preview = document.getElementById('appearanceImagePreview');
+    if (!value) {
+      preview.innerHTML = '';
+      return;
+    }
+    
+    if (value.startsWith('fa-') || value.startsWith('fas ') || value.startsWith('far ') || value.startsWith('fab ')) {
+      preview.innerHTML = `<div style="font-size: 3rem; color: var(--color-accent-2);"><i class="${value}"></i></div>`;
+    } else if (value.startsWith('data:') || value.startsWith('http')) {
+      preview.innerHTML = `<img src="${value}" alt="Preview" style="max-width: 200px; max-height: 200px; border: 1px solid var(--color-border-2); border-radius: 4px;">`;
+    } else {
+      preview.innerHTML = '';
+    }
+  };
+  
+  // Update preview when input changes
+  setTimeout(() => {
+    const imageInput = document.getElementById('appearanceImage');
+    if (imageInput) {
+      imageInput.addEventListener('input', function() {
+        updateAppearancePreview(this.value);
+      });
+    }
+  }, 0);
+  
   // Make switchStatsEraTab function available globally
   window.switchStatsEraTab = function(era) {
     // Update tabs
@@ -1677,9 +1993,9 @@ export function renderOCForm(oc = null, onSave) {
 }
 
 function renderStatInput(name, value) {
-  // Clamp value to valid range (2-5) and round to nearest 0.5
-  const rawValue = value || 2;
-  const clampedValue = Math.max(2, Math.min(5, rawValue));
+  // Clamp value to valid range (1-5) and round to nearest 0.5
+  const rawValue = value || 3;
+  const clampedValue = Math.max(1, Math.min(5, rawValue));
   const roundedValue = Math.round(clampedValue * 2) / 2; // Round to nearest 0.5
   
   // Format display value (show as integer if whole number, otherwise show decimal)
@@ -1699,11 +2015,11 @@ function renderStatInput(name, value) {
         </div>
       </div>
       <div class="stat-control-wrapper">
-        <input type="range" class="stat-slider" id="${name}" min="2" max="5" step="0.5" value="${roundedValue}" 
+        <input type="range" class="stat-slider" id="${name}" min="1" max="5" step="0.5" value="${roundedValue}" 
                oninput="const val = parseFloat(this.value); document.getElementById('${name}-value').textContent = val % 1 === 0 ? val.toString() : val.toFixed(1); updateStatVisual('${name}', val)">
         <div class="stat-dots" id="${name}-dots">
-          ${Array.from({length: 7}, (_, i) => {
-            const dotValue = 2 + (i * 0.5); // Dots represent values 2, 2.5, 3, 3.5, 4, 4.5, 5
+          ${Array.from({length: 9}, (_, i) => {
+            const dotValue = 1 + (i * 0.5); // Dots represent values 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5
             const isHalf = dotValue % 1 !== 0;
             const isActive = dotValue <= roundedValue;
             return `<span class="stat-dot ${isActive ? 'active' : ''} ${isHalf ? 'half-dot' : ''}" data-value="${dotValue}"></span>`;
@@ -1777,6 +2093,86 @@ function renderAbilityEditor(type, ability = {}, index) {
       <div class="form-group">
         <label>Description</label>
         <textarea class="form-control" name="ability-description-${type}-${index}" rows="2">${ability.description || ''}</textarea>
+      </div>
+    </div>
+  `;
+}
+
+function renderGearEditor(gear = {}, index) {
+  const gearIcon = gear.icon || '';
+  const gearName = gear.name || '';
+  const gearCategory = gear.category || 'Item';
+  const gearMaterial = gear.material || '';
+  const gearUse = gear.use || '';
+  const gearInfo = Array.isArray(gear.info) ? gear.info.join('\n') : (gear.information || []);
+  
+  return `
+    <div class="gear-editor-item mb-3" data-index="${index}" style="border: 1px solid var(--color-border-2); padding: 1rem; border-radius: 4px;">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <strong>Gear Item</strong>
+        <button type="button" class="btn-naruto btn-naruto-secondary" onclick="removeGearItem(${index})" style="padding: 0.25rem 0.5rem; font-size: 0.85rem;">Remove</button>
+      </div>
+      <div class="row">
+        <div class="col-12 col-md-6">
+          <div class="form-group">
+            <label>Name</label>
+            <input type="text" class="form-control" name="gear-name-${index}" value="${gearName}" placeholder="e.g., Bone Chain Sickle (Kusarigama)">
+          </div>
+        </div>
+        <div class="col-12 col-md-6">
+          <div class="form-group">
+            <label>Category</label>
+            <input type="text" class="form-control" name="gear-category-${index}" value="${gearCategory}" placeholder="e.g., Item, Weapon, Tool">
+          </div>
+        </div>
+        <div class="col-12">
+          <div class="form-group">
+            <label>Icon / Image</label>
+            <div style="display: flex; gap: 0.5rem; margin-bottom: 0.5rem; flex-wrap: wrap;">
+              <button type="button" class="btn-naruto btn-naruto-secondary" onclick="showGearImageUpload(${index})" style="flex: 1; min-width: 120px;">
+                <i class="fas fa-upload"></i> Upload Image
+              </button>
+              <button type="button" class="btn-naruto btn-naruto-secondary" onclick="showGearIconPicker(${index})" style="flex: 1; min-width: 120px;">
+                <i class="fas fa-icons"></i> Pick Icon
+              </button>
+            </div>
+            <input type="file" id="gearImageUpload-${index}" accept="image/*" style="display: none;" onchange="handleGearImageUpload(event, ${index})">
+            <div id="gear-icon-picker-${index}" style="display: none; margin-bottom: 0.5rem;">
+              <div style="margin-bottom: 0.5rem;">
+                <input type="text" class="form-control" id="gearIconSearch-${index}" placeholder="Search Font Awesome icons..." onkeyup="filterGearIcons(this.value, ${index})" style="font-size: 0.85rem;" autocomplete="off">
+              </div>
+              <div id="gear-icon-picker-grid-${index}" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(50px, 1fr)); gap: 0.5rem; max-height: 300px; overflow-y: auto; padding: 0.5rem; background-color: var(--color-bg-1); border: 1px solid var(--color-border-2); border-radius: 4px;">
+                <div style="grid-column: 1 / -1; text-align: center; padding: 1rem; color: var(--color-text-dark-2);">Loading icons...</div>
+              </div>
+            </div>
+            <input type="text" class="form-control" name="gear-icon-${index}" id="gear-icon-input-${index}" value="${gearIcon}" placeholder="Image URL or Font Awesome icon class (e.g., fas fa-sword)">
+            <div id="gear-icon-preview-${index}" style="margin-top: 0.5rem; text-align: center; min-height: 50px;">
+              ${gearIcon ? (
+                gearIcon.startsWith('fa-') || gearIcon.startsWith('fas ') || gearIcon.startsWith('far ') || gearIcon.startsWith('fab ') ?
+                  `<div style="font-size: 2rem; color: var(--color-accent-2);"><i class="${gearIcon}"></i></div>` :
+                  `<img src="${gearIcon}" alt="Preview" style="max-width: 100px; max-height: 100px; border: 1px solid var(--color-border-2); border-radius: 4px;">`
+              ) : ''}
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-md-6">
+          <div class="form-group">
+            <label>Material</label>
+            <input type="text" class="form-control" name="gear-material-${index}" value="${gearMaterial}" placeholder="e.g., Bone, Metal, Wood">
+          </div>
+        </div>
+        <div class="col-12 col-md-6">
+          <div class="form-group">
+            <label>Use</label>
+            <input type="text" class="form-control" name="gear-use-${index}" value="${gearUse}" placeholder="e.g., Combat, Utility">
+          </div>
+        </div>
+        <div class="col-12">
+          <div class="form-group">
+            <label>Additional Information (one per line)</label>
+            <textarea class="form-control" name="gear-info-${index}" rows="3" placeholder="Additional details about this gear item...">${gearInfo}</textarea>
+          </div>
+        </div>
       </div>
     </div>
   `;
@@ -1903,6 +2299,149 @@ if (typeof window !== 'undefined') {
     updateAbilityIndices();
   };
   
+  window.addGearItem = function() {
+    const container = document.getElementById('gear-container');
+    const items = container.querySelectorAll('.gear-editor-item');
+    const index = items.length;
+    
+    const newGear = { name: '', category: 'Item', icon: '', material: '', use: '', info: [] };
+    container.innerHTML += renderGearEditor(newGear, index);
+    if (container.querySelector('.text-muted')) {
+      container.querySelector('.text-muted').remove();
+    }
+  };
+  
+  window.removeGearItem = function(index) {
+    const container = document.getElementById('gear-container');
+    const item = container.querySelector(`[data-index="${index}"]`);
+    if (item) item.remove();
+    updateGearIndices();
+  };
+  
+  function updateGearIndices() {
+    const container = document.getElementById('gear-container');
+    const items = container.querySelectorAll('.gear-editor-item');
+    items.forEach((item, newIndex) => {
+      item.dataset.index = newIndex;
+      // Update all input names
+      item.querySelectorAll('input, textarea, button').forEach(input => {
+        if (input.name) {
+          input.name = input.name.replace(/-\d+$/, `-${newIndex}`);
+        }
+        if (input.id && input.id.includes('-')) {
+          const parts = input.id.split('-');
+          parts[parts.length - 1] = newIndex;
+          input.id = parts.join('-');
+        }
+      });
+    });
+  }
+  
+  // Gear-specific image/icon picker functions
+  window.showGearImageUpload = function(index) {
+    document.getElementById(`gearImageUpload-${index}`).click();
+  };
+  
+  window.handleGearImageUpload = function(event, index) {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const iconInput = document.getElementById(`gear-icon-input-${index}`);
+        iconInput.value = e.target.result;
+        updateGearIconPreview(e.target.result, index);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+  
+  window.showGearIconPicker = function(index) {
+    const container = document.getElementById(`gear-icon-picker-${index}`);
+    const grid = document.getElementById(`gear-icon-picker-grid-${index}`);
+    const isVisible = container.style.display !== 'none';
+    
+    if (!isVisible) {
+      // Load icons when showing picker
+      if (!grid.dataset.loaded) {
+        const allIcons = window.getAllFontAwesomeIcons();
+        grid.innerHTML = allIcons.map(icon => `
+          <button type="button" class="gear-icon-picker-btn" onclick="selectGearIcon('${icon.class}', ${index})" 
+                  data-keywords="${icon.keywords || ''}"
+                  style="padding: 0.5rem; border: 1px solid var(--color-border-2); background: var(--color-bg-transparent); cursor: pointer; border-radius: 4px; transition: all 0.2s;" 
+                  onmouseover="this.style.background='var(--color-accent-2)'; this.style.color='white';" 
+                  onmouseout="this.style.background='var(--color-bg-transparent)'; this.style.color='';"
+                  title="${icon.class.replace('fas ', '')}">
+            <i class="${icon.class}" style="font-size: 1.5rem;"></i>
+          </button>
+        `).join('');
+        grid.dataset.loaded = 'true';
+      }
+      container.style.display = 'block';
+    } else {
+      container.style.display = 'none';
+    }
+  };
+  
+  window.selectGearIcon = function(iconClass, index) {
+    const iconInput = document.getElementById(`gear-icon-input-${index}`);
+    iconInput.value = iconClass;
+    updateGearIconPreview(iconClass, index);
+    document.getElementById(`gear-icon-picker-${index}`).style.display = 'none';
+  };
+  
+  window.filterGearIcons = function(searchTerm, index) {
+    const buttons = document.querySelectorAll(`#gear-icon-picker-grid-${index} .gear-icon-picker-btn`);
+    const term = searchTerm.toLowerCase().trim();
+    
+    if (term === '') {
+      buttons.forEach(btn => btn.style.display = 'block');
+      return;
+    }
+    
+    buttons.forEach(btn => {
+      const icon = btn.querySelector('i');
+      const iconClass = icon ? icon.className : '';
+      const keywords = btn.dataset.keywords || '';
+      const iconName = iconClass.replace(/^(fas|far|fab|fal|fad)\s+fa-/, '').replace(/\s+/g, '-');
+      const searchableText = `${iconClass} ${iconName} ${keywords}`.toLowerCase();
+      
+      if (searchableText.includes(term)) {
+        btn.style.display = 'block';
+      } else {
+        btn.style.display = 'none';
+      }
+    });
+  };
+  
+  window.updateGearIconPreview = function(value, index) {
+    const preview = document.getElementById(`gear-icon-preview-${index}`);
+    if (!value) {
+      preview.innerHTML = '';
+      return;
+    }
+    
+    if (value.startsWith('fa-') || value.startsWith('fas ') || value.startsWith('far ') || value.startsWith('fab ')) {
+      preview.innerHTML = `<div style="font-size: 2rem; color: var(--color-accent-2);"><i class="${value}"></i></div>`;
+    } else if (value.startsWith('data:') || value.startsWith('http')) {
+      preview.innerHTML = `<img src="${value}" alt="Preview" style="max-width: 100px; max-height: 100px; border: 1px solid var(--color-border-2); border-radius: 4px;">`;
+    } else {
+      preview.innerHTML = '';
+    }
+  };
+  
+  // Update gear icon previews when inputs change
+  setTimeout(() => {
+    const gearContainer = document.getElementById('gear-container');
+    if (gearContainer) {
+      gearContainer.addEventListener('input', function(e) {
+        if (e.target.name && e.target.name.startsWith('gear-icon-')) {
+          const index = e.target.name.split('-').pop();
+          updateGearIconPreview(e.target.value, index);
+        }
+      });
+    }
+  }, 0);
+  
   window.addRelationship = function() {
     const container = document.getElementById('relationships-container');
     const items = container.querySelectorAll('.relationship-editor-item');
@@ -2026,7 +2565,7 @@ if (typeof window !== 'undefined') {
     const slider = document.getElementById(name);
     const numValue = parseFloat(value);
     
-    // Update dots (dots represent values 2, 2.5, 3, 3.5, 4, 4.5, 5)
+    // Update dots (dots represent values 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5)
     if (dots) {
       const dotElements = dots.querySelectorAll('.stat-dot');
       dotElements.forEach((dot) => {

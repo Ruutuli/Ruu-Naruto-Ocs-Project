@@ -715,7 +715,7 @@ export const villages = [
       name: 'Fire Release',
       kanji: '火',
       romaji: 'Hi',
-      iconUrl: 'https://static.wikia.nocookie.net/naruto/images/8/8e/Nature_Icon_Fire.svg/',
+      iconUrl: 'https://static.wikia.nocookie.net/naruto/images/b/bf/Nature_Icon_Fire.svg/',
       strongAgainst: 'Wind',
       weakAgainst: 'Water',
       type: 'basic',

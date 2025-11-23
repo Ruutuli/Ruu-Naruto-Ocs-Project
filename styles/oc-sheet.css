@@ -125,11 +125,21 @@
   align-items: center;
 }
 
+.stat-icon-wrapper {
+  display: inline-block;
+  width: 1.2rem;
+  height: 1rem;
+  position: relative;
+  text-align: center;
+}
+
 .stat-icon {
   font-size: 1rem;
   width: 1.2rem;
   text-align: center;
   transition: all 0.2s ease;
+  position: relative;
+  display: inline-block;
 }
 
 .stat-icon-filled {
@@ -140,6 +150,32 @@
 .stat-icon-empty {
   color: var(--color-text-light);
   opacity: 0.3;
+}
+
+.stat-icon-half-wrapper {
+  position: relative;
+  display: inline-block;
+  width: 1.2rem;
+  height: 1rem;
+}
+
+.stat-icon-half-wrapper .stat-icon-empty {
+  position: relative;
+  z-index: 1;
+}
+
+.stat-icon-half-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 50%;
+  height: 100%;
+  overflow: hidden;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
 }
 
 /* Stats Era Tabs */
@@ -1088,12 +1124,13 @@ i.era-label {
   color: var(--color-text-light);
   text-align: center;
   text-transform: uppercase;
-  padding: 1rem;
+  padding: 0.6rem;
   margin-bottom: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
+  font-size: 1.1rem;
 }
 
 .appearance-image-container {
@@ -1101,8 +1138,8 @@ i.era-label {
   justify-content: center;
   align-items: center;
   width: 100%;
-  margin: 1rem 0;
-  padding: 1rem;
+  margin: 0.5rem 0;
+  padding: 0.75rem;
   background-color: var(--color-bg-transparent);
   border: 1px solid var(--color-border-2);
   border-top: none;
@@ -1110,68 +1147,105 @@ i.era-label {
 
 .appearance-image {
   width: 100%;
-  max-width: 800px;
+  max-width: 400px;
   height: auto;
   display: block;
 }
 
+.appearance-icon {
+  font-size: 4rem;
+  color: var(--color-accent-2);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+}
+
+.color-palette-container {
+  background-color: var(--color-bg-transparent);
+  border: 1px solid var(--color-border-2);
+  border-top: none;
+  padding: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.color-palette-label {
+  font-size: 0.85rem;
+  color: var(--color-text-dark-2);
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
 .color-palette {
   display: flex;
-  gap: 0;
-  height: 25px;
-  margin-bottom: 1rem;
+  gap: 0.25rem;
+  height: 40px;
+  border-radius: 4px;
+  overflow: hidden;
 }
 
 .color-swatch {
   flex: 1;
   height: 100%;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.color-swatch:hover {
+  transform: scale(1.05);
+  z-index: 1;
+  position: relative;
 }
 
 .gear-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 1rem;
-  margin-top: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0.5rem;
+  margin-top: 0.5rem;
 }
 
 .gear-item {
   background-color: var(--color-bg-1);
-  padding: 1rem;
+  padding: 0.5rem;
   border: 1px solid var(--color-border-2);
+  font-size: 0.85rem;
 }
 
 .gear-icon {
-  width: 60px;
-  height: 60px;
+  width: 30px;
+  height: 30px;
   background-color: var(--color-dark-3);
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  margin-right: 1rem;
+  margin-right: 0.5rem;
   vertical-align: middle;
+  font-size: 0.9rem;
 }
 
 .gear-name {
-  font-size: 1.5rem;
+  font-size: 0.95rem;
   font-weight: bold;
   display: inline-block;
   vertical-align: middle;
 }
 
 .gear-category {
-  font-size: 0.9rem;
+  font-size: 0.75rem;
   color: var(--color-text-dark);
-  margin-top: 0.5rem;
+  margin-top: 0.25rem;
 }
 
 .gear-info {
   list-style: none;
   padding: 0;
-  margin-top: 0.5rem;
+  margin-top: 0.25rem;
+  font-size: 0.75rem;
 }
 
 .gear-info li {
-  padding: 0.25rem 0;
+  padding: 0.15rem 0;
 }
 
 /* Footer */

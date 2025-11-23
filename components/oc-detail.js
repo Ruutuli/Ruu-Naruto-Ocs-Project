@@ -152,10 +152,17 @@ export function renderOCDetail(oc) {
     
     <div class="appearance-section">
       <h1>Appearance & Gear <i class="japanese-header">外見と装備</i></h1>
-      ${oc.appearance?.image ? `<div class="appearance-image-container"><img src="${oc.appearance.image}" alt="Appearance" class="appearance-image"></div>` : ''}
+      ${oc.appearance?.image ? (
+        oc.appearance.image.startsWith('fa-') || oc.appearance.image.startsWith('fas ') || oc.appearance.image.startsWith('far ') || oc.appearance.image.startsWith('fab ') ?
+          `<div class="appearance-image-container"><div class="appearance-icon"><i class="${oc.appearance.image}"></i></div></div>` :
+          `<div class="appearance-image-container"><img src="${oc.appearance.image}" alt="Appearance" class="appearance-image"></div>`
+      ) : ''}
       ${oc.appearance?.colors && oc.appearance.colors.length > 0 ? `
-        <div class="color-palette">
-          ${oc.appearance.colors.map(color => `<div class="color-swatch" style="background-color: ${color};"></div>`).join('')}
+        <div class="color-palette-container">
+          <div class="color-palette-label">Color Palette</div>
+          <div class="color-palette">
+            ${oc.appearance.colors.map(color => `<div class="color-swatch" style="background-color: ${color};" title="${color}"></div>`).join('')}
+          </div>
         </div>
       ` : ''}
       ${oc.appearance?.gear && oc.appearance.gear.length > 0 ? `
@@ -555,9 +562,33 @@ function renderStat(name, value, iconType) {
   };
   
   const iconClass = icons[iconType] || 'fa-circle';
-  const iconsHtml = Array.from({ length: 5 }, (_, i) => 
-    `<i class="fas ${iconClass} stat-icon ${i < value ? 'stat-icon-filled' : 'stat-icon-empty'}"></i>`
-  ).join('');
+  const numValue = parseFloat(value) || 0;
+  
+  // Generate icons with support for half values
+  const iconsHtml = Array.from({ length: 5 }, (_, i) => {
+    const iconIndex = i + 1; // 1-based index (1, 2, 3, 4, 5)
+    let iconState = 'stat-icon-empty';
+    let isHalf = false;
+    
+    if (iconIndex <= Math.floor(numValue)) {
+      // Fully filled
+      iconState = 'stat-icon-filled';
+    } else if (iconIndex === Math.ceil(numValue) && numValue % 1 !== 0) {
+      // Half filled (e.g., if value is 2.5, iconIndex 3 should be half)
+      iconState = 'stat-icon-half';
+      isHalf = true;
+    }
+    
+    if (isHalf) {
+      // For half-filled icons, use a wrapper with two icons
+      return `<span class="stat-icon-wrapper stat-icon-half-wrapper">
+        <i class="fas ${iconClass} stat-icon stat-icon-empty"></i>
+        <i class="fas ${iconClass} stat-icon stat-icon-filled stat-icon-half-overlay"></i>
+      </span>`;
+    } else {
+      return `<i class="fas ${iconClass} stat-icon ${iconState}"></i>`;
+    }
+  }).join('');
   
   return `
     <div class="stat-row">
@@ -1634,15 +1665,40 @@ function renderRecordHistory(oc) {
 }
 
 function renderGearItem(gear) {
+  // Handle simple string format
+  if (typeof gear === 'string') {
+    return `
+      <div class="gear-item">
+        <div>
+          <div class="gear-icon">⚔</div>
+          <span class="gear-name">${gear}</span>
+        </div>
+        <div class="gear-category">Item</div>
+      </div>
+    `;
+  }
+  
+  // Determine icon display
+  let iconHtml = '<div class="gear-icon">⚔</div>';
+  if (gear.icon) {
+    if (gear.icon.startsWith('fa-') || gear.icon.startsWith('fas ') || gear.icon.startsWith('far ') || gear.icon.startsWith('fab ')) {
+      iconHtml = `<div class="gear-icon" style="font-size: 1.2rem; color: var(--color-accent-2);"><i class="${gear.icon}"></i></div>`;
+    } else if (gear.icon.startsWith('http') || gear.icon.startsWith('data:')) {
+      iconHtml = `<div class="gear-icon" style="width: 30px; height: 30px; padding: 0; overflow: hidden;"><img src="${gear.icon}" alt="${gear.name || 'Gear'}" style="width: 100%; height: 100%; object-fit: contain;"></div>`;
+    }
+  }
+  
   return `
     <div class="gear-item">
       <div>
-        <div class="gear-icon">⚔</div>
+        ${iconHtml}
         <span class="gear-name">${gear.name || 'Item Name'}</span>
       </div>
-      <div class="gear-category">
-        ${gear.category || 'Category'} <small><em>${gear.material || ''}</em></small>. ${gear.use || ''}
-      </div>
+      ${gear.category || gear.material || gear.use ? `
+        <div class="gear-category">
+          ${gear.category || 'Item'}${gear.material ? ` <small><em>${gear.material}</em></small>` : ''}${gear.use ? `. ${gear.use}` : ''}
+        </div>
+      ` : ''}
       ${gear.info && gear.info.length > 0 ? `
         <ul class="gear-info">
           ${gear.info.map(info => `<li>${info}</li>`).join('')}
