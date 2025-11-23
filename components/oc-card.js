@@ -143,29 +143,28 @@ export function renderOCCard(oc, onClick) {
         
         // Load all clans asynchronously
         const loadPromises = clanIds.map(async (clanId) => {
-          // Check if already in cache
+          // First check if already in cache
           let clan = storage.getClan(clanId);
           if (clan) {
             return clan.name;
           }
           
-          // Try to load it
+          // If not in cache, try to load it directly
           try {
-            // Load the static file directly
             const response = await fetch(`data/clans/${clanId}.json`);
             if (response.ok) {
               const clanData = await response.json();
-              if (clanData && clanData.id) {
-                // Add to cache
-                storage._cache.clans.set(clanData.id, clanData);
-                return clanData.name || 'Unknown';
+              if (clanData && clanData.id && clanData.name) {
+                // The storage will cache it when we call getClan again
+                // But for now, return the name directly
+                return clanData.name;
               }
             }
           } catch (e) {
             // File doesn't exist or error loading
           }
           
-          // Fallback: try getClan again (might have been loaded by another component)
+          // Final check: try getClan again (might have been loaded by another component)
           clan = storage.getClan(clanId);
           return clan ? clan.name : 'Unknown';
         });
