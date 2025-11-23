@@ -1074,7 +1074,7 @@ export function renderOCForm(oc = null, onSave) {
           })()}
         </div>
         
-        <!-- Record History -->
+        <!-- Record History / Story Arcs / Timeline -->
         <h3 class="mb-3 mt-4">Record History <i class="japanese-header">記録履歴</i></h3>
         <div class="form-group">
           <label class="form-label">Childhood</label>
@@ -1087,6 +1087,22 @@ export function renderOCForm(oc = null, onSave) {
         <div class="form-group">
           <label class="form-label">Adulthood</label>
           <textarea class="form-control" id="recordHistoryAdulthood" rows="5">${formOC.recordHistory?.adulthood || ''}</textarea>
+        </div>
+        
+        <div id="story-arcs-editor" class="mb-4 mt-4">
+          <label class="form-label mb-2">Story Arcs / Timeline</label>
+          <div class="card-naruto" style="padding: 1rem; margin-bottom: 1rem;">
+            <div id="story-arcs-container">
+              ${(() => {
+                const storyArcs = formOC.storyArcs || [];
+                if (storyArcs.length === 0) {
+                  return '<p class="text-muted">No story arcs added yet.</p>';
+                }
+                return storyArcs.map((arc, index) => renderStoryArcEditor(arc, index)).join('');
+              })()}
+            </div>
+            <button type="button" class="btn-naruto btn-naruto-secondary mt-2" onclick="addStoryArc()">+ Add Story Arc</button>
+          </div>
         </div>
         
         <!-- Appearance & Gear -->
@@ -1226,24 +1242,6 @@ export function renderOCForm(oc = null, onSave) {
               })()}
             </div>
             <button type="button" class="btn-naruto btn-naruto-secondary mt-2" onclick="addRelationship()">+ Add Relationship</button>
-          </div>
-        </div>
-        
-        <!-- Story Arcs / Timeline -->
-        <h3 class="mb-3 mt-4">Story Arcs / Timeline</h3>
-        <div id="story-arcs-editor" class="mb-4">
-          <label class="form-label mb-2">Story Arcs</label>
-          <div class="card-naruto" style="padding: 1rem; margin-bottom: 1rem;">
-            <div id="story-arcs-container">
-              ${(() => {
-                const storyArcs = formOC.storyArcs || [];
-                if (storyArcs.length === 0) {
-                  return '<p class="text-muted">No story arcs added yet.</p>';
-                }
-                return storyArcs.map((arc, index) => renderStoryArcEditor(arc, index)).join('');
-              })()}
-            </div>
-            <button type="button" class="btn-naruto btn-naruto-secondary mt-2" onclick="addStoryArc()">+ Add Story Arc</button>
           </div>
         </div>
         
@@ -2721,6 +2719,43 @@ if (typeof window !== 'undefined') {
       }
     });
   };
+  
+  // Add event listeners for image preview updates
+  setTimeout(() => {
+    const eras = ['Part I', 'Part II', 'Blank Period', 'Gaiden', 'Boruto'];
+    eras.forEach(era => {
+      const input = document.getElementById(`imageEra-${era}`);
+      if (input) {
+        input.addEventListener('input', function() {
+          const panel = document.getElementById(`image-era-panel-${era.replace(/\s+/g, '-')}`);
+          if (panel) {
+            const preview = panel.querySelector('img');
+            const value = this.value.trim();
+            if (value && preview) {
+              preview.src = value;
+              preview.style.display = '';
+            } else if (preview) {
+              preview.style.display = 'none';
+            } else if (value) {
+              // Create preview if it doesn't exist
+              const previewContainer = panel.querySelector('.form-group');
+              if (previewContainer) {
+                const existingPreview = previewContainer.querySelector('div[style*="margin-top"]');
+                if (!existingPreview) {
+                  const previewDiv = document.createElement('div');
+                  previewDiv.style.marginTop = '0.5rem';
+                  previewDiv.innerHTML = `<img src="${value}" alt="${era} image" 
+                       style="max-width: 200px; max-height: 200px; border: 1px solid var(--color-border-2); border-radius: 4px; object-fit: contain;"
+                       onerror="this.style.display='none'">`;
+                  previewContainer.appendChild(previewDiv);
+                }
+              }
+            }
+          }
+        });
+      }
+    });
+  }, 100);
   
   function updateAbilityIndices() {
     const container = document.getElementById('abilities-container');

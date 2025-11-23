@@ -348,6 +348,30 @@ export function renderOCDetail(oc) {
     });
   };
   
+  // Make switchProfileImageEraTab available globally
+  window.switchProfileImageEraTab = (era) => {
+    // Update tabs
+    const tabs = container.querySelectorAll('.profile-image-era-tab');
+    tabs.forEach(tab => {
+      if (tab.dataset.era === era) {
+        tab.classList.add('active');
+      } else {
+        tab.classList.remove('active');
+      }
+    });
+    
+    // Update panels
+    const panels = container.querySelectorAll('.profile-image-era-panel');
+    const eraId = era.replace(/\s+/g, '-');
+    panels.forEach(panel => {
+      if (panel.id === `profile-image-era-panel-${eraId}`) {
+        panel.classList.add('active');
+      } else {
+        panel.classList.remove('active');
+      }
+    });
+  };
+  
   // Load clan badge images if clans exist, otherwise show kunai
   import('../data/storage.js').then(module => {
     // Handle backward compatibility: convert single values to arrays
@@ -1770,6 +1794,58 @@ function renderNatureTypeRow(natureType) {
     <div class="info-row">
       ${renderInfoContent(`${iconHtml}${type}`)}
       ${renderInfoLabel('nature type')}
+    </div>
+  `;
+}
+
+function renderProfileImageWithEras(oc) {
+  const eras = ['Part I', 'Part II', 'Blank Period', 'Gaiden', 'Boruto'];
+  const imagesByEra = oc.imagesByEra || {};
+  
+  // Check if any era-specific images exist
+  const hasEraImages = Object.keys(imagesByEra).some(era => imagesByEra[era] && imagesByEra[era].trim());
+  
+  // If no era images, use default profile image
+  if (!hasEraImages) {
+    return oc.profileImage ? 
+      `<img src="${oc.profileImage}" alt="${oc.firstName} ${oc.lastName}" class="oc-profile-image">` 
+      : `<img src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png" alt="Profile" class="oc-profile-image">`;
+  }
+  
+  // Generate era tabs
+  const eraTabs = eras.map((era, index) => {
+    const hasImage = imagesByEra[era] && imagesByEra[era].trim();
+    return `
+      <button class="profile-image-era-tab ${index === 0 ? 'active' : ''}" 
+              onclick="switchProfileImageEraTab('${era}')" 
+              data-era="${era}"
+              ${!hasImage ? 'style="opacity: 0.5;"' : ''}>
+        ${era}
+      </button>
+    `;
+  }).join('');
+  
+  // Generate image panels
+  const imagePanels = eras.map((era, index) => {
+    const imageUrl = imagesByEra[era] && imagesByEra[era].trim() 
+      ? imagesByEra[era].trim() 
+      : (oc.profileImage || 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png');
+    const isActive = index === 0 ? 'active' : '';
+    return `
+      <div class="profile-image-era-panel ${isActive}" id="profile-image-era-panel-${era.replace(/\s+/g, '-')}">
+        <img src="${imageUrl}" alt="${oc.firstName} ${oc.lastName} - ${era}" class="oc-profile-image">
+      </div>
+    `;
+  }).join('');
+  
+  return `
+    <div class="profile-image-era-container">
+      <div class="profile-image-era-tabs">
+        ${eraTabs}
+      </div>
+      <div class="profile-image-era-content">
+        ${imagePanels}
+      </div>
     </div>
   `;
 }
