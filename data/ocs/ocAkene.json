@@ -41,7 +41,7 @@
   "clanId": null,
   "clanName": null,
   "stats": {
-    "intelligence": 3,
+    "intelligence": 4,
     "stamina": 3,
     "strength": 3,
     "speed": 3,
@@ -53,7 +53,7 @@
   },
   "statsByEra": {
     "Part I": {
-      "intelligence": 3,
+      "intelligence": 4,
       "stamina": 3,
       "strength": 3,
       "speed": 3,
@@ -108,6 +108,20 @@
       "fuinjutsu": 1
     }
   },
+  "heightByEra": {
+    "Part I": "149 cm–150 cm",
+    "Part II": "156 cm",
+    "Blank Period": "157.5 cm",
+    "Gaiden": "157.5 cm",
+    "Boruto": "157.5 cm"
+  },
+  "weightByEra": {
+    "Part I": "47 kg–51 kg",
+    "Part II": "52 kg",
+    "Blank Period": "53.5 kg",
+    "Gaiden": "53.5 kg",
+    "Boruto": "53.5 kg"
+  },
   "identifyingInfo": {
     "bodyType": "Lean, athletic, hourglass figure; shorter torso with long legs"
   },
@@ -127,12 +141,12 @@
   "madeGenin": "11",
   "madeChunin": "",
   "battleStrategy": {
-    "inTeam": "",
-    "alone": "",
-    "fieldPosition": "",
-    "effectiveDistance": "",
-    "specialty": "",
-    "notableAbilities": ""
+    "inTeam": "Functions as an intel-focused support fighter.  \nCreates openings for stronger teammates, sets traps, suppresses enemy mobility,  \nand redirects the flow of battle through misdirection and environmental control.  \nOften acts as decoy to draw attention away from allies.\n",
+    "alone": "Avoids direct confrontation.  \nRelies on stealth, terrain manipulation, and low-chakra techniques.  \nPrefers evasion, diversion, and tactical withdrawal over extended combat.  \nFocuses on disabling or restraining opponents rather than overpowering them.\n",
+    "fieldPosition": "Mid-line to rear-line.   Operates best when observing the battlefield, relaying intel,   and striking opportunistically rather than leading from the front.",
+    "effectiveDistance": "Short to mid-range.   Uses Earth Release to control the ground and Fire Release for quick mid-range attacks.   Prefers maintaining enough distance to read the situation and adapt.",
+    "specialty": "Intelligence analysis, concealment techniques, battlefield reading,   trap setting, subtle misdirection, and information-based combat.   Excels at combining multiple small jutsu into efficient tactical chains.",
+    "notableAbilities": "• Earth Release: Inner Decapitation Jutsu – ambush tactic and immobilizer  \n• Fire Release: Flame Bullet & Phoenix Sage Fire – controlled, low-chakra offense  \n• Chakra String Manipulation – silent tool control for intel and traps  \n• Kusarigamajutsu (Chain Sickle Technique) – bone weapon gifted by her family  \n• High Chakra Control – precise molding for infiltration and divination  \n• Madousho Vessel Traits – passive absorption of information; involuntary mode activation  \n"
   },
   "personality": {
     "likes": [],
@@ -244,18 +258,11 @@
     "combatStrategy": "Very high; quickly identifies patterns, motives, and hidden information.  \nCapable of connecting village secrets, clan histories, and political  \nthreads long before most adults.  \nNotably skilled in reading people, situations, and micro-behaviors.\n",
     "leadershipSkill": "Moderate; not a natural “team commander,” but excels when  \ndirecting information flow, forming plans, or advising others.  \nFunctions best as a tactician or analyst rather than a front-line leader.\n"
   },
-  "dojutsu": {
-    "name": "",
-    "type": "",
-    "development": "",
-    "stages": [],
-    "specialAbilities": []
-  },
-  "themeSong": "",
+  "themeSong": "\"There’s No Ending\" by RUANN",
   "themeSongLink": "",
   "voiceActors": {
-    "japanese": "",
-    "english": ""
+    "japanese": "Ami Koshimizu",
+    "english": "Emily Neves"
   },
   "otherMedia": {
     "novel": [],
@@ -267,15 +274,22 @@
   "quotes": [],
   "trivia": "",
   "gallery": [],
-  "fears": [],
-  "moralAlignment": "",
-  "mbti": "",
+  "fears": [
+    "Fear of Missing Out (information loss)",
+    "Fear of Failure",
+    "Fear of not fulfilling her “destined” role",
+    "Fear of instability or sudden change",
+    "Fear of being powerless or uninformed",
+    "Fear of abandonment after losing purpose"
+  ],
+  "moralAlignment": "True Neutral",
+  "mbti": "ESTJ",
   "enneagram": "",
   "missions": {
     "s": 0,
     "a": 0,
     "b": 0,
-    "c": 0,
-    "d": 0
+    "c": 2,
+    "d": 25
   }
 }
