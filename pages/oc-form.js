@@ -30,7 +30,9 @@ import {
   generateGroupedOptions,
   generateDatalistOptions,
   relationshipTypes,
-  getRelationshipHeartEmoji
+  getRelationshipHeartEmoji,
+  getHeartEmojiFromTypes,
+  getAllHeartEmojisFromTypes
 } from '../data/options.js';
 
 // ------------------- Constants -------------------
@@ -1771,18 +1773,23 @@ export function renderOCForm(oc = null, onSave) {
         container.querySelectorAll('.relationship-editor-item').forEach(item => {
           const index = item.dataset.index;
           const nameInput = container.querySelector(`[name="relationship-name-${index}"]`);
-          const typeInput = container.querySelector(`[name="relationship-type-${index}"]`);
           const imageInput = container.querySelector(`[name="relationship-image-${index}"]`);
-          const heartInput = container.querySelector(`[name="relationship-heartChart-${index}"]`);
           const descInput = container.querySelector(`[name="relationship-description-${index}"]`);
+          
+          // Get all checked relationship types
+          const typeCheckboxes = item.querySelectorAll(`input[name="relationship-type-${index}"]:checked`);
+          const selectedTypes = Array.from(typeCheckboxes).map(cb => cb.value);
+          
+          // Get ALL heart emojis from selected types
+          const heartEmojis = getAllHeartEmojisFromTypes(selectedTypes);
           
           if (!nameInput && !descInput) return;
           
           const rel = {
             name: nameInput?.value || '',
-            relationshipType: typeInput?.value || '',
+            relationshipType: selectedTypes.length > 0 ? selectedTypes : '',
             image: imageInput?.value || '',
-            heartChart: heartInput?.value || '',
+            heartChart: heartEmojis,
             description: descInput?.value || ''
           };
           
@@ -2540,6 +2547,34 @@ function renderGearEditor(gear = {}, index) {
 }
 
 function renderRelationshipEditor(rel = {}, index) {
+  // Handle both array and single string formats for backward compatibility
+  const currentTypes = Array.isArray(rel.relationshipType) 
+    ? rel.relationshipType 
+    : (rel.relationshipType ? [rel.relationshipType] : (rel.type ? [rel.type] : []));
+  
+  // Generate checkboxes for relationship types
+  const relationshipCheckboxes = relationshipTypes.map(rt => {
+    const isChecked = currentTypes.includes(rt.value);
+    const checkboxId = `relationship-type-${index}-${rt.value.replace(/\s+/g, '-')}`;
+    return `
+      <div class="form-check" style="margin-bottom: 0.5rem;">
+        <input class="form-check-input relationship-type-checkbox" 
+               type="checkbox" 
+               name="relationship-type-${index}" 
+               value="${rt.value}" 
+               id="${checkboxId}"
+               ${isChecked ? 'checked' : ''}
+               onchange="updateRelationshipHeart(${index})">
+        <label class="form-check-label" for="${checkboxId}">
+          ${rt.label}
+        </label>
+      </div>
+    `;
+  }).join('');
+  
+  // Get initial heart emojis (all selected types)
+  const initialHeart = getAllHeartEmojisFromTypes(currentTypes);
+  
   return `
     <div class="relationship-editor-item mb-3" data-index="${index}" style="border: 1px solid var(--color-border-2); padding: 1rem; border-radius: 4px;">
       <div class="d-flex justify-content-between align-items-center mb-2">
@@ -2555,23 +2590,25 @@ function renderRelationshipEditor(rel = {}, index) {
         </div>
         <div class="col-12 col-md-6">
           <div class="form-group">
-            <label>Relationship Type</label>
-            <select class="form-control relationship-type-select" name="relationship-type-${index}" id="relationship-type-${index}" onchange="updateRelationshipHeart(${index})">
-              <option value="">-- Select Relationship Type --</option>
-              ${generateOptions(relationshipTypes, rel.relationshipType || rel.type || '')}
-            </select>
-          </div>
-        </div>
-        <div class="col-12 col-md-6">
-          <div class="form-group">
             <label>Image URL</label>
             <input type="text" class="form-control" name="relationship-image-${index}" value="${rel.image || rel.icon || ''}" placeholder="https://...">
           </div>
         </div>
+        <div class="col-12">
+          <div class="form-group">
+            <label>Relationship Types</label>
+            <div style="border: 1px solid var(--color-border-2); padding: 1rem; border-radius: 4px; max-height: 200px; overflow-y: auto; background-color: var(--color-bg-1);">
+              ${relationshipCheckboxes}
+            </div>
+          </div>
+        </div>
         <div class="col-12 col-md-6">
           <div class="form-group">
-            <label>Heart Chart (Emoji)</label>
-            <input type="text" class="form-control relationship-heart-input" name="relationship-heartChart-${index}" id="relationship-heartChart-${index}" value="${rel.heartChart || getRelationshipHeartEmoji(rel.relationshipType || rel.type || '')}" placeholder="e.g., 💚">
+            <label>Heart Chart (Auto-updated)</label>
+            <div class="form-control" style="background-color: var(--color-bg-2); font-size: 1.5rem; text-align: center; padding: 0.5rem; border: 1px solid var(--color-border-2); border-radius: 4px;">
+              <span class="relationship-heart-display" id="relationship-heart-display-${index}">${initialHeart}</span>
+            </div>
+            <small class="form-text text-muted">Heart emoji updates automatically based on selected relationship types</small>
           </div>
         </div>
         <div class="col-12">
@@ -2868,12 +2905,19 @@ if (typeof window !== 'undefined') {
   };
   
   window.updateRelationshipHeart = function(index) {
-    const typeSelect = document.getElementById(`relationship-type-${index}`);
-    const heartInput = document.getElementById(`relationship-heartChart-${index}`);
-    if (typeSelect && heartInput) {
-      const selectedType = typeSelect.value;
-      const heartEmoji = getRelationshipHeartEmoji(selectedType);
-      heartInput.value = heartEmoji;
+    const container = document.getElementById('relationships-container');
+    const item = container.querySelector(`[data-index="${index}"]`);
+    if (!item) return;
+    
+    // Get all checked relationship types
+    const checkboxes = item.querySelectorAll(`input[name="relationship-type-${index}"]:checked`);
+    const selectedTypes = Array.from(checkboxes).map(cb => cb.value);
+    
+    // Update heart display with ALL emojis
+    const heartDisplay = document.getElementById(`relationship-heart-display-${index}`);
+    if (heartDisplay) {
+      const heartEmojis = getAllHeartEmojisFromTypes(selectedTypes);
+      heartDisplay.textContent = heartEmojis;
     }
   };
   
@@ -3062,15 +3106,27 @@ if (typeof window !== 'undefined') {
       item.querySelectorAll('input, textarea, select').forEach(input => {
         const oldName = input.name;
         input.name = input.name.replace(/-\d+$/, `-${index}`);
-        // Update IDs for select and heart input
+        // Update IDs for inputs and heart display
         if (input.id) {
           input.id = input.id.replace(/-\d+$/, `-${index}`);
         }
-        // Update onchange handler for relationship type select
-        if (input.classList.contains('relationship-type-select')) {
+        // Update onchange handler for relationship type checkboxes
+        if (input.classList.contains('relationship-type-checkbox')) {
           input.setAttribute('onchange', `updateRelationshipHeart(${index})`);
+          // Update checkbox ID and label for attribute
+          const newCheckboxId = `relationship-type-${index}-${input.value.replace(/\s+/g, '-')}`;
+          input.id = newCheckboxId;
+          const label = item.querySelector(`label[for*="${input.value.replace(/\s+/g, '-')}"]`);
+          if (label) {
+            label.setAttribute('for', newCheckboxId);
+          }
         }
       });
+      // Update heart display ID
+      const heartDisplay = item.querySelector('.relationship-heart-display');
+      if (heartDisplay) {
+        heartDisplay.id = `relationship-heart-display-${index}`;
+      }
       item.querySelector('button').setAttribute('onclick', `removeRelationship(${index})`);
     });
   }

@@ -108,8 +108,31 @@ export function renderOCCard(oc, onClick) {
   // Load clan names if exist
   const clanNameEl = card.querySelector('.oc-card-clan-name');
   if (clanNameEl) {
-    const clanIds = JSON.parse(clanNameEl.getAttribute('data-clan-ids') || '[]');
-    const clanNames = JSON.parse(clanNameEl.getAttribute('data-clan-names') || '[]');
+    const clanIdsAttr = clanNameEl.getAttribute('data-clan-ids');
+    const clanNamesAttr = clanNameEl.getAttribute('data-clan-names');
+    
+    let clanIds = [];
+    let clanNames = [];
+    
+    try {
+      if (clanIdsAttr && clanIdsAttr.trim()) {
+        clanIds = JSON.parse(clanIdsAttr);
+        if (!Array.isArray(clanIds)) clanIds = [];
+      }
+    } catch (e) {
+      console.warn('Failed to parse data-clan-ids:', e);
+      clanIds = [];
+    }
+    
+    try {
+      if (clanNamesAttr && clanNamesAttr.trim()) {
+        clanNames = JSON.parse(clanNamesAttr);
+        if (!Array.isArray(clanNames)) clanNames = [];
+      }
+    } catch (e) {
+      console.warn('Failed to parse data-clan-names:', e);
+      clanNames = [];
+    }
     
     if (clanIds.length > 0) {
       import('../data/storage.js').then(module => {

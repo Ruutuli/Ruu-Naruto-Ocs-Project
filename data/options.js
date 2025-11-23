@@ -1032,12 +1032,51 @@ export const villages = [
     { value: 'Neutral', label: '🤍 Neutral', heartEmoji: '🤍' },
     { value: 'Family', label: '💛 Family', heartEmoji: '💛' },
     { value: 'Rival', label: '💙 Rival', heartEmoji: '💙' },
-    { value: 'Admire', label: '💜 Admire', heartEmoji: '💜' }
+    { value: 'Admire', label: '💜 Admire', heartEmoji: '💜' },
+    { value: 'Complicated', label: '🤎 Complicated', heartEmoji: '🤎' }
   ];
   
   // Helper function to get heart emoji by relationship type
   export function getRelationshipHeartEmoji(relationshipType) {
     const found = relationshipTypes.find(r => r.value === relationshipType);
     return found ? found.heartEmoji : '🤍';
+  }
+  
+  // Helper function to get heart emoji from multiple relationship types (priority-based)
+  // Priority: Lovers > Crush > Hate > Dislike > Complicated > Admire > Rival > Family > Close Friend > Friend > Acquaintance > Neutral
+  export function getHeartEmojiFromTypes(types) {
+    if (!types || types.length === 0) return '🤍';
+    
+    // Handle both string and array formats
+    const typeArray = Array.isArray(types) ? types : (types ? [types] : []);
+    if (typeArray.length === 0) return '🤍';
+    
+    // Priority order (highest to lowest)
+    const priority = ['Lovers', 'Crush', 'Hate', 'Dislike', 'Complicated', 'Admire', 'Rival', 'Family', 'Close Friend', 'Friend', 'Acquaintance', 'Neutral'];
+    
+    // Find the highest priority type
+    for (const priorityType of priority) {
+      if (typeArray.includes(priorityType)) {
+        return getRelationshipHeartEmoji(priorityType);
+      }
+    }
+    
+    // If none match priority, use first type
+    return getRelationshipHeartEmoji(typeArray[0]);
+  }
+  
+  // Helper function to get ALL heart emojis from multiple relationship types
+  export function getAllHeartEmojisFromTypes(types) {
+    if (!types || types.length === 0) return '🤍';
+    
+    // Handle both string and array formats
+    const typeArray = Array.isArray(types) ? types : (types ? [types] : []);
+    if (typeArray.length === 0) return '🤍';
+    
+    // Get all emojis for selected types
+    const emojis = typeArray.map(type => getRelationshipHeartEmoji(type)).filter(emoji => emoji);
+    
+    // Return all emojis joined together
+    return emojis.length > 0 ? emojis.join(' ') : '🤍';
   }
   

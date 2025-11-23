@@ -332,6 +332,18 @@ export const defaultClan = {
     weaknesses: [],
     notableJutsu: []
   },
+  hiden: {
+    name: '',
+    type: '',
+    classification: '',
+    chakraNature: '',
+    description: '',
+    activation: '',
+    mechanics: [],
+    strengths: [],
+    weaknesses: [],
+    notableJutsu: []
+  },
   clanStructure: {
     clanHead: '',
     councilElders: '',

@@ -1,6 +1,6 @@
 // OC Detail Component - Full Data Book style character sheet renderer
 
-import { natureReleases, getNatureRelease, getClanSymbol, getTechniqueTypeLabel, allTechniqueTypes } from '../data/options.js';
+import { natureReleases, getNatureRelease, getClanSymbol, getTechniqueTypeLabel, allTechniqueTypes, getHeartEmojiFromTypes, getAllHeartEmojisFromTypes } from '../data/options.js';
 import storage from '../data/storage.js';
 import { renderMarkdown } from '../utils/markdown.js';
 import { convertImageUrl } from '../utils/imageUtils.js';
@@ -1173,6 +1173,33 @@ function renderCharacterLinks(names, isArray = false) {
   return links.join(', ');
 }
 
+// Helper function to render clan names as links (for custom clans with clanId)
+function renderClanLinks(clanIds, clanNames) {
+  const links = [];
+  
+  // Process custom clans (those with clanId)
+  clanIds.forEach(clanId => {
+    if (!clanId) return;
+    const clan = storage.getClan(clanId);
+    if (clan) {
+      // Custom clan - make it clickable
+      links.push(`<a href="#clans/${clanId}" onclick="window.showClanDetail('${clanId}'); return false;" style="color: var(--color-accent-2); text-decoration: underline; cursor: pointer;">${clan.name}</a>`);
+    } else {
+      // Clan ID exists but clan not found - show as plain text
+      links.push(clanId);
+    }
+  });
+  
+  // Process predefined clans (those with only clanName, no clanId)
+  clanNames.forEach(clanName => {
+    if (!clanName) return;
+    // Predefined clan - show as plain text (not clickable)
+    links.push(clanName);
+  });
+  
+  return links.length > 0 ? links.join(', ') : '';
+}
+
 function renderIdentifyingInfo(oc) {
   const info = oc.identifyingInfo || {};
   
@@ -1624,16 +1651,23 @@ function renderRelationships(oc) {
   return `
     <div class="relationships-grid">
       ${relationships.map(rel => {
-        const relationshipType = (rel.relationshipType || rel.type || 'friend').toLowerCase();
-        // Try exact match, then normalized (no spaces), then fallback
-        const normalizedType = relationshipType.replace(/\s+/g, '');
-        const heartEmoji = relationshipIcons[relationshipType] || relationshipIcons[normalizedType] || relationshipIcons[rel.heartChart] || (rel.heartChart || '🤍');
-        const heartChart = rel.heartChart || heartEmoji;
+        // Handle both array and string formats for relationshipType
+        const relationshipTypes = Array.isArray(rel.relationshipType) 
+          ? rel.relationshipType 
+          : (rel.relationshipType ? [rel.relationshipType] : (rel.type ? [rel.type] : ['Unknown Relationship']));
+        
+        // Get ALL heart emojis - use stored heartChart or calculate from types
+        const heartChart = rel.heartChart || getAllHeartEmojisFromTypes(relationshipTypes);
+        
+        // Format type label - show multiple types joined with commas
+        const typeLabel = relationshipTypes.length > 0 
+          ? relationshipTypes.join(', ') 
+          : 'Unknown Relationship';
+        
         const name = rel.name || rel.character || 'Unknown';
         const description = rel.description || '';
         const image = rel.image || rel.icon || '';
         const fullName = rel.fullName || name;
-        const typeLabel = rel.relationshipType || rel.type || 'Unknown Relationship';
         
         const convertedImageUrl = image ? convertImageUrl(image) : null;
         return `
@@ -1720,17 +1754,13 @@ function renderAffiliations(oc) {
   const ranks = Array.isArray(oc.rank) ? oc.rank : (oc.rank ? [oc.rank] : []);
   const classifications = Array.isArray(oc.classification) ? oc.classification : (oc.classification ? [oc.classification] : []);
   
-  // Resolve clan names from clanIds
-  const resolvedClanNames = clanIds.map(clanId => {
-    const clan = storage.getClan(clanId);
-    return clan ? clan.name : clanId;
-  });
-  const allClanNames = [...resolvedClanNames, ...clanNames].filter(Boolean);
+  // Render clan links (custom clans with clanId will be clickable)
+  const clanLinks = renderClanLinks(clanIds, clanNames);
   
   return `
     <div class="affiliations-info">
       <div class="affiliation-item"><strong>Village(s):</strong> ${villages.length > 0 ? villages.join(', ') : 'Not specified'}</div>
-      <div class="affiliation-item"><strong>Clan(s):</strong> ${allClanNames.length > 0 ? allClanNames.join(', ') : 'Not specified'}</div>
+      <div class="affiliation-item"><strong>Clan(s):</strong> ${clanLinks || 'Not specified'}</div>
       <div class="affiliation-item"><strong>Rank(s):</strong> ${ranks.length > 0 ? ranks.join(', ') : 'Not specified'}</div>
       <div class="affiliation-item"><strong>Classification(s):</strong> ${classifications.length > 0 ? classifications.join(', ') : 'Not specified'}</div>
       <div class="affiliation-item"><strong>Ninja Registration Number:</strong> ${oc.ninjaRegistrationNumber || 'Not specified'}</div>
