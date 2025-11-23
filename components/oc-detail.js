@@ -282,6 +282,86 @@ export function renderOCDetail(oc) {
           </ul>
         </div>
         ` : ''}
+        ${oc.voiceLines && oc.voiceLines.length > 0 ? `
+        <div style="margin-top: 1rem;">
+          <h4>Voice Lines <i class="japanese-header">ボイスライン</i></h4>
+          <div style="display: flex; flex-direction: column; gap: 1rem;">
+            ${oc.voiceLines.map((voiceLine, index) => {
+              const quote = typeof voiceLine === 'string' ? voiceLine : (voiceLine.quote || voiceLine.text || '');
+              const mediaUrl = typeof voiceLine === 'object' ? (voiceLine.mediaUrl || voiceLine.videoUrl || voiceLine.audioUrl || '') : '';
+              const mediaType = typeof voiceLine === 'object' ? (voiceLine.mediaType || '') : '';
+              
+              // Detect media type from URL if not specified
+              let detectedType = mediaType;
+              if (!detectedType && mediaUrl) {
+                if (mediaUrl.includes('youtube.com') || mediaUrl.includes('youtu.be')) {
+                  detectedType = 'video';
+                } else if (mediaUrl.match(/\.(mp4|webm|ogg|mov)$/i)) {
+                  detectedType = 'video';
+                } else if (mediaUrl.match(/\.(mp3|wav|ogg|m4a|aac)$/i)) {
+                  detectedType = 'audio';
+                }
+              }
+              
+              // Convert YouTube URL to embed format
+              let embedUrl = mediaUrl;
+              if (mediaUrl && (mediaUrl.includes('youtube.com/watch') || mediaUrl.includes('youtu.be'))) {
+                const youtubeId = mediaUrl.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\n?#]+)/)?.[1];
+                if (youtubeId) {
+                  embedUrl = `https://www.youtube.com/embed/${youtubeId}`;
+                  detectedType = 'video';
+                }
+              }
+              
+              let mediaHtml = '';
+              if (embedUrl) {
+                if (detectedType === 'video' || (!detectedType && embedUrl.includes('youtube'))) {
+                  mediaHtml = `
+                    <div style="margin-top: 0.5rem;">
+                      <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; border-radius: 4px; background: var(--color-bg-2);">
+                        <iframe src="${embedUrl}" 
+                                style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;" 
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                allowfullscreen></iframe>
+                      </div>
+                    </div>
+                  `;
+                } else if (detectedType === 'audio' || (!detectedType && embedUrl.match(/\.(mp3|wav|ogg|m4a|aac)$/i))) {
+                  mediaHtml = `
+                    <div style="margin-top: 0.5rem;">
+                      <audio controls style="width: 100%; max-width: 500px;">
+                        <source src="${embedUrl}" type="audio/mpeg">
+                        <source src="${embedUrl}" type="audio/wav">
+                        <source src="${embedUrl}" type="audio/ogg">
+                        Your browser does not support the audio element.
+                      </audio>
+                    </div>
+                  `;
+                } else {
+                  // Default to video player for unknown types
+                  mediaHtml = `
+                    <div style="margin-top: 0.5rem;">
+                      <video controls style="width: 100%; max-width: 500px; border-radius: 4px;">
+                        <source src="${embedUrl}" type="video/mp4">
+                        <source src="${embedUrl}" type="video/webm">
+                        <source src="${embedUrl}" type="video/ogg">
+                        Your browser does not support the video element.
+                      </video>
+                    </div>
+                  `;
+                }
+              }
+              
+              return `
+                <div style="padding: 1rem; background-color: rgba(227, 94, 63, 0.05); border-radius: 4px; border-left: 3px solid var(--color-accent-2);">
+                  ${quote ? `<p style="margin-bottom: ${mediaUrl ? '0.5rem' : '0'}; font-style: italic; color: var(--color-text-dark-2);">"${quote}"</p>` : ''}
+                  ${mediaHtml}
+                </div>
+              `;
+            }).join('')}
+          </div>
+        </div>
+        ` : ''}
         ${oc.trivia ? `
         <div style="margin-top: 1rem;">
           <h4>Trivia <i class="japanese-header">トリビア</i></h4>

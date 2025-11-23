@@ -14,9 +14,31 @@ export function renderOCCard(oc, onClick) {
   const rankClass = ranks.length > 0 ? `rank-${ranks[0].toLowerCase().replace('-', '-')}` : '';
   const villageDisplay = villages.length > 0 ? villages.join(', ') : 'Unknown';
   
-  // Get profile image, or fallback to first available era image
+  // Get age display: prioritize Part I age from ageByEra, then check for range in age field
+  let ageDisplay = 'N/A';
+  if (oc.ageByEra && oc.ageByEra['Part I'] && oc.ageByEra['Part I'].trim()) {
+    ageDisplay = oc.ageByEra['Part I'].trim();
+  } else if (oc.age) {
+    const ageStr = oc.age.toString().trim();
+    // Check if it's a range (e.g., "12-13", "12-15")
+    if (ageStr.includes('-')) {
+      ageDisplay = ageStr;
+    } else {
+      // Check if it contains era markers and extract first value
+      const eraMatch = ageStr.match(/^(\d+(?:-\d+)?)/);
+      if (eraMatch) {
+        ageDisplay = eraMatch[1];
+      } else {
+        ageDisplay = ageStr;
+      }
+    }
+  }
+  
+  // Get display image with priority: displayImage > profileImage > imagesByEra
   let profileImageUrl = null;
-  if (oc.profileImage && oc.profileImage.trim()) {
+  if (oc.displayImage && oc.displayImage.trim()) {
+    profileImageUrl = convertImageUrl(oc.displayImage);
+  } else if (oc.profileImage && oc.profileImage.trim()) {
     profileImageUrl = convertImageUrl(oc.profileImage);
   } else if (oc.imagesByEra && typeof oc.imagesByEra === 'object') {
     // Find first available era image
@@ -47,7 +69,7 @@ export function renderOCCard(oc, onClick) {
       <div class="oc-card-info-row">
         <div class="oc-card-info-item">
           <i class="fas fa-birthday-cake"></i>
-          <span><strong>Age:</strong> ${oc.age || 'N/A'}</span>
+          <span><strong>Age:</strong> ${ageDisplay}</span>
         </div>
         ${villageImage ? `
         <div class="oc-card-village">

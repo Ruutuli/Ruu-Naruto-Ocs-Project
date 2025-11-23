@@ -284,6 +284,7 @@ export const defaultOC = {
     english: ''
   },
   quotes: [],
+  voiceLines: [],
   trivia: '',
   gallery: []
 };

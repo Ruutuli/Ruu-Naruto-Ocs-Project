@@ -1172,40 +1172,6 @@ export function renderOCForm(oc = null, onSave) {
         <!-- Appearance & Gear -->
         <h3 class="mb-3 mt-4">Appearance & Gear <i class="japanese-header">外見と装備</i></h3>
         <div class="form-group">
-          <label class="form-label">Appearance Image / Icon</label>
-          <div style="display: flex; gap: 0.5rem; margin-bottom: 0.5rem; flex-wrap: wrap;">
-            <button type="button" class="btn-naruto btn-naruto-secondary" onclick="showImageUpload()" style="flex: 1; min-width: 120px;">
-              <i class="fas fa-upload"></i> Upload Image
-            </button>
-            <button type="button" class="btn-naruto btn-naruto-secondary" onclick="showIconPicker()" style="flex: 1; min-width: 120px;">
-              <i class="fas fa-icons"></i> Pick Icon
-            </button>
-          </div>
-          <input type="file" id="appearanceImageUpload" accept="image/*" style="display: none;" onchange="handleImageUpload(event)">
-          <div id="icon-picker-container" style="display: none; margin-bottom: 0.5rem;">
-            <div style="margin-bottom: 0.5rem;">
-              <input type="text" class="form-control" id="iconSearch" placeholder="Search Font Awesome icons (e.g., sword, ninja, fire, lightning, dragon...)" onkeyup="filterIcons(this.value)" style="font-size: 0.85rem;" autocomplete="off">
-              <small style="color: var(--color-text-dark-2); font-size: 0.75rem; display: block; margin-top: 0.25rem;">
-                Search by icon name or keywords. Try: weapon, ninja, element, animal, symbol, etc.
-              </small>
-            </div>
-            <div id="icon-picker-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(50px, 1fr)); gap: 0.5rem; max-height: 300px; overflow-y: auto; padding: 0.5rem; background-color: var(--color-bg-1); border: 1px solid var(--color-border-2); border-radius: 4px;">
-              ${(() => {
-                // This will be populated dynamically when icon picker is shown
-                return '<div style="grid-column: 1 / -1; text-align: center; padding: 1rem; color: var(--color-text-dark-2);">Loading icons...</div>';
-              })()}
-            </div>
-          </div>
-          <input type="text" class="form-control" id="appearanceImage" value="${formOC.appearance?.image || ''}" placeholder="Image URL or Font Awesome icon class (e.g., fas fa-user-ninja)">
-          <div id="appearanceImagePreview" style="margin-top: 0.5rem; text-align: center; min-height: 60px;">
-            ${formOC.appearance?.image ? (
-              formOC.appearance.image.startsWith('fa-') || formOC.appearance.image.startsWith('fas ') || formOC.appearance.image.startsWith('far ') || formOC.appearance.image.startsWith('fab ') ?
-                `<div style="font-size: 3rem; color: var(--color-accent-2);"><i class="${formOC.appearance.image}"></i></div>` :
-                `<img src="${convertImageUrl(formOC.appearance.image)}" alt="Preview" style="max-width: 200px; max-height: 200px; border: 1px solid var(--color-border-2); border-radius: 4px;">`
-            ) : ''}
-          </div>
-        </div>
-        <div class="form-group">
           <label class="form-label">Color Palette <small style="font-weight: normal; color: var(--color-text-dark-2);">(one color per line, hex codes or color names)</small></label>
           <textarea class="form-control" id="appearanceColors" rows="3" placeholder="#FF5733&#10;#33FF57&#10;blue" oninput="updateColorPreview()">${(formOC.appearance?.colors || []).join('\n')}</textarea>
           <div id="colorPreview" style="margin-top: 0.5rem; min-height: 40px; display: flex; gap: 0.25rem; flex-wrap: wrap; padding: 0.5rem; background-color: var(--color-bg-1); border: 1px solid var(--color-border-2); border-radius: 4px;">
@@ -1349,6 +1315,22 @@ export function renderOCForm(oc = null, onSave) {
         <div class="form-group">
           <label class="form-label">Quotes (one per line)</label>
           <textarea class="form-control" id="quotes" rows="4">${(formOC.quotes || []).join('\n')}</textarea>
+        </div>
+        
+        <div id="voice-lines-editor" class="mb-4">
+          <label class="form-label mb-2">Voice Lines <i class="japanese-header">ボイスライン</i></label>
+          <div class="card-naruto" style="padding: 1rem; margin-bottom: 1rem;">
+            <div id="voice-lines-container">
+              ${(() => {
+                const voiceLines = formOC.voiceLines || [];
+                if (voiceLines.length === 0) {
+                  return '<p class="text-muted">No voice lines added yet.</p>';
+                }
+                return voiceLines.map((item, index) => renderVoiceLineItem(item, index)).join('');
+              })()}
+            </div>
+            <button type="button" class="btn-naruto btn-naruto-secondary mt-2" onclick="addVoiceLineItem()">+ Add Voice Line</button>
+          </div>
         </div>
         
         <div class="form-group">
@@ -1711,7 +1693,6 @@ export function renderOCForm(oc = null, onSave) {
         adulthood: document.getElementById('recordHistoryAdulthood').value
       },
       appearance: {
-        image: document.getElementById('appearanceImage').value,
         colors: (() => {
           const colorsText = document.getElementById('appearanceColors').value;
           // Helper function to validate and normalize color
@@ -1852,6 +1833,26 @@ export function renderOCForm(oc = null, onSave) {
         nonCanon: document.getElementById('otherMediaNonCanon').value.split('\n').filter(m => m.trim())
       },
       quotes: document.getElementById('quotes').value.split('\n').filter(q => q.trim()),
+      voiceLines: (() => {
+        const container = document.getElementById('voice-lines-container');
+        if (!container) return [];
+        const voiceLines = [];
+        const items = container.querySelectorAll('.voice-line-editor-item');
+        items.forEach((item) => {
+          const index = item.dataset.index;
+          const quote = item.querySelector(`[name="voice-line-quote-${index}"]`)?.value || '';
+          const mediaUrl = item.querySelector(`[name="voice-line-media-${index}"]`)?.value || '';
+          const mediaType = item.querySelector(`[name="voice-line-type-${index}"]`)?.value || '';
+          if (quote.trim() || mediaUrl.trim()) {
+            voiceLines.push({
+              quote: quote.trim(),
+              mediaUrl: mediaUrl.trim(),
+              mediaType: mediaType || undefined
+            });
+          }
+        });
+        return voiceLines;
+      })(),
       trivia: document.getElementById('trivia').value,
       gallery: (() => {
         const container = document.getElementById('gallery-container');
@@ -1918,92 +1919,11 @@ export function renderOCForm(oc = null, onSave) {
   }, 0);
   
   // ------------------- Window Functions -------------------
-  // Appearance image upload and icon picker functions
-  window.showImageUpload = function() {
-    document.getElementById('appearanceImageUpload').click();
-  };
-  
-  window.handleImageUpload = function(event) {
-    const file = event.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        const imageInput = document.getElementById('appearanceImage');
-        imageInput.value = e.target.result;
-        updateAppearancePreview(e.target.result);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-  
-  window.showIconPicker = function() {
-    const container = document.getElementById('icon-picker-container');
-    const grid = document.getElementById('icon-picker-grid');
-    const isVisible = container.style.display !== 'none';
-    
-    if (!isVisible) {
-      // Load icons when showing picker
-      if (!grid.dataset.loaded) {
-        const allIcons = window.getAllFontAwesomeIcons();
-        grid.innerHTML = allIcons.map(icon => `
-          <button type="button" class="icon-picker-btn" onclick="selectIcon('${icon.class}')" 
-                  data-keywords="${icon.keywords || ''}"
-                  style="padding: 0.5rem; border: 1px solid var(--color-border-2); background: var(--color-bg-transparent); cursor: pointer; border-radius: 4px; transition: all 0.2s;" 
-                  onmouseover="this.style.background='var(--color-accent-2)'; this.style.color='white';" 
-                  onmouseout="this.style.background='var(--color-bg-transparent)'; this.style.color='';"
-                  title="${icon.class.replace('fas ', '')}">
-            <i class="${icon.class}" style="font-size: 1.5rem;"></i>
-          </button>
-        `).join('');
-        grid.dataset.loaded = 'true';
-      }
-      container.style.display = 'block';
-    } else {
-      container.style.display = 'none';
-    }
-  };
-  
-  window.selectIcon = function(iconClass) {
-    const imageInput = document.getElementById('appearanceImage');
-    imageInput.value = iconClass;
-    updateAppearancePreview(iconClass);
-    document.getElementById('icon-picker-container').style.display = 'none';
-  };
-  
-  window.filterIcons = function(searchTerm) {
-    const buttons = document.querySelectorAll('.icon-picker-btn');
-    const term = searchTerm.toLowerCase().trim();
-    
-    if (term === '') {
-      buttons.forEach(btn => btn.style.display = 'block');
-      return;
-    }
-    
-    // Search through icon classes and keywords
-    buttons.forEach(btn => {
-      const icon = btn.querySelector('i');
-      const iconClass = icon ? icon.className : '';
-      const keywords = btn.dataset.keywords || '';
-      
-      // Extract icon name from class (e.g., "fas fa-user-ninja" -> "user-ninja")
-      const iconName = iconClass.replace(/^(fas|far|fab|fal|fad)\s+fa-/, '').replace(/\s+/g, '-');
-      
-      // Search in icon class, icon name, and keywords
-      const searchableText = `${iconClass} ${iconName} ${keywords}`.toLowerCase();
-      
-      if (searchableText.includes(term)) {
-        btn.style.display = 'block';
-      } else {
-        btn.style.display = 'none';
-      }
-    });
-  };
-  
   // Get comprehensive list of Font Awesome icons with keywords
-  // Make it available globally
+  // Make it available globally (used by gear icon picker)
   if (!window.getAllFontAwesomeIcons) {
     window.getAllFontAwesomeIcons = function() {
-    return [
+      return [
       // Weapons & Combat
       { class: 'fas fa-sword', keywords: 'weapon blade katana combat' },
       { class: 'fas fa-knife', keywords: 'weapon blade combat' },
@@ -2167,25 +2087,6 @@ export function renderOCForm(oc = null, onSave) {
     };
   }
   
-  window.updateDemeanorDisplay = function(trait, value) {
-    const display = document.getElementById(`demeanor-${trait}-value`);
-    if (display) {
-      display.textContent = value;
-    }
-    
-    // Update the visual slider
-    const percentage = ((parseFloat(value) - 1) / 9) * 100;
-    const fillDiv = document.getElementById(`demeanor-${trait}-fill`);
-    const markerDiv = document.getElementById(`demeanor-${trait}-marker`);
-    
-    if (fillDiv) {
-      fillDiv.style.width = `${percentage}%`;
-    }
-    if (markerDiv) {
-      markerDiv.style.left = `${percentage}%`;
-    }
-  };
-  
   window.updateColorPreview = function() {
     const colorsText = document.getElementById('appearanceColors').value;
     const preview = document.getElementById('colorPreview');
@@ -2220,33 +2121,6 @@ export function renderOCForm(oc = null, onSave) {
       return `<div class="color-swatch" style="width: 40px; height: 40px; background-color: ${color}; border: 1px solid var(--color-border-2); border-radius: 4px; flex-shrink: 0;" title="${color}"></div>`;
     }).join('');
   };
-  
-  window.updateAppearancePreview = function(value) {
-    const preview = document.getElementById('appearanceImagePreview');
-    if (!value) {
-      preview.innerHTML = '';
-      return;
-    }
-    
-    if (value.startsWith('fa-') || value.startsWith('fas ') || value.startsWith('far ') || value.startsWith('fab ')) {
-      preview.innerHTML = `<div style="font-size: 3rem; color: var(--color-accent-2);"><i class="${value}"></i></div>`;
-    } else if (value.startsWith('data:') || value.startsWith('http')) {
-      const convertedUrl = convertImageUrl(value);
-      preview.innerHTML = `<img src="${convertedUrl}" alt="Preview" style="max-width: 200px; max-height: 200px; border: 1px solid var(--color-border-2); border-radius: 4px;">`;
-    } else {
-      preview.innerHTML = '';
-    }
-  };
-  
-  // Update preview when input changes
-  setTimeout(() => {
-    const imageInput = document.getElementById('appearanceImage');
-    if (imageInput) {
-      imageInput.addEventListener('input', function() {
-        updateAppearancePreview(this.value);
-      });
-    }
-  }, 0);
   
   // Make switchStatsEraTab function available globally
   window.switchStatsEraTab = function(era) {
@@ -2559,6 +2433,43 @@ function renderGalleryItem(item = {}, index) {
   `;
 }
 
+function renderVoiceLineItem(item = {}, index) {
+  const quote = typeof item === 'string' ? item : (item.quote || item.text || '');
+  const mediaUrl = typeof item === 'object' ? (item.mediaUrl || item.videoUrl || item.audioUrl || '') : '';
+  const mediaType = typeof item === 'object' ? (item.mediaType || '') : '';
+  return `
+    <div class="voice-line-editor-item mb-3" data-index="${index}" style="border: 1px solid var(--color-border-2); padding: 1rem; border-radius: 4px;">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <strong>Voice Line ${index + 1}</strong>
+        <button type="button" class="btn-naruto btn-naruto-secondary" onclick="removeVoiceLineItem(${index})" style="padding: 0.25rem 0.5rem; font-size: 0.85rem;">Remove</button>
+      </div>
+      <div class="form-group">
+        <label>Quote/Text</label>
+        <textarea class="form-control" name="voice-line-quote-${index}" rows="2" placeholder="Enter the voice line text...">${quote}</textarea>
+      </div>
+      <div class="row">
+        <div class="col-12 col-md-8">
+          <div class="form-group">
+            <label>Video/Audio URL</label>
+            <input type="text" class="form-control" name="voice-line-media-${index}" value="${mediaUrl}" placeholder="https://... (YouTube, direct video/audio link, etc.)">
+            <small class="form-text text-muted">Supports YouTube links, direct video/audio URLs, or file uploads</small>
+          </div>
+        </div>
+        <div class="col-12 col-md-4">
+          <div class="form-group">
+            <label>Media Type</label>
+            <select class="form-control" name="voice-line-type-${index}">
+              <option value="" ${!mediaType ? 'selected' : ''}>Auto-detect</option>
+              <option value="video" ${mediaType === 'video' ? 'selected' : ''}>Video</option>
+              <option value="audio" ${mediaType === 'audio' ? 'selected' : ''}>Audio</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
 function renderStoryArcEditor(arc = {}, index) {
   return `
     <div class="story-arc-editor-item mb-3" data-index="${index}" style="border: 1px solid var(--color-border-2); padding: 1rem; border-radius: 4px;">
@@ -2804,6 +2715,33 @@ if (typeof window !== 'undefined') {
     updateGalleryIndices();
   };
   
+  window.addVoiceLineItem = function() {
+    const container = document.getElementById('voice-lines-container');
+    const items = container.querySelectorAll('.voice-line-editor-item');
+    const index = items.length;
+    
+    // Remove "No voice lines" message if present
+    const noVoiceLinesMsg = container.querySelector('.text-muted');
+    if (noVoiceLinesMsg) {
+      noVoiceLinesMsg.remove();
+    }
+    
+    // Create a temporary div to parse the HTML
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = renderVoiceLineItem({}, index);
+    const newItem = tempDiv.firstElementChild;
+    
+    // Append the new item without destroying existing elements
+    container.appendChild(newItem);
+  };
+  
+  window.removeVoiceLineItem = function(index) {
+    const container = document.getElementById('voice-lines-container');
+    const item = container.querySelector(`[data-index="${index}"]`);
+    if (item) item.remove();
+    updateVoiceLineIndices();
+  };
+  
   window.addStoryArc = function() {
     const container = document.getElementById('story-arcs-container');
     if (!container) return;
@@ -2948,6 +2886,19 @@ if (typeof window !== 'undefined') {
       });
       item.querySelector('strong').textContent = `Gallery Image ${index + 1}`;
       item.querySelector('button').setAttribute('onclick', `removeGalleryItem(${index})`);
+    });
+  }
+  
+  function updateVoiceLineIndices() {
+    const container = document.getElementById('voice-lines-container');
+    if (!container) return;
+    container.querySelectorAll('.voice-line-editor-item').forEach((item, index) => {
+      item.setAttribute('data-index', index);
+      item.querySelectorAll('input, textarea, select').forEach(input => {
+        input.name = input.name.replace(/-\d+$/, `-${index}`);
+      });
+      item.querySelector('strong').textContent = `Voice Line ${index + 1}`;
+      item.querySelector('button').setAttribute('onclick', `removeVoiceLineItem(${index})`);
     });
   }
   
