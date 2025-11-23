@@ -159,6 +159,13 @@
         "rank": "C-Rank",
         "difficulty": 3,
         "chakraIntensity": 3
+      },
+      {
+        "style": "Earth Release: Inner Decapitation Jutsu (土遁・心中斬首の術)",
+        "description": "A stealth-oriented earth technique that pulls a target underground up to the neck, immobilizing them. Akene uses it as a close-range ambush tool or to disable threats for information extraction.\n",
+        "rank": "C-Rank",
+        "difficulty": 4,
+        "chakraIntensity": 3
       }
     ]
   },
@@ -251,8 +258,8 @@
     "stages": [],
     "specialAbilities": []
   },
-  "themeSong": "",
-  "themeSongLink": "",
+  "themeSong": "\"There’s No Ending\" by RUANN",
+  "themeSongLink": "https://youtu.be/LePcCSpmdE4?si=Cb8b_oKLUfOyJkP0",
   "voiceActors": {
     "japanese": "",
     "english": ""
