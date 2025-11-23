@@ -4,6 +4,7 @@ import { natureReleases, getNatureRelease, getClanSymbol, getTechniqueTypeLabel,
 import storage from '../data/storage.js';
 import { renderMarkdown } from '../utils/markdown.js';
 import { convertImageUrl } from '../utils/imageUtils.js';
+import { getMoralAlignmentDescription, getMBTIDescription, getEnneagramDescription } from '../utils/personalityDescriptions.js';
 
 export function renderOCDetail(oc) {
   const container = document.createElement('div');
@@ -1255,9 +1256,32 @@ function renderKnownBehavior(oc) {
       <div class="behavior-section">
         <h4>Personality Profile <i class="japanese-header">性格プロフィール</i></h4>
         <div class="personality-profile">
-          <p><strong>Moral Alignment:</strong> ${oc.moralAlignment || 'Not specified'}</p>
-          <p><strong>MBTI:</strong> ${oc.mbti || 'Not specified'}</p>
-          <p><strong>Enneagram:</strong> ${oc.enneagram || 'Not specified'}</p>
+          ${oc.moralAlignment ? `
+            <div style="margin-bottom: 1rem;">
+              <p style="margin-bottom: 0.25rem;"><strong>Moral Alignment:</strong> ${oc.moralAlignment}</p>
+              <p style="font-size: 0.85rem; color: var(--color-text-dark-2); margin-left: 1rem; font-style: italic;">
+                ${getMoralAlignmentDescription(oc.moralAlignment)}
+              </p>
+            </div>
+          ` : '<p><strong>Moral Alignment:</strong> Not specified</p>'}
+          
+          ${oc.mbti ? `
+            <div style="margin-bottom: 1rem;">
+              <p style="margin-bottom: 0.25rem;"><strong>MBTI:</strong> ${oc.mbti}</p>
+              <p style="font-size: 0.85rem; color: var(--color-text-dark-2); margin-left: 1rem; font-style: italic;">
+                ${getMBTIDescription(oc.mbti)}
+              </p>
+            </div>
+          ` : '<p><strong>MBTI:</strong> Not specified</p>'}
+          
+          ${oc.enneagram ? `
+            <div style="margin-bottom: 1rem;">
+              <p style="margin-bottom: 0.25rem;"><strong>Enneagram:</strong> ${oc.enneagram}</p>
+              <p style="font-size: 0.85rem; color: var(--color-text-dark-2); margin-left: 1rem; font-style: italic;">
+                ${getEnneagramDescription(oc.enneagram)}
+              </p>
+            </div>
+          ` : '<p><strong>Enneagram:</strong> Not specified</p>'}
         </div>
       </div>
     </div>
