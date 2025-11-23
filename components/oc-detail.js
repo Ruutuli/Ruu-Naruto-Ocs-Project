@@ -2,6 +2,7 @@
 
 import { natureReleases, getNatureRelease, getClanSymbol, getTechniqueTypeLabel, allTechniqueTypes } from '../data/options.js';
 import storage from '../data/storage.js';
+import { renderMarkdown } from '../utils/markdown.js';
 
 export function renderOCDetail(oc) {
   const container = document.createElement('div');
@@ -1700,14 +1701,18 @@ function renderRecordHistory(oc) {
   // Render all entries in the same format
   return entries.map((entry, index) => {
     const id = `history-${entry.title.toLowerCase().replace(/\s+/g, '-')}-${index}`;
+    // Check if content is already HTML (from story arcs) or plain text (from record history)
+    const isHtml = entry.content.trim().startsWith('<');
+    const renderedContent = isHtml ? entry.content : renderMarkdown(entry.content);
+    
     return `
       <div class="history-entry" style="margin-bottom: ${index < entries.length - 1 ? '1.5rem' : '0'};">
         <div class="history-entry-header" onclick="toggleCollapse('${id}')">
           ${entry.title}
           <i class="fas fa-chevron-down bounce-arrow"></i>
         </div>
-        <div id="${id}" class="history-entry-content">
-          ${entry.content}
+        <div id="${id}" class="history-entry-content markdown-content">
+          ${renderedContent}
         </div>
       </div>
     `;

@@ -1013,60 +1013,66 @@ export function renderOCForm(oc = null, onSave) {
         <!-- Demeanor / Personality Traits -->
         <h3 class="mb-3 mt-4">Demeanor <i class="japanese-header">態度</i></h3>
         <p style="color: var(--color-text-dark-2); font-size: 0.9rem; margin-bottom: 1rem;">
-          Rate each trait from 1 (lowest) to 5 (highest). These traits help define the character's personality and behavior.
+          Rate each trait from 1 to 10. 1 = very left trait, 10 = very right trait. These traits define where your character falls on each spectrum.
         </p>
-        <div class="demeanor-traits-container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem;">
+        <div class="demeanor-traits-container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1rem;">
           ${(() => {
             const demeanor = formOC.personality?.demeanor || {
-              charisma: 3,
-              extraversion: 3,
-              energy: 3,
-              empathy: 3,
-              impulsivity: 3,
-              neuroticism: 3,
-              intuition: 3,
-              observation: 3,
-              sensitivity: 3,
-              generosity: 3,
-              respectForAuthority: 3
+              friendlyReserved: 5.5,
+              politeBlunt: 5.5,
+              cleverFoolish: 5.5,
+              sensitiveTough: 5.5,
+              braveTimid: 5.5,
+              carefulReckless: 5.5,
+              sincereDeceptive: 5.5,
+              diligentLazy: 5.5,
+              calmIrritable: 5.5,
+              humorousSerious: 5.5
             };
             
-            const traits = [
-              { key: 'charisma', label: 'Charisma', description: 'Ability to attract, inspire, and influence others' },
-              { key: 'extraversion', label: 'Extraversion', description: 'Outgoing, social, and expressive nature' },
-              { key: 'energy', label: 'Energy', description: 'Vitality, enthusiasm, and activity level' },
-              { key: 'empathy', label: 'Empathy', description: 'Understanding and sharing feelings of others' },
-              { key: 'impulsivity', label: 'Impulsivity', description: 'Tendency to act on sudden urges without thinking' },
-              { key: 'neuroticism', label: 'Neuroticism', description: 'Emotional instability and anxiety proneness' },
-              { key: 'intuition', label: 'Intuition', description: 'Ability to understand things instinctively' },
-              { key: 'observation', label: 'Observation', description: 'Attention to detail and awareness of surroundings' },
-              { key: 'sensitivity', label: 'Sensitivity', description: 'Responsiveness to emotions and subtle cues' },
-              { key: 'generosity', label: 'Generosity', description: 'Willingness to give and share with others' },
-              { key: 'respectForAuthority', label: 'Respect for Authority', description: 'Deference to rules, hierarchy, and leadership' }
+            const traitPairs = [
+              { key: 'friendlyReserved', left: 'Friendly', right: 'Reserved' },
+              { key: 'politeBlunt', left: 'Polite', right: 'Blunt' },
+              { key: 'cleverFoolish', left: 'Clever', right: 'Foolish' },
+              { key: 'sensitiveTough', left: 'Sensitive', right: 'Tough' },
+              { key: 'braveTimid', left: 'Brave', right: 'Timid' },
+              { key: 'carefulReckless', left: 'Careful', right: 'Reckless' },
+              { key: 'sincereDeceptive', left: 'Sincere', right: 'Deceptive' },
+              { key: 'diligentLazy', left: 'Diligent', right: 'Lazy' },
+              { key: 'calmIrritable', left: 'Calm', right: 'Irritable' },
+              { key: 'humorousSerious', left: 'Humorous', right: 'Serious' }
             ];
             
-            return traits.map(trait => {
-              const value = demeanor[trait.key] || 3;
+            return traitPairs.map(trait => {
+              const value = demeanor[trait.key] !== undefined ? demeanor[trait.key] : 5.5;
+              const percentage = ((value - 1) / 9) * 100; // Convert 1-10 to 0-100%
+              
               return `
-                <div class="demeanor-trait-item" style="background-color: var(--color-bg-1); border: 1px solid var(--color-border-2); border-radius: 4px; padding: 1rem;">
-                  <label class="form-label" style="margin-bottom: 0.5rem; font-weight: 600;">
-                    ${trait.label}
-                    <small style="display: block; font-weight: normal; color: var(--color-text-dark-2); font-size: 0.75rem; margin-top: 0.25rem;">
-                      ${trait.description}
-                    </small>
-                  </label>
-                  <div style="display: flex; align-items: center; gap: 0.5rem;">
-                    <input type="range" 
-                           class="form-control" 
-                           id="demeanor-${trait.key}" 
-                           min="1" 
-                           max="5" 
-                           value="${value}"
-                           style="flex: 1;"
-                           oninput="updateDemeanorDisplay('${trait.key}', this.value)">
-                    <span id="demeanor-${trait.key}-value" style="min-width: 30px; text-align: center; font-weight: 600; color: var(--color-accent-2);">
-                      ${value}
-                    </span>
+                <div class="demeanor-trait-item" style="background-color: var(--color-bg-1); border: 1px solid var(--color-border-2); border-radius: 6px; padding: 1rem; display: flex; flex-direction: column; gap: 0.75rem;">
+                  <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; font-weight: 600; font-size: 0.95rem; color: var(--color-text-dark-2);">
+                    <span style="color: #228B22;">${trait.left}</span>
+                    <span style="color: var(--color-text-dark-2);">–</span>
+                    <span style="color: var(--color-accent-2);">${trait.right}</span>
+                  </div>
+                  <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                    <div class="demeanor-slider-track-form" style="position: relative; height: 20px; background: linear-gradient(to right, rgba(34, 139, 34, 0.15) 0%, rgba(200, 200, 200, 0.3) 50%, rgba(227, 94, 63, 0.15) 100%); border: 2px solid var(--color-border-2); border-radius: 10px;">
+                      <div id="demeanor-${trait.key}-fill" style="position: absolute; left: 0; top: 0; height: 100%; width: ${percentage}%; background: linear-gradient(to right, #228B22 0%, rgba(227, 94, 63, 0.6) 100%); border-radius: 8px 0 0 8px; opacity: 0.5; transition: width 0.2s ease;"></div>
+                      <div id="demeanor-${trait.key}-marker" style="position: absolute; top: 50%; left: ${percentage}%; transform: translate(-50%, -50%); width: 20px; height: 20px; background: linear-gradient(135deg, var(--color-accent-2) 0%, var(--color-accent-1) 100%); border: 3px solid var(--color-text-light); border-radius: 50%; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5); z-index: 2; transition: left 0.2s ease;"></div>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                      <input type="range" 
+                             class="form-control" 
+                             id="demeanor-${trait.key}" 
+                             min="1" 
+                             max="10" 
+                             step="0.5"
+                             value="${value}"
+                             style="flex: 1;"
+                             oninput="updateDemeanorDisplay('${trait.key}', parseFloat(this.value))">
+                      <span id="demeanor-${trait.key}-value" style="min-width: 35px; text-align: center; font-weight: 700; font-size: 1rem; color: var(--color-accent-2); background-color: rgba(255, 255, 255, 0.9); padding: 0.25rem 0.5rem; border-radius: 4px; border: 1px solid var(--color-border-2);">
+                        ${value}
+                      </span>
+                    </div>
                   </div>
                 </div>
               `;
@@ -1526,17 +1532,16 @@ export function renderOCForm(oc = null, onSave) {
         dislikes: document.getElementById('dislikes').value.split('\n').filter(d => d.trim()),
         demeanor: (() => {
           const traits = [
-            'charisma', 'extraversion', 'energy', 'empathy', 'impulsivity',
-            'neuroticism', 'intuition', 'observation', 'sensitivity',
-            'generosity', 'respectForAuthority'
+            'friendlyReserved', 'politeBlunt', 'cleverFoolish', 'sensitiveTough', 'braveTimid',
+            'carefulReckless', 'sincereDeceptive', 'diligentLazy', 'calmIrritable', 'humorousSerious'
           ];
           const demeanor = {};
           traits.forEach(trait => {
             const input = document.getElementById(`demeanor-${trait}`);
             if (input) {
-              demeanor[trait] = parseInt(input.value) || 3;
+              demeanor[trait] = parseFloat(input.value) || 5.5;
             } else {
-              demeanor[trait] = formOC.personality?.demeanor?.[trait] || 3;
+              demeanor[trait] = formOC.personality?.demeanor?.[trait] || 5.5;
             }
           });
           return demeanor;
@@ -2107,6 +2112,18 @@ export function renderOCForm(oc = null, onSave) {
     const display = document.getElementById(`demeanor-${trait}-value`);
     if (display) {
       display.textContent = value;
+    }
+    
+    // Update the visual slider
+    const percentage = ((parseFloat(value) - 1) / 9) * 100;
+    const fillDiv = document.getElementById(`demeanor-${trait}-fill`);
+    const markerDiv = document.getElementById(`demeanor-${trait}-marker`);
+    
+    if (fillDiv) {
+      fillDiv.style.width = `${percentage}%`;
+    }
+    if (markerDiv) {
+      markerDiv.style.left = `${percentage}%`;
     }
   };
   
