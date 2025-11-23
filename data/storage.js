@@ -340,25 +340,6 @@ class Storage {
 
     const path = `data/${type}/${id}.json`;
     const content = JSON.stringify(data, null, 2);
-    
-    // Always save to localStorage first as backup
-    this.saveToLocalStorage(type, id, data);
-    
-    // Also save to a temporary backup location
-    try {
-      const backupKey = `naruto_oc_backup_${type}_${id}_${Date.now()}`;
-      localStorage.setItem(backupKey, content);
-      // Keep only last 5 backups
-      const backupKeys = Object.keys(localStorage)
-        .filter(k => k.startsWith(`naruto_oc_backup_${type}_${id}_`))
-        .sort()
-        .reverse();
-      if (backupKeys.length > 5) {
-        backupKeys.slice(5).forEach(k => localStorage.removeItem(k));
-      }
-    } catch (e) {
-      console.warn('Could not create backup:', e);
-    }
 
     try {
       // Check if content actually changed by comparing with current cache
@@ -456,12 +437,6 @@ class Storage {
     } catch (e) {
       console.error(`Error saving ${type}/${id}.json:`, e);
       
-      // Data is already saved to localStorage as backup, so it's safe
-      this.showNotification(
-        `Saved to local backup. GitHub save failed: ${e.message}. Your data is safe locally.`,
-        'error'
-      );
-      
       let errorMessage = e.message;
       
       if (e.message.includes('Bad credentials') || e.message.includes('401')) {
@@ -471,10 +446,10 @@ class Storage {
       } else if (e.message.includes('404')) {
         errorMessage = 'Repository not found. Please check your GitHub config in data/github-config.js';
       } else if (e.message.includes('does not match') || e.message.includes('409')) {
-        errorMessage = 'File conflict detected. Data saved to local backup. Please refresh and try again.';
+        errorMessage = 'File conflict detected. Please refresh and try again.';
       }
       
-      // Still update cache since we saved to localStorage
+      // Update cache even on failure so UI reflects current state
       this._cache[type].set(id, data);
       
       return false;
