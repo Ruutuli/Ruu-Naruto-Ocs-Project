@@ -29,9 +29,15 @@
   },
   "bloodType": "O",
   "gender": "Female",
-  "natureType": "",
-  "village": [],
-  "rank": [],
+  "natureType": [
+    "Fire Release",
+    "Earth Release"
+  ],
+  "village": [
+    "Konoha",
+    "Oto"
+  ],
+  "rank": "Genin",
   "clanId": null,
   "clanName": null,
   "stats": {
@@ -103,15 +109,22 @@
     }
   },
   "identifyingInfo": {
-    "bodyType": ""
+    "bodyType": "Lean, athletic, hourglass figure; shorter torso with long legs"
   },
-  "eyeColor": "",
-  "hairColor": "",
-  "distinguishingFeatures": [],
-  "teamNumber": "",
-  "teammates": [],
-  "sensei": "",
-  "madeGenin": "",
+  "eyeColor": "Pink",
+  "hairColor": "Silver",
+  "distinguishingFeatures": [
+    "Short, round eyebrows",
+    "Pinkish-red undertone to skin",
+    "Long, fluffy hair (Clan tradition)"
+  ],
+  "teamNumber": "Team 4",
+  "teammates": [
+    "Amagawa Oniji",
+    "Toraneko Akisu"
+  ],
+  "sensei": "Suishou Teruo",
+  "madeGenin": "11",
   "madeChunin": "",
   "battleStrategy": {
     "inTeam": "",
@@ -188,22 +201,32 @@
   "sexualOrientation": "Demisexual",
   "romanticOrientation": "Demiromantic",
   "family": {
-    "father": "",
-    "mother": "",
-    "siblings": [],
-    "otherRelatives": []
+    "father": "Natsuno Chigiri",
+    "mother": "Ayuna Chigiri ",
+    "siblings": [
+      "Kae Chigiri (Older Brother)",
+      "Nerin Chigiri (Middle Brother)"
+    ],
+    "otherRelatives": [
+      "Tsubomi Chigiri (Previous Madousho)",
+      "Maizou Chigiri",
+      "Rei Chigiri (Ancestral Madousho)",
+      "Taro Chigiri (Ancestor)",
+      "Eikene Chigiri (Ancestor)",
+      "Yasha Ōtsutsuki (Ancestral Relative by Marriage)"
+    ]
   },
-  "ninjaRegistrationNumber": "",
-  "academyGraduationAge": "",
+  "ninjaRegistrationNumber": "012726",
+  "academyGraduationAge": "11",
   "classification": [],
   "kekkeiGenkai": "",
   "chakraPhysicalProwess": {
-    "chakraReserves": "",
-    "chakraControl": "",
-    "strengthFeats": "",
-    "speedFeats": "",
-    "taijutsuSkill": "",
-    "trainingInfluences": ""
+    "chakraReserves": "Moderate; typical for a skilled Genin with steady stamina but not large reserves\n",
+    "chakraControl": "High chakra control; excels in precision-based jutsu and divination-style techniques\n",
+    "strengthFeats": "Slightly below average strength; relies on technique rather than raw force\n",
+    "speedFeats": "Fast reactions and agile movement; optimized for dodging and evasion, not burst speed\n",
+    "taijutsuSkill": "Moderate taijutsu; defensive and evasive style with efficient, minimal movements\n",
+    "trainingInfluences": "Chigiri Clan intel training\nFire Branch elemental conditioning\nKonoha Academy fundamentals\nEarth Release discipline from family lineage\nOrochimaru’s research-based training and forbidden knowledge exposure\n"
   },
   "intelligence": {
     "academicPerformance": "",
