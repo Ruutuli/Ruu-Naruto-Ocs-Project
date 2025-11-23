@@ -32,7 +32,6 @@ interface Character {
         age?: number;
         bloodType?: string;
         gender?: string;
-        chakraType?: string;
         madeGenin?: string;
         madeChunin?: string;
         bodyType?: string;
@@ -640,9 +639,6 @@ class UIRenderer {
         }
         if (info.gender) {
             rows.push({ label: info.gender, small: 'gender' });
-        }
-        if (info.chakraType) {
-            rows.push({ label: info.chakraType, small: 'chakra type' });
         }
         if (info.madeGenin || info.madeChunin) {
             rows.push({ 

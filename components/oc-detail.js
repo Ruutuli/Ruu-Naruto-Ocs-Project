@@ -1,5 +1,7 @@
 // OC Detail Component - Full Data Book style character sheet renderer
 
+import { natureReleases, getNatureRelease } from '../data/nature-releases.js';
+
 export function renderOCDetail(oc) {
   const container = document.createElement('div');
   container.className = 'detail-scroll';
@@ -570,7 +572,7 @@ function renderIdentifyingInfo(oc) {
         ${renderInfoRow('Blood Type', oc.bloodType || 'Unknown')}
         ${renderInfoRow('Gender', oc.gender || 'Unknown')}
         ${orientation ? renderInfoRow('Orientation', orientation) : ''}
-        ${renderInfoRow('Chakra Type', oc.chakraType || 'Unknown')}
+        ${oc.natureType ? renderNatureTypeRow(oc.natureType) : ''}
         ${oc.kekkeiGenkai ? renderInfoRow('Kekkei Genkai', oc.kekkeiGenkai) : ''}
         ${oc.ninjaRegistrationNumber ? renderInfoRow('Ninja Registration Number', oc.ninjaRegistrationNumber) : ''}
         ${oc.academyGraduationAge ? renderInfoRow('Academy Graduation Age', oc.academyGraduationAge) : ''}
@@ -1039,6 +1041,46 @@ function renderGearItem(gear) {
           ${gear.info.map(info => `<li>${info}</li>`).join('')}
         </ul>
       ` : ''}
+    </div>
+  `;
+}
+
+function getNatureTypeIcon(natureType) {
+  const release = getNatureRelease(natureType);
+  return release ? release.iconUrl : '';
+}
+
+function renderNatureTypeRow(natureType) {
+  const release = getNatureRelease(natureType);
+  if (!release) {
+    return `
+      <div class="info-row">
+        ${renderInfoContent(natureType)}
+        ${renderInfoLabel('nature type')}
+      </div>
+    `;
+  }
+  
+  const iconUrl = release.iconUrl;
+  const iconHtml = iconUrl ? `<img src="${iconUrl}" alt="${natureType}" style="width: 24px; height: 24px; vertical-align: middle; margin-right: 8px; display: inline-block;">` : '';
+  
+  let details = [];
+  if (release.kanji) {
+    details.push(`${release.kanji} (${release.romaji})`);
+  }
+  if (release.strongAgainst && release.weakAgainst) {
+    details.push(`Strong: ${release.strongAgainst}, Weak: ${release.weakAgainst}`);
+  }
+  if (release.components) {
+    details.push(`Components: ${release.components.join(' + ')}`);
+  }
+  
+  const detailsHtml = details.length > 0 ? `<br><small style="color: var(--color-text-dark-2); font-size: 0.85rem;">${details.join(' • ')}</small>` : '';
+  
+  return `
+    <div class="info-row">
+      ${renderInfoContent(`${iconHtml}${natureType}${detailsHtml}`)}
+      ${renderInfoLabel('nature type')}
     </div>
   `;
 }

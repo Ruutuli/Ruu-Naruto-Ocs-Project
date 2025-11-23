@@ -2,6 +2,7 @@
 
 import { defaultOC, generateId } from '../data/default-data.js';
 import storage from '../data/storage.js';
+import { natureReleases, getAllNatureReleaseNames } from '../data/nature-releases.js';
 
 export function renderOCForm(oc = null, onSave) {
   const isEdit = !!oc;
@@ -198,10 +199,32 @@ export function renderOCForm(oc = null, onSave) {
           </div>
           <div class="col-12 col-md-4">
             <div class="form-group">
-              <label class="form-label">Chakra Type</label>
-              <input type="text" class="form-control" id="chakraType" value="${formOC.chakraType || ''}">
+              <label class="form-label">Nature Type</label>
+              <input type="text" class="form-control" id="natureType" list="nature-types" value="${formOC.natureType || ''}" placeholder="Type or select a nature type" autocomplete="off">
+              <datalist id="nature-types">
+                ${(() => {
+                  const allNames = getAllNatureReleaseNames();
+                  return allNames.map(name => {
+                    const release = natureReleases[name];
+                    let displayText = name;
+                    if (release.kanji) {
+                      displayText += ` (${release.kanji}, ${release.romaji})`;
+                    }
+                    if (release.strongAgainst && release.weakAgainst) {
+                      displayText += ` - Strong: ${release.strongAgainst}, Weak: ${release.weakAgainst}`;
+                    }
+                    if (release.components) {
+                      displayText += ` - ${release.components.join(' + ')}`;
+                    }
+                    return `<option value="${name}">${displayText}</option>`;
+                  }).join('');
+                })()}
+              </datalist>
             </div>
           </div>
+        </div>
+        
+        <div class="row">
           <div class="col-12 col-md-4">
             <div class="form-group">
               <label class="form-label">Kekkei Genkai</label>
@@ -555,7 +578,7 @@ export function renderOCForm(oc = null, onSave) {
       })(),
       bloodType: document.getElementById('bloodType').value,
       gender: document.getElementById('gender').value,
-      chakraType: document.getElementById('chakraType').value,
+      natureType: document.getElementById('natureType').value,
       village: document.getElementById('village').value,
       rank: document.getElementById('rank').value,
       clanId: document.getElementById('clanId').value || null,

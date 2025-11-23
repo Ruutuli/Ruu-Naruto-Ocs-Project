@@ -20,7 +20,7 @@ export const defaultOC = {
   },
   bloodType: '',
   gender: '',
-  chakraType: '',
+  natureType: '',
   village: '',
   rank: '',
   stats: {
