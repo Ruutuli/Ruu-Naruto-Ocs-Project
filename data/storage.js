@@ -283,7 +283,7 @@ class Storage {
   }
 
   // Save a file to GitHub
-  async saveFile(type, id, data) {
+  async saveFile(type, id, data, retryCount = 0) {
     if (!this._token) {
       this._token = await getGitHubToken();
     }
@@ -297,12 +297,17 @@ class Storage {
       }
     }
 
+    // Ensure the data.id matches the filename for consistency
+    if (data && typeof data === 'object' && data.id !== id) {
+      data.id = id;
+    }
+
     try {
       const path = `data/${type}/${id}.json`;
       const content = JSON.stringify(data, null, 2);
       const encodedContent = btoa(unescape(encodeURIComponent(content)));
       
-      // Get existing file SHA if it exists
+      // Get existing file SHA if it exists (always fetch fresh SHA)
       const sha = await this.getFileSHA(path);
       
       const body = {
@@ -335,6 +340,16 @@ class Storage {
         return true;
       } else {
         const error = await response.json();
+        
+        // Handle 409 Conflict - file was modified, retry with fresh SHA
+        if (response.status === 409 && retryCount < 2) {
+          console.log(`409 Conflict detected for ${path}, retrying with fresh SHA...`);
+          // Wait a bit before retrying to avoid race conditions
+          await new Promise(resolve => setTimeout(resolve, 500));
+          // Retry with fresh SHA
+          return this.saveFile(type, id, data, retryCount + 1);
+        }
+        
         throw new Error(error.message || 'Failed to save file');
       }
     } catch (e) {
@@ -347,6 +362,8 @@ class Storage {
         this._token = null;
       } else if (e.message.includes('404')) {
         errorMessage = 'Repository not found. Please check your GitHub config in data/github-config.js';
+      } else if (e.message.includes('does not match') || e.message.includes('409')) {
+        errorMessage = 'File was modified by another process. Please refresh and try again.';
       }
       
       this.showNotification(`Error saving: ${errorMessage}`, 'error');
@@ -450,6 +467,17 @@ class Storage {
 
   // OC Methods
   async saveOC(oc) {
+    // Ensure ID is set and consistent
+    if (!oc.id) {
+      // Generate ID: oc + FirstName (e.g., "ocAkene")
+      const firstName = (oc.firstName || '').trim();
+      if (firstName) {
+        oc.id = 'oc' + firstName.charAt(0).toUpperCase() + firstName.slice(1).replace(/[^a-zA-Z0-9]/g, '');
+      } else {
+        oc.id = 'oc' + Date.now().toString(36);
+      }
+    }
+    
     const success = await this.saveFile('ocs', oc.id, oc);
     if (success) {
       this.showNotification('OC saved to GitHub!');
