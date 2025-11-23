@@ -565,6 +565,9 @@ window.showOCDetail = async function(id) {
   const ocName = `${oc.firstName || ''} ${oc.lastName || ''}`.trim() || 'Unnamed OC';
   updatePageTitle('oc-detail', ocName);
   
+  // Update SEO for each age/era
+  updateOCSEO(oc);
+  
   const container = document.getElementById('oc-detail-container');
   const detail = renderOCDetail(oc);
   container.innerHTML = '';
@@ -947,6 +950,113 @@ function handleHashChange() {
 // ============================================================================
 // ------------------- Page Title Management -------------------
 // ============================================================================
+
+// ------------------- OC SEO Updater ------------------
+// Update SEO meta tags for each age/era of an OC
+function updateOCSEO(oc) {
+  const ocName = `${oc.firstName || ''} ${oc.lastName || ''}`.trim() || 'Unnamed OC';
+  const baseUrl = window.location.origin + window.location.pathname;
+  const ocUrl = `${baseUrl}#ocs/${oc.id}`;
+  
+  // Get ageByEra data
+  const ageByEra = oc.ageByEra || {};
+  const eras = ['Part I', 'Part II', 'Blank Period', 'Gaiden', 'Boruto'];
+  
+  // Get villages and rank for description
+  const villages = Array.isArray(oc.village) ? oc.village : (oc.village ? [oc.village] : []);
+  const villageDisplay = villages.length > 0 ? villages.join(', ') : 'Unknown Village';
+  const rank = Array.isArray(oc.rank) ? oc.rank[0] : (oc.rank || 'Unknown Rank');
+  
+  // Build age summary for description
+  const ageEntries = eras
+    .filter(era => ageByEra[era] && ageByEra[era].trim())
+    .map(era => `Age ${ageByEra[era]} (${era})`)
+    .join(', ');
+  
+  // Update main meta tags with comprehensive description including all ages
+  const mainDescription = ageEntries
+    ? `${ocName} - ${rank} from ${villageDisplay}. Ages: ${ageEntries}. ${oc.personality?.overview?.substring(0, 120) || 'Original Naruto character with detailed profile, abilities, techniques, and world-building content.'}...`
+    : `${ocName} - ${rank} from ${villageDisplay}. ${oc.personality?.overview?.substring(0, 150) || 'Original Naruto character with detailed profile, abilities, techniques, and world-building content.'}...`;
+  
+  // Update primary meta tags
+  updateMetaTag('meta[name="description"]', 'name', 'description', mainDescription);
+  updateMetaTag('meta[property="og:title"]', 'property', 'og:title', `${ocName} | Naruto OC`);
+  updateMetaTag('meta[property="og:description"]', 'property', 'og:description', mainDescription);
+  updateMetaTag('meta[property="og:url"]', 'property', 'og:url', ocUrl);
+  updateMetaTag('meta[property="twitter:title"]', 'property', 'twitter:title', `${ocName} | Naruto OC`);
+  updateMetaTag('meta[property="twitter:description"]', 'property', 'twitter:description', mainDescription);
+  
+  // Update structured data (JSON-LD) for each age
+  updateStructuredData(oc, ageByEra, eras);
+}
+
+// Helper function to update or create meta tags
+function updateMetaTag(selector, attribute, attributeValue, content) {
+  let meta = document.querySelector(selector);
+  if (!meta) {
+    meta = document.createElement('meta');
+    meta.setAttribute(attribute, attributeValue);
+    document.head.appendChild(meta);
+  }
+  meta.setAttribute('content', content);
+}
+
+// Update structured data (JSON-LD) for each age
+function updateStructuredData(oc, ageByEra, eras) {
+  // Remove existing OC structured data
+  const existingScripts = document.querySelectorAll('script[type="application/ld+json"][data-oc-seo]');
+  existingScripts.forEach(script => script.remove());
+  
+  const ocName = `${oc.firstName || ''} ${oc.lastName || ''}`.trim() || 'Unnamed OC';
+  const baseUrl = window.location.origin + window.location.pathname;
+  const villages = Array.isArray(oc.village) ? oc.village : (oc.village ? [oc.village] : []);
+  const rank = Array.isArray(oc.rank) ? oc.rank[0] : (oc.rank || 'Unknown Rank');
+  
+  // Create structured data for each age/era
+  eras.forEach(era => {
+    const age = ageByEra[era];
+    if (!age || !age.trim()) return;
+    
+    const structuredData = {
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "name": ocName,
+      "description": `${ocName} at age ${age} during ${era}. ${rank} from ${villages.join(', ')}. Original Naruto character.`,
+      "url": `${baseUrl}#ocs/${oc.id}?era=${encodeURIComponent(era)}&age=${encodeURIComponent(age)}`,
+      "identifier": `${oc.id}-${era.toLowerCase().replace(/\s+/g, '-')}-age-${age.replace(/\s+/g, '-')}`,
+      "additionalProperty": [
+        {
+          "@type": "PropertyValue",
+          "name": "Age",
+          "value": age
+        },
+        {
+          "@type": "PropertyValue",
+          "name": "Era",
+          "value": era
+        },
+        {
+          "@type": "PropertyValue",
+          "name": "Rank",
+          "value": rank
+        },
+        {
+          "@type": "PropertyValue",
+          "name": "Village",
+          "value": villages.join(', ')
+        }
+      ]
+    };
+    
+    const script = document.createElement('script');
+    script.type = 'application/ld+json';
+    script.setAttribute('data-oc-seo', 'true');
+    script.setAttribute('data-era', era);
+    script.setAttribute('data-age', age);
+    script.textContent = JSON.stringify(structuredData);
+    document.head.appendChild(script);
+  });
+}
 
 // ------------------- Page Title Updater ------------------
 // Update page title based on current page

@@ -72,7 +72,7 @@ export function renderOCDetail(oc) {
       
       <div id="relationships-collapse" class="collapsible-section">
       <div class="collapsible-header" onclick="toggleCollapse('relationships-content')">
-        Relationships <i class="japanese-header">関係</i>
+        <i class="fas fa-users" style="margin-right: 0.5rem;"></i> Relationships <i class="japanese-header">関係</i>
         <i class="fas fa-chevron-down bounce-arrow"></i>
       </div>
       <div id="relationships-content" class="collapsible-content">
@@ -82,7 +82,7 @@ export function renderOCDetail(oc) {
     
     <div id="family-collapse" class="collapsible-section">
       <div class="collapsible-header" onclick="toggleCollapse('family-content')">
-        Family <i class="japanese-header">家族</i>
+        <i class="fas fa-home" style="margin-right: 0.5rem;"></i> Family <i class="japanese-header">家族</i>
         <i class="fas fa-chevron-down bounce-arrow"></i>
       </div>
       <div id="family-content" class="collapsible-content">
@@ -92,7 +92,7 @@ export function renderOCDetail(oc) {
     
     <div id="physical-appearance-collapse" class="collapsible-section">
       <div class="collapsible-header" onclick="toggleCollapse('physical-appearance-content')">
-        Physical Appearance <i class="japanese-header">外見</i>
+        <i class="fas fa-user" style="margin-right: 0.5rem;"></i> Physical Appearance <i class="japanese-header">外見</i>
         <i class="fas fa-chevron-down bounce-arrow"></i>
       </div>
       <div id="physical-appearance-content" class="collapsible-content">
@@ -102,7 +102,7 @@ export function renderOCDetail(oc) {
     
     <div id="appearance-by-era-collapse" class="collapsible-section">
       <div class="collapsible-header" onclick="toggleCollapse('appearance-by-era-content')">
-        Appearance by Era <i class="japanese-header">時代別の外見</i>
+        <i class="fas fa-history" style="margin-right: 0.5rem;"></i> Appearance by Era <i class="japanese-header">時代別の外見</i>
         <i class="fas fa-chevron-down bounce-arrow"></i>
       </div>
       <div id="appearance-by-era-content" class="collapsible-content">
@@ -112,7 +112,7 @@ export function renderOCDetail(oc) {
     
     <div id="affiliations-collapse" class="collapsible-section">
       <div class="collapsible-header" onclick="toggleCollapse('affiliations-content')">
-        Affiliations <i class="japanese-header">所属</i>
+        <i class="fas fa-flag" style="margin-right: 0.5rem;"></i> Affiliations <i class="japanese-header">所属</i>
         <i class="fas fa-chevron-down bounce-arrow"></i>
       </div>
       <div id="affiliations-content" class="collapsible-content">
@@ -122,7 +122,7 @@ export function renderOCDetail(oc) {
     
     <div id="personality-collapse" class="collapsible-section">
       <div class="collapsible-header" onclick="toggleCollapse('personality-content')">
-        Known Behavior <i class="japanese-header">既知の行動</i>
+        <i class="fas fa-brain" style="margin-right: 0.5rem;"></i> Known Behavior <i class="japanese-header">既知の行動</i>
         <i class="fas fa-chevron-down bounce-arrow"></i>
       </div>
       <div id="personality-content" class="collapsible-content">
@@ -132,7 +132,7 @@ export function renderOCDetail(oc) {
     
     <div id="abilities-collapse" class="collapsible-section">
       <div class="collapsible-header" onclick="toggleCollapse('abilities-content')">
-        Abilities & Techniques <i class="japanese-header">能力と術</i>
+        <i class="fas fa-fire" style="margin-right: 0.5rem;"></i> Abilities & Techniques <i class="japanese-header">能力と術</i>
         <i class="fas fa-chevron-down bounce-arrow"></i>
       </div>
       <div id="abilities-content" class="collapsible-content">
@@ -1359,13 +1359,13 @@ function renderFamily(oc) {
   
   return `
     <div class="family-info">
-      <div class="family-member"><strong>Father:</strong> ${family.father || 'Not specified'}</div>
-      <div class="family-member"><strong>Mother:</strong> ${family.mother || 'Not specified'}</div>
+      <div class="family-member"><i class="fas fa-male" style="margin-right: 0.5rem;"></i><strong>Father <i class="japanese-header">父親</i>:</strong> ${family.father || 'Not specified'}</div>
+      <div class="family-member"><i class="fas fa-female" style="margin-right: 0.5rem;"></i><strong>Mother <i class="japanese-header">母親</i>:</strong> ${family.mother || 'Not specified'}</div>
       <div class="family-member">
-        <strong>Siblings:</strong> ${(family.siblings && family.siblings.length > 0) ? family.siblings.join(', ') : 'Not specified'}
+        <i class="fas fa-user-friends" style="margin-right: 0.5rem;"></i><strong>Siblings <i class="japanese-header">兄弟姉妹</i>:</strong> ${(family.siblings && family.siblings.length > 0) ? family.siblings.join(', ') : 'Not specified'}
       </div>
       <div class="family-member">
-        <strong>Other Relatives:</strong> ${(family.otherRelatives && family.otherRelatives.length > 0) ? family.otherRelatives.join(', ') : 'Not specified'}
+        <i class="fas fa-users" style="margin-right: 0.5rem;"></i><strong>Other Relatives <i class="japanese-header">その他の親族</i>:</strong> ${(family.otherRelatives && family.otherRelatives.length > 0) ? family.otherRelatives.join(', ') : 'Not specified'}
       </div>
     </div>
   `;
@@ -1431,8 +1431,8 @@ function renderAffiliations(oc) {
       <div class="affiliation-item"><strong>Classification(s):</strong> ${classifications.length > 0 ? classifications.join(', ') : 'Not specified'}</div>
       <div class="affiliation-item"><strong>Ninja Registration Number:</strong> ${oc.ninjaRegistrationNumber || 'Not specified'}</div>
       <div class="affiliation-item"><strong>Team Number:</strong> ${oc.teamNumber || 'Not specified'}</div>
-      <div class="affiliation-item"><strong>Teammates:</strong> ${(oc.teammates && oc.teammates.length > 0) ? renderCharacterLinks(oc.teammates, true) : 'Not specified'}</div>
-      <div class="affiliation-item"><strong>Sensei:</strong> ${oc.sensei ? renderCharacterLinks(oc.sensei, false) : 'Not specified'}</div>
+      <div class="affiliation-item"><i class="fas fa-user-friends" style="margin-right: 0.5rem;"></i><strong>Teammates <i class="japanese-header">チームメイト</i>:</strong> ${(oc.teammates && oc.teammates.length > 0) ? renderCharacterLinks(oc.teammates, true) : 'Not specified'}</div>
+      <div class="affiliation-item"><i class="fas fa-chalkboard-teacher" style="margin-right: 0.5rem;"></i><strong>Sensei <i class="japanese-header">先生</i>:</strong> ${oc.sensei ? renderCharacterLinks(oc.sensei, false) : 'Not specified'}</div>
       <div class="affiliation-item"><strong>Academy Graduation Age:</strong> ${oc.academyGraduationAge || 'Not specified'}</div>
       <div class="affiliation-item"><strong>Made Genin:</strong> ${oc.madeGenin || 'Not specified'}</div>
       <div class="affiliation-item"><strong>Made Chunin:</strong> ${oc.madeChunin || 'Not specified'}</div>

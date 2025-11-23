@@ -14,7 +14,21 @@ export function renderOCCard(oc, onClick) {
   const rankClass = ranks.length > 0 ? `rank-${ranks[0].toLowerCase().replace('-', '-')}` : '';
   const villageDisplay = villages.length > 0 ? villages.join(', ') : 'Unknown';
   
-  const profileImageUrl = oc.profileImage ? convertImageUrl(oc.profileImage) : null;
+  // Get profile image, or fallback to first available era image
+  let profileImageUrl = null;
+  if (oc.profileImage && oc.profileImage.trim()) {
+    profileImageUrl = convertImageUrl(oc.profileImage);
+  } else if (oc.imagesByEra && typeof oc.imagesByEra === 'object') {
+    // Find first available era image
+    const eras = Object.keys(oc.imagesByEra);
+    for (const era of eras) {
+      const eraImage = oc.imagesByEra[era];
+      if (eraImage && eraImage.trim()) {
+        profileImageUrl = convertImageUrl(eraImage);
+        break;
+      }
+    }
+  }
   
   card.innerHTML = `
     <div class="oc-card-image-wrapper">

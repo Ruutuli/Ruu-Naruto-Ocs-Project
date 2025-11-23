@@ -15,6 +15,7 @@ export const defaultOC = {
   nameMeaning: '',
   aliases: [],
   profileImage: '',
+  displayImage: '',
   
   // Debut Information
   debut: {

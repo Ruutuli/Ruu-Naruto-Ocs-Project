@@ -1,17 +1,23 @@
+// ============================================================================
 // OC Form Component - Create/Edit OC form
+// ============================================================================
 
+// ------------------- Imports -------------------
 import { defaultOC, generateId } from '../data/default-data.js';
 import storage from '../data/storage.js';
-import { natureReleases, getAllNatureReleaseNames, getAllClanNames, getClanSymbol } from '../data/options.js';
 import { convertImageUrl } from '../utils/imageUtils.js';
 import { 
-  villages, 
-  ranks, 
-  zodiacSigns, 
-  moralAlignments, 
-  mbtiTypes, 
-  enneagramTypes, 
-  months, 
+  natureReleases,
+  getAllNatureReleaseNames,
+  getAllClanNames,
+  getClanSymbol,
+  villages,
+  ranks,
+  zodiacSigns,
+  moralAlignments,
+  mbtiTypes,
+  enneagramTypes,
+  months,
   days,
   bloodTypes,
   genders,
@@ -25,56 +31,70 @@ import {
   generateDatalistOptions
 } from '../data/options.js';
 
-export function renderOCForm(oc = null, onSave) {
-  const isEdit = !!oc;
-  const formOC = oc || { ...defaultOC, id: generateId() };
-  const clans = storage.getAllClans();
-  
-  // Get predefined clan names from options.js
-  const predefinedClanNames = getAllClanNames();
-  
-  // Handle backward compatibility: convert single values to arrays
-  const formOCVillages = Array.isArray(formOC.village) ? formOC.village : (formOC.village ? [formOC.village] : []);
-  const formOCRanks = Array.isArray(formOC.rank) ? formOC.rank : (formOC.rank ? [formOC.rank] : []);
-  
-  // Handle clans - support both old format (single clanId/clanName) and new format (arrays)
-  const formOCClanIds = Array.isArray(formOC.clanId) ? formOC.clanId : (formOC.clanId ? [formOC.clanId] : []);
-  const formOCClanNames = Array.isArray(formOC.clanName) ? formOC.clanName : (formOC.clanName ? [formOC.clanName] : []);
-  
-  // Get current clan names for display
-  const currentClanNames = [];
-  // Add clanIds (user-created clans)
-  formOCClanIds.forEach(clanId => {
-    const clan = clans.find(c => c.id === clanId);
-    if (clan) {
-      currentClanNames.push(clan.name);
-    } else if (typeof clanId === 'string' && predefinedClanNames.includes(clanId)) {
-      // If clanId is actually a predefined clan name
-      currentClanNames.push(clanId);
+// ------------------- Constants -------------------
+const ERAS = ['Part I', 'Part II', 'Blank Period', 'Gaiden', 'Boruto'];
+const STAT_NAMES = ['intelligence', 'stamina', 'strength', 'speed', 'ninjutsu', 'genjutsu', 'taijutsu', 'handSeals', 'fuinjutsu'];
+const TAIJUTSU_TYPES = [
+  'taijutsu', 'kenjutsu', 'bojutsu', 'kayakujutsu', 'kusarigamajutsu',
+  'kyujutsu', 'shurikenjutsu', 'tessenjutsu', 'bukijutsu', 'nintaijutsu'
+];
+
+// ------------------- Helper Functions -------------------
+// Normalize array values for backward compatibility
+function normalizeArrayValue(value) {
+  return Array.isArray(value) ? value : (value ? [value] : []);
+}
+
+// Get age value from old format or ageByEra
+function getAgeValue(formOC, era) {
+  if (formOC.ageByEra && formOC.ageByEra[era]) {
+    return formOC.ageByEra[era];
+  }
+  if (typeof formOC.age === 'string') {
+    const escapedEra = era.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const eraMatch = formOC.age.match(new RegExp(`${escapedEra}:\\s*([^,]+)`));
+    if (eraMatch && eraMatch[1]) {
+      return eraMatch[1].trim();
     }
-  });
-  // Add clanNames (predefined or custom clan names)
-  formOCClanNames.forEach(clanName => {
-    if (clanName && !currentClanNames.includes(clanName)) {
-      currentClanNames.push(clanName);
+  }
+  return '';
+}
+
+// Get height/weight value from old format or byEra
+function getEraValue(formOC, era, field) {
+  const byEraField = `${field}ByEra`;
+  if (formOC[byEraField] && formOC[byEraField][era]) {
+    return formOC[byEraField][era];
+  }
+  if (typeof formOC.identifyingInfo?.[field] === 'string') {
+    const escapedEra = era.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const eraMatch = formOC.identifyingInfo[field].match(new RegExp(`${escapedEra}:\\s*([^,]+)`));
+    if (eraMatch && eraMatch[1]) {
+      return eraMatch[1].trim();
     }
-  });
-  
-  // Combine user-created clans and predefined clans for autocomplete
+    const eraMatch2 = formOC.identifyingInfo[field].match(new RegExp(`([^,]+)\\s*\\(${escapedEra}\\)`));
+    if (eraMatch2 && eraMatch2[1]) {
+      return eraMatch2[1].trim();
+    }
+  }
+  return '';
+}
+
+// Build unique clans list
+function buildUniqueClans(clans, predefinedClanNames) {
   const allClanOptions = [
     ...clans.map(clan => ({ name: clan.name, id: clan.id, type: 'user' })),
     ...predefinedClanNames.map(name => ({ name, id: null, type: 'predefined' }))
   ];
   
-  // Remove duplicates (in case user created a clan with same name as predefined)
   const uniqueClans = [];
   const seenNames = new Set();
+  
   allClanOptions.forEach(clan => {
     if (!seenNames.has(clan.name)) {
       seenNames.add(clan.name);
       uniqueClans.push(clan);
     } else {
-      // If duplicate, prefer user-created over predefined
       const existing = uniqueClans.find(c => c.name === clan.name);
       if (existing && existing.type === 'predefined' && clan.type === 'user') {
         const index = uniqueClans.indexOf(existing);
@@ -82,6 +102,47 @@ export function renderOCForm(oc = null, onSave) {
       }
     }
   });
+  
+  return uniqueClans;
+}
+
+// Get current clan names for display
+function getCurrentClanNames(formOC, clans, predefinedClanNames) {
+  const formOCClanIds = normalizeArrayValue(formOC.clanId);
+  const formOCClanNames = normalizeArrayValue(formOC.clanName);
+  const currentClanNames = [];
+  
+  formOCClanIds.forEach(clanId => {
+    const clan = clans.find(c => c.id === clanId);
+    if (clan) {
+      currentClanNames.push(clan.name);
+    } else if (typeof clanId === 'string' && predefinedClanNames.includes(clanId)) {
+      currentClanNames.push(clanId);
+    }
+  });
+  
+  formOCClanNames.forEach(clanName => {
+    if (clanName && !currentClanNames.includes(clanName)) {
+      currentClanNames.push(clanName);
+    }
+  });
+  
+  return currentClanNames;
+}
+
+// ------------------- Main Export Function -------------------
+export function renderOCForm(oc = null, onSave) {
+  try {
+    const isEdit = !!oc;
+    const formOC = oc || { ...defaultOC, id: generateId() };
+    const clans = storage.getAllClans();
+    const predefinedClanNames = getAllClanNames();
+    
+    // Normalize form data for backward compatibility
+    const formOCVillages = normalizeArrayValue(formOC.village);
+    const formOCRanks = normalizeArrayValue(formOC.rank);
+    const currentClanNames = getCurrentClanNames(formOC, clans, predefinedClanNames);
+    const uniqueClans = buildUniqueClans(clans, predefinedClanNames);
   
   const form = document.createElement('div');
   form.className = 'card-naruto';
@@ -158,12 +219,18 @@ export function renderOCForm(oc = null, onSave) {
           <small class="form-text text-muted">Default image (used if no era-specific images are set)</small>
         </div>
         
+        <div class="form-group">
+          <label class="form-label">Display Image URL</label>
+          <input type="text" class="form-control" id="displayImage" value="${formOC.displayImage || ''}" placeholder="Enter image URL">
+          <small class="form-text text-muted">Separate display image (different from profile image)</small>
+        </div>
+        
         <!-- Images by Era -->
         <h3 class="mb-3 mt-4">Images by Era <i class="japanese-header">時代別の画像</i></h3>
         <div class="mb-4">
           <p class="text-muted" style="margin-bottom: 1rem;">Add images for different eras. These will be displayed with tabs in the detail view.</p>
           <div class="image-era-tabs" style="display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap;">
-            ${['Part I', 'Part II', 'Blank Period', 'Gaiden', 'Boruto'].map((era, index) => `
+            ${ERAS.map((era, index) => `
               <button type="button" class="btn-naruto btn-naruto-secondary image-era-tab ${index === 0 ? 'active' : ''}" 
                       onclick="switchImageEraTab('${era}')" 
                       data-era="${era}"
@@ -173,7 +240,7 @@ export function renderOCForm(oc = null, onSave) {
             `).join('')}
           </div>
           <div class="image-era-content">
-            ${['Part I', 'Part II', 'Blank Period', 'Gaiden', 'Boruto'].map((era, index) => {
+            ${ERAS.map((era, index) => {
               const eraImage = formOC.imagesByEra?.[era] || '';
               const isActive = index === 0 ? 'active' : '';
               return `
@@ -298,25 +365,6 @@ export function renderOCForm(oc = null, onSave) {
               <div class="age-era-inputs">
                 <div class="row">
                   ${(() => {
-                    // Helper function to extract age value from old format or ageByEra
-                    const getAgeValue = (era) => {
-                      // First check ageByEra
-                      if (formOC.ageByEra && formOC.ageByEra[era]) {
-                        return formOC.ageByEra[era];
-                      }
-                      // Then check old format string (e.g., "Part I: 12–13, Part II: 15–17")
-                      if (typeof formOC.age === 'string') {
-                        // Escape special regex characters in era name
-                        const escapedEra = era.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-                        // Match era: value pattern, value can contain dashes, numbers, and spaces
-                        const eraMatch = formOC.age.match(new RegExp(`${escapedEra}:\\s*([^,]+)`));
-                        if (eraMatch && eraMatch[1]) {
-                          return eraMatch[1].trim();
-                        }
-                      }
-                      return '';
-                    };
-                    
                     const eras = [
                       { key: 'Part I', label: 'Part I Age', placeholder: 'e.g., 12–13' },
                       { key: 'Part II', label: 'Part II Age', placeholder: 'e.g., 15–17' },
@@ -329,7 +377,7 @@ export function renderOCForm(oc = null, onSave) {
                       <div class="col-md-6 col-lg-4" style="margin-bottom: 0.75rem;">
                         <label style="font-size: 0.85rem; color: var(--color-text-dark-2); margin-bottom: 0.25rem; display: block;">${era.label}</label>
                         <input type="text" class="form-control" id="age-${era.key}" 
-                               value="${getAgeValue(era.key)}" 
+                               value="${getAgeValue(formOC, era.key)}" 
                                placeholder="${era.placeholder}">
                       </div>
                     `).join('');
@@ -492,11 +540,42 @@ export function renderOCForm(oc = null, onSave) {
         </div>
         
         <div class="form-group">
-          <label class="form-label">Classification (comma-separated)</label>
-          <input type="text" class="form-control" id="classification" list="classification-datalist" value="${(formOC.classification || []).join(', ')}" placeholder="e.g., Genin, Fate Reader, Missing-nin">
-          <datalist id="classification-datalist">
-            ${generateDatalistOptions(ninjaClassifications)}
-          </datalist>
+          <label class="form-label">Classification</label>
+          <div class="classification-selector-wrapper">
+            <div class="classification-selected-tags" id="classification-tags">
+              ${(formOC.classification || []).map(cls => `
+                <span class="classification-tag">
+                  ${cls}
+                  <button type="button" class="classification-tag-remove" onclick="removeClassificationTag('${cls.replace(/'/g, "\\'")}')" aria-label="Remove ${cls}">
+                    <i class="fas fa-times"></i>
+                  </button>
+                </span>
+              `).join('')}
+            </div>
+            <div class="classification-dropdown-container">
+              <input type="text" 
+                     class="form-control classification-search-input" 
+                     id="classification-search" 
+                     placeholder="Search and select classifications..."
+                     autocomplete="off"
+                     onfocus="openClassificationDropdown()"
+                     oninput="filterClassificationOptions(this.value)">
+              <div class="classification-dropdown" id="classification-dropdown" style="display: none;">
+                <div class="classification-dropdown-list" id="classification-dropdown-list">
+                  ${ninjaClassifications.map(opt => `
+                    <div class="classification-option ${(formOC.classification || []).includes(opt.value) ? 'selected' : ''}" 
+                         data-value="${opt.value.replace(/"/g, '&quot;')}"
+                         onclick="toggleClassificationOption('${opt.value.replace(/'/g, "\\'")}')">
+                      <i class="fas fa-check classification-check-icon"></i>
+                      <span>${opt.label}</span>
+                    </div>
+                  `).join('')}
+                </div>
+              </div>
+            </div>
+            <input type="hidden" id="classification" value="${(formOC.classification || []).join(',')}">
+          </div>
+          <small class="form-text text-muted">Type to search classifications. Click to select/deselect.</small>
         </div>
         
         <div class="row">
@@ -814,17 +893,14 @@ export function renderOCForm(oc = null, onSave) {
         <h3 class="mb-3 mt-4">Stats (1-5)</h3>
         <div class="stats-form-container">
           <div class="stats-form-tabs">
-            <button type="button" class="stats-form-tab active" onclick="switchStatsEraTab('Part I')" data-era="Part I">Part I</button>
-            <button type="button" class="stats-form-tab" onclick="switchStatsEraTab('Part II')" data-era="Part II">Part II</button>
-            <button type="button" class="stats-form-tab" onclick="switchStatsEraTab('Blank Period')" data-era="Blank Period">Blank Period</button>
-            <button type="button" class="stats-form-tab" onclick="switchStatsEraTab('Gaiden')" data-era="Gaiden">Gaiden</button>
-            <button type="button" class="stats-form-tab" onclick="switchStatsEraTab('Boruto')" data-era="Boruto">Boruto</button>
+            ${ERAS.map((era, index) => `
+              <button type="button" class="stats-form-tab ${index === 0 ? 'active' : ''}" 
+                      onclick="switchStatsEraTab('${era}')" 
+                      data-era="${era}">${era}</button>
+            `).join('')}
           </div>
           <div class="stats-form-content">
             ${(() => {
-              const eras = ['Part I', 'Part II', 'Blank Period', 'Gaiden', 'Boruto'];
-              const statNames = ['intelligence', 'stamina', 'strength', 'speed', 'ninjutsu', 'genjutsu', 'taijutsu', 'handSeals', 'fuinjutsu'];
-              
               // Helper function to get stat value for an era, checking previous eras if not found
               const getStatValue = (era, statName) => {
                 // First check if this era has the stat
@@ -834,9 +910,9 @@ export function renderOCForm(oc = null, onSave) {
                 }
                 
                 // If not found, check previous eras in order
-                const currentIndex = eras.indexOf(era);
+                const currentIndex = ERAS.indexOf(era);
                 for (let i = currentIndex - 1; i >= 0; i--) {
-                  const prevEra = eras[i];
+                  const prevEra = ERAS[i];
                   const prevEraStats = formOC.statsByEra?.[prevEra];
                   if (prevEraStats && prevEraStats[statName] !== undefined) {
                     return prevEraStats[statName];
@@ -852,13 +928,13 @@ export function renderOCForm(oc = null, onSave) {
                 return statName === 'fuinjutsu' ? 0 : 3;
               };
               
-              return eras.map((era, index) => {
+              return ERAS.map((era, index) => {
                 const isActive = index === 0 ? 'active' : '';
                 return `
                   <div class="stats-form-panel ${isActive}" id="stats-form-panel-${era.replace(/\s+/g, '-')}">
                     <div class="stats-container">
                       <div class="stats-grid">
-                        ${statNames.map(statName => 
+                        ${STAT_NAMES.map(statName => 
                           renderStatInput(`${statName}-${era}`, getStatValue(era, statName))
                         ).join('')}
                       </div>
@@ -877,28 +953,6 @@ export function renderOCForm(oc = null, onSave) {
               <div class="height-era-inputs">
                 <div class="row">
                   ${(() => {
-                    // Helper function to extract height value from old format or heightByEra
-                    const getHeightValue = (era) => {
-                      // First check heightByEra
-                      if (formOC.heightByEra && formOC.heightByEra[era]) {
-                        return formOC.heightByEra[era];
-                      }
-                      // Then check old format string (e.g., "148.5 cm–150.1 cm (Part I), 161 cm (Part II)")
-                      if (typeof formOC.identifyingInfo?.height === 'string') {
-                        const escapedEra = era.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-                        const eraMatch = formOC.identifyingInfo.height.match(new RegExp(`${escapedEra}:\\s*([^,]+)`));
-                        if (eraMatch && eraMatch[1]) {
-                          return eraMatch[1].trim();
-                        }
-                        // Also check for (Part I) format
-                        const eraMatch2 = formOC.identifyingInfo.height.match(new RegExp(`([^,]+)\\s*\\(${escapedEra}\\)`));
-                        if (eraMatch2 && eraMatch2[1]) {
-                          return eraMatch2[1].trim();
-                        }
-                      }
-                      return '';
-                    };
-                    
                     const eras = [
                       { key: 'Part I', label: 'Part I Height', placeholder: 'e.g., 148.5 cm–150.1 cm' },
                       { key: 'Part II', label: 'Part II Height', placeholder: 'e.g., 161 cm' },
@@ -911,7 +965,7 @@ export function renderOCForm(oc = null, onSave) {
                       <div class="col-md-6 col-lg-4" style="margin-bottom: 0.75rem;">
                         <label style="font-size: 0.85rem; color: var(--color-text-dark-2); margin-bottom: 0.25rem; display: block;">${era.label}</label>
                         <input type="text" class="form-control" id="height-${era.key}" 
-                               value="${getHeightValue(era.key)}" 
+                               value="${getEraValue(formOC, era.key, 'height')}" 
                                placeholder="${era.placeholder}">
                       </div>
                     `).join('');
@@ -929,28 +983,6 @@ export function renderOCForm(oc = null, onSave) {
               <div class="weight-era-inputs">
                 <div class="row">
                   ${(() => {
-                    // Helper function to extract weight value from old format or weightByEra
-                    const getWeightValue = (era) => {
-                      // First check weightByEra
-                      if (formOC.weightByEra && formOC.weightByEra[era]) {
-                        return formOC.weightByEra[era];
-                      }
-                      // Then check old format string
-                      if (typeof formOC.identifyingInfo?.weight === 'string') {
-                        const escapedEra = era.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-                        const eraMatch = formOC.identifyingInfo.weight.match(new RegExp(`${escapedEra}:\\s*([^,]+)`));
-                        if (eraMatch && eraMatch[1]) {
-                          return eraMatch[1].trim();
-                        }
-                        // Also check for (Part I) format
-                        const eraMatch2 = formOC.identifyingInfo.weight.match(new RegExp(`([^,]+)\\s*\\(${escapedEra}\\)`));
-                        if (eraMatch2 && eraMatch2[1]) {
-                          return eraMatch2[1].trim();
-                        }
-                      }
-                      return '';
-                    };
-                    
                     const eras = [
                       { key: 'Part I', label: 'Part I Weight', placeholder: 'e.g., 35.4 kg–35.9 kg' },
                       { key: 'Part II', label: 'Part II Weight', placeholder: 'e.g., 45.4 kg' },
@@ -963,7 +995,7 @@ export function renderOCForm(oc = null, onSave) {
                       <div class="col-md-6 col-lg-4" style="margin-bottom: 0.75rem;">
                         <label style="font-size: 0.85rem; color: var(--color-text-dark-2); margin-bottom: 0.25rem; display: block;">${era.label}</label>
                         <input type="text" class="form-control" id="weight-${era.key}" 
-                               value="${getWeightValue(era.key)}" 
+                               value="${getEraValue(formOC, era.key, 'weight')}" 
                                placeholder="${era.placeholder}">
                       </div>
                     `).join('');
@@ -1217,7 +1249,7 @@ export function renderOCForm(oc = null, onSave) {
         <h3 class="mb-3 mt-4">Appearance by Era</h3>
         <div class="appearance-era-container">
           <div class="appearance-era-tabs" style="display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap;">
-            ${['Part I', 'Part II', 'Blank Period', 'Gaiden', 'Boruto'].map((era, index) => `
+            ${ERAS.map((era, index) => `
               <button type="button" class="btn-naruto btn-naruto-secondary appearance-era-tab ${index === 0 ? 'active' : ''}" 
                       onclick="switchAppearanceEraTab('${era}')" 
                       data-era="${era}"
@@ -1227,7 +1259,7 @@ export function renderOCForm(oc = null, onSave) {
             `).join('')}
           </div>
           <div class="appearance-era-content">
-            ${['Part I', 'Part II', 'Blank Period', 'Gaiden', 'Boruto'].map((era, index) => {
+            ${ERAS.map((era, index) => {
               const eraAppearance = formOC.appearanceByEra?.[era] || { description: '', clothing: '', accessories: '', visualMotifs: '' };
               const isActive = index === 0 ? 'active' : '';
               return `
@@ -1349,9 +1381,21 @@ export function renderOCForm(oc = null, onSave) {
     </div>
   `;
   
+  // ------------------- Save Handler -------------------
   // Store onSave callback and formOC id globally
   window.saveOCForm = () => {
-    const ocData = {
+    try {
+      const ocData = buildOCData(formOC, clans, predefinedClanNames);
+      onSave(ocData);
+    } catch (error) {
+      console.error('[oc-form.js]❌ Failed to save OC form:', error);
+      alert('Failed to save OC. Please check the console for details.');
+    }
+  };
+  
+  // ------------------- Data Builder Function -------------------
+  function buildOCData(formOC, clans, predefinedClanNames) {
+    return {
       id: formOC.id,
       lastName: document.getElementById('lastName').value,
       firstName: document.getElementById('firstName').value,
@@ -1388,9 +1432,8 @@ export function renderOCForm(oc = null, onSave) {
         return (month && day) ? `${month}-${day}` : '';
       })(),
       ageByEra: (() => {
-        const eras = ['Part I', 'Part II', 'Blank Period', 'Gaiden', 'Boruto'];
         const ageByEra = {};
-        eras.forEach(era => {
+        ERAS.forEach(era => {
           const ageInput = document.getElementById(`age-${era}`);
           if (ageInput && ageInput.value.trim()) {
             ageByEra[era] = ageInput.value.trim();
@@ -1460,12 +1503,11 @@ export function renderOCForm(oc = null, onSave) {
       })(),
       stats: (() => {
         // Default stats (use Part I if available, otherwise default values)
-        const eras = ['Part I', 'Part II', 'Blank Period', 'Gaiden', 'Boruto'];
         const partIStats = {};
-        eras.forEach(era => {
+        ERAS.forEach(era => {
           const eraId = era.replace(/\s+/g, '-');
           const eraStats = {};
-          ['intelligence', 'stamina', 'strength', 'speed', 'ninjutsu', 'genjutsu', 'taijutsu', 'handSeals', 'fuinjutsu'].forEach(stat => {
+          STAT_NAMES.forEach(stat => {
             const element = document.getElementById(`${stat}-${era}`);
             if (element) {
               eraStats[stat] = parseFloat(element.value) || 0;
@@ -1476,24 +1518,23 @@ export function renderOCForm(oc = null, onSave) {
           }
         });
         return Object.keys(partIStats).length > 0 ? partIStats : {
-          intelligence: 3,
-          stamina: 3,
-          strength: 3,
-          speed: 3,
-          ninjutsu: 3,
-          genjutsu: 3,
-          taijutsu: 3,
-          handSeals: 3,
-          fuinjutsu: 0
+          intelligence: 1,
+          stamina: 1,
+          strength: 1,
+          speed: 1,
+          ninjutsu: 1,
+          genjutsu: 1,
+          taijutsu: 1,
+          handSeals: 1,
+          fuinjutsu: 1
         };
       })(),
       statsByEra: (() => {
-        const eras = ['Part I', 'Part II', 'Blank Period', 'Gaiden', 'Boruto'];
         const statsByEra = {};
-        eras.forEach(era => {
+        ERAS.forEach(era => {
           const eraId = era.replace(/\s+/g, '-');
           const eraStats = {};
-          ['intelligence', 'stamina', 'strength', 'speed', 'ninjutsu', 'genjutsu', 'taijutsu', 'handSeals', 'fuinjutsu'].forEach(stat => {
+          STAT_NAMES.forEach(stat => {
             const element = document.getElementById(`${stat}-${era}`);
             if (element) {
               const value = parseFloat(element.value) || 0;
@@ -1509,9 +1550,8 @@ export function renderOCForm(oc = null, onSave) {
         return Object.keys(statsByEra).length > 0 ? statsByEra : undefined;
       })(),
       heightByEra: (() => {
-        const eras = ['Part I', 'Part II', 'Blank Period', 'Gaiden', 'Boruto'];
         const heightByEra = {};
-        eras.forEach(era => {
+        ERAS.forEach(era => {
           const heightInput = document.getElementById(`height-${era}`);
           if (heightInput && heightInput.value.trim()) {
             heightByEra[era] = heightInput.value.trim();
@@ -1520,9 +1560,8 @@ export function renderOCForm(oc = null, onSave) {
         return Object.keys(heightByEra).length > 0 ? heightByEra : undefined;
       })(),
       weightByEra: (() => {
-        const eras = ['Part I', 'Part II', 'Blank Period', 'Gaiden', 'Boruto'];
         const weightByEra = {};
-        eras.forEach(era => {
+        ERAS.forEach(era => {
           const weightInput = document.getElementById(`weight-${era}`);
           if (weightInput && weightInput.value.trim()) {
             weightByEra[era] = weightInput.value.trim();
@@ -1578,10 +1617,6 @@ export function renderOCForm(oc = null, onSave) {
         if (!container) return {};
         const abilities = {};
         
-        // Determine taijutsu-style techniques
-        const taijutsuTypes = ['taijutsu', 'kenjutsu', 'bojutsu', 'kayakujutsu', 'kusarigamajutsu', 
-                               'kyujutsu', 'shurikenjutsu', 'tessenjutsu', 'bukijutsu', 'nintaijutsu'];
-        
         container.querySelectorAll('.ability-editor-item').forEach(item => {
           const type = item.dataset.type;
           const index = item.dataset.index;
@@ -1595,7 +1630,7 @@ export function renderOCForm(oc = null, onSave) {
             description: descInput.value || ''
           };
           
-          const isTaijutsu = taijutsuTypes.includes(type.toLowerCase());
+          const isTaijutsu = TAIJUTSU_TYPES.includes(type.toLowerCase());
           
           if (isTaijutsu) {
             const baseStyleInput = container.querySelector(`[name="ability-baseStyle-${type}-${index}"]`);
@@ -1745,9 +1780,8 @@ export function renderOCForm(oc = null, onSave) {
         })()
       },
       appearanceByEra: (() => {
-        const eras = ['Part I', 'Part II', 'Blank Period', 'Gaiden', 'Boruto'];
         const appearanceByEra = {};
-        eras.forEach(era => {
+        ERAS.forEach(era => {
           const eraId = era.replace(/\s+/g, '-');
           const descEl = document.getElementById(`appearanceEra-${era}-description`);
           const clothingEl = document.getElementById(`appearanceEra-${era}-clothing`);
@@ -1766,9 +1800,8 @@ export function renderOCForm(oc = null, onSave) {
         return Object.keys(appearanceByEra).length > 0 ? appearanceByEra : undefined;
       })(),
       imagesByEra: (() => {
-        const eras = ['Part I', 'Part II', 'Blank Period', 'Gaiden', 'Boruto'];
         const imagesByEra = {};
-        eras.forEach(era => {
+        ERAS.forEach(era => {
           const imageEl = document.getElementById(`imageEra-${era}`);
           if (imageEl && imageEl.value && imageEl.value.trim()) {
             imagesByEra[era] = imageEl.value.trim();
@@ -1777,6 +1810,7 @@ export function renderOCForm(oc = null, onSave) {
         return Object.keys(imagesByEra).length > 0 ? imagesByEra : undefined;
       })(),
       profileImage: document.getElementById('profileImage').value,
+      displayImage: document.getElementById('displayImage').value,
       zodiac: document.getElementById('zodiac').value,
       sexualOrientation: document.getElementById('sexualOrientation').value,
       romanticOrientation: document.getElementById('romanticOrientation').value,
@@ -1855,9 +1889,7 @@ export function renderOCForm(oc = null, onSave) {
         d: parseInt(document.getElementById('missionD').value) || 0
       }
     };
-    
-    onSave(ocData);
-  };
+  }
   
   // Initialize stat slider backgrounds after form is inserted into DOM
   setTimeout(() => {
@@ -1885,6 +1917,7 @@ export function renderOCForm(oc = null, onSave) {
     }
   }, 0);
   
+  // ------------------- Window Functions -------------------
   // Appearance image upload and icon picker functions
   window.showImageUpload = function() {
     document.getElementById('appearanceImageUpload').click();
@@ -2239,13 +2272,11 @@ export function renderOCForm(oc = null, onSave) {
     });
     
     // Copy values from previous era if current era inputs are empty
-    const eras = ['Part I', 'Part II', 'Blank Period', 'Gaiden', 'Boruto'];
-    const statNames = ['intelligence', 'stamina', 'strength', 'speed', 'ninjutsu', 'genjutsu', 'taijutsu', 'handSeals', 'fuinjutsu'];
-    const currentIndex = eras.indexOf(era);
+    const currentIndex = ERAS.indexOf(era);
     
     // Check if current era has any values filled in
     let hasValues = false;
-    statNames.forEach(statName => {
+    STAT_NAMES.forEach(statName => {
       const input = document.getElementById(`${statName}-${era}`);
       if (input && input.value && parseFloat(input.value) > 0) {
         hasValues = true;
@@ -2254,8 +2285,8 @@ export function renderOCForm(oc = null, onSave) {
     
     // If no values and there's a previous era, copy from it
     if (!hasValues && currentIndex > 0) {
-      const previousEra = eras[currentIndex - 1];
-      statNames.forEach(statName => {
+      const previousEra = ERAS[currentIndex - 1];
+      STAT_NAMES.forEach(statName => {
         const prevInput = document.getElementById(`${statName}-${previousEra}`);
         const currentInput = document.getElementById(`${statName}-${era}`);
         if (prevInput && currentInput && prevInput.value) {
@@ -2270,9 +2301,30 @@ export function renderOCForm(oc = null, onSave) {
     }
   };
   
+  // Initialize selectedClassifications from formOC
+  if (typeof window.initializeClassificationFromOC === 'function') {
+    window.initializeClassificationFromOC(formOC.classification);
+  }
+  
   return form;
+  } catch (error) {
+    console.error('[oc-form.js]❌ Failed to render OC form:', error);
+    const errorDiv = document.createElement('div');
+    errorDiv.className = 'card-naruto';
+    errorDiv.innerHTML = `
+      <div class="card-header-naruto">
+        <h2>Error</h2>
+      </div>
+      <div class="card-body">
+        <p>Failed to load OC form. Please refresh the page.</p>
+        <button type="button" class="btn-naruto" onclick="window.navigateTo('ocs')">Go Back</button>
+      </div>
+    `;
+    return errorDiv;
+  }
 }
 
+// ------------------- Render Functions -------------------
 function renderStatInput(name, value) {
   // Clamp value to valid range (1-5) and round to nearest 0.5
   const rawValue = value || 3;
@@ -2311,12 +2363,11 @@ function renderStatInput(name, value) {
   `;
 }
 
+// ------------------- Render Functions -------------------
 // Ability editor helper functions
 function renderAbilityEditor(type, ability = {}, index) {
   // Determine if this is a taijutsu-style technique (body/weapon techniques)
-  const taijutsuTypes = ['taijutsu', 'kenjutsu', 'bojutsu', 'kayakujutsu', 'kusarigamajutsu', 
-                         'kyujutsu', 'shurikenjutsu', 'tessenjutsu', 'bukijutsu', 'nintaijutsu'];
-  const isTaijutsu = taijutsuTypes.includes(type.toLowerCase());
+  const isTaijutsu = TAIJUTSU_TYPES.includes(type.toLowerCase());
   
   // Get type name from options or use formatted version
   const typeName = getTechniqueTypeLabel(type) || 
@@ -2534,21 +2585,27 @@ function renderStoryArcEditor(arc = {}, index) {
 // Make helper functions globally available
 if (typeof window !== 'undefined') {
   window.addAbility = function(type) {
-    const container = document.getElementById('abilities-container');
-    const items = container.querySelectorAll(`[data-type="${type}"]`);
-    const index = items.length;
-    
-    // Determine if this is a taijutsu-style technique
-    const taijutsuTypes = ['taijutsu', 'kenjutsu', 'bojutsu', 'kayakujutsu', 'kusarigamajutsu', 
-                           'kyujutsu', 'shurikenjutsu', 'tessenjutsu', 'bukijutsu', 'nintaijutsu'];
-    const isTaijutsu = taijutsuTypes.includes(type.toLowerCase());
-    
-    const newAbility = isTaijutsu
-      ? { style: '', baseStyle: '', mastery: 3, description: '' }
-      : { style: '', rank: '', difficulty: 3, chakraIntensity: 3, description: '' };
-    container.innerHTML += renderAbilityEditor(type, newAbility, index);
-    if (container.querySelector('.text-muted')) {
-      container.querySelector('.text-muted').remove();
+    try {
+      const container = document.getElementById('abilities-container');
+      if (!container) {
+        console.error('[oc-form.js]❌ Abilities container not found');
+        return;
+      }
+      const items = container.querySelectorAll(`[data-type="${type}"]`);
+      const index = items.length;
+      
+      // Determine if this is a taijutsu-style technique
+      const isTaijutsu = TAIJUTSU_TYPES.includes(type.toLowerCase());
+      
+      const newAbility = isTaijutsu
+        ? { style: '', baseStyle: '', mastery: 3, description: '' }
+        : { style: '', rank: '', difficulty: 3, chakraIntensity: 3, description: '' };
+      container.innerHTML += renderAbilityEditor(type, newAbility, index);
+      if (container.querySelector('.text-muted')) {
+        container.querySelector('.text-muted').remove();
+      }
+    } catch (error) {
+      console.error('[oc-form.js]❌ Failed to add ability:', error);
     }
   };
   
@@ -2724,10 +2781,20 @@ if (typeof window !== 'undefined') {
     const container = document.getElementById('gallery-container');
     const items = container.querySelectorAll('.gallery-editor-item');
     const index = items.length;
-    container.innerHTML += renderGalleryItem({}, index);
-    if (container.querySelector('.text-muted')) {
-      container.querySelector('.text-muted').remove();
+    
+    // Remove "No gallery images" message if present
+    const noImagesMsg = container.querySelector('.text-muted');
+    if (noImagesMsg) {
+      noImagesMsg.remove();
     }
+    
+    // Create a temporary div to parse the HTML
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = renderGalleryItem({}, index);
+    const newItem = tempDiv.firstElementChild;
+    
+    // Append the new item without destroying existing elements
+    container.appendChild(newItem);
   };
   
   window.removeGalleryItem = function(index) {
@@ -2924,5 +2991,131 @@ if (typeof window !== 'undefined') {
         var(--color-border-2) 100%)`;
     }
   };
+  
+  // Classification selector functions
+  // Initialize from DOM element if available, otherwise use empty array
+  let selectedClassifications = [];
+  
+  // Function to initialize from formOC data (called from renderOCForm)
+  window.initializeClassificationFromOC = function(classificationArray) {
+    selectedClassifications = (classificationArray || []).slice();
+  };
+  
+  // Function to sync from DOM element
+  function initializeSelectedClassifications() {
+    const hiddenInput = document.getElementById('classification');
+    if (hiddenInput && hiddenInput.value) {
+      selectedClassifications = hiddenInput.value.split(',').map(c => c.trim()).filter(c => c);
+    }
+  }
+  // Initialize when DOM is ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeSelectedClassifications);
+  } else {
+    initializeSelectedClassifications();
+  }
+  
+  window.openClassificationDropdown = function() {
+    const dropdown = document.getElementById('classification-dropdown');
+    if (dropdown) {
+      dropdown.style.display = 'block';
+    }
+  };
+  
+  window.closeClassificationDropdown = function() {
+    // Close after a small delay to allow click events to fire
+    setTimeout(() => {
+      const dropdown = document.getElementById('classification-dropdown');
+      if (dropdown) {
+        dropdown.style.display = 'none';
+      }
+    }, 200);
+  };
+  
+  window.filterClassificationOptions = function(searchText) {
+    const dropdown = document.getElementById('classification-dropdown');
+    const options = dropdown?.querySelectorAll('.classification-option');
+    const searchLower = searchText.toLowerCase();
+    
+    if (!options) return;
+    
+    // Show dropdown when searching
+    if (dropdown) {
+      dropdown.style.display = 'block';
+    }
+    
+    options.forEach(option => {
+      const text = option.textContent.toLowerCase();
+      if (text.includes(searchLower)) {
+        option.style.display = '';
+      } else {
+        option.style.display = 'none';
+      }
+    });
+  };
+  
+  window.toggleClassificationOption = function(value) {
+    const index = selectedClassifications.indexOf(value);
+    if (index > -1) {
+      selectedClassifications.splice(index, 1);
+    } else {
+      selectedClassifications.push(value);
+    }
+    updateClassificationDisplay();
+    updateClassificationHiddenInput();
+  };
+  
+  window.removeClassificationTag = function(value) {
+    const index = selectedClassifications.indexOf(value);
+    if (index > -1) {
+      selectedClassifications.splice(index, 1);
+      updateClassificationDisplay();
+      updateClassificationHiddenInput();
+    }
+  };
+  
+  function updateClassificationDisplay() {
+    // Update tags
+    const tagsContainer = document.getElementById('classification-tags');
+    if (tagsContainer) {
+      tagsContainer.innerHTML = selectedClassifications.map(cls => `
+        <span class="classification-tag">
+          ${cls}
+          <button type="button" class="classification-tag-remove" onclick="removeClassificationTag('${cls.replace(/'/g, "\\'")}')" aria-label="Remove ${cls}">
+            <i class="fas fa-times"></i>
+          </button>
+        </span>
+      `).join('');
+    }
+    
+    // Update dropdown options
+    const options = document.querySelectorAll('.classification-option');
+    options.forEach(option => {
+      const value = option.dataset.value;
+      if (selectedClassifications.includes(value)) {
+        option.classList.add('selected');
+      } else {
+        option.classList.remove('selected');
+      }
+    });
+  }
+  
+  function updateClassificationHiddenInput() {
+    const hiddenInput = document.getElementById('classification');
+    if (hiddenInput) {
+      hiddenInput.value = selectedClassifications.join(',');
+    }
+  }
+  
+  // Close dropdown when clicking outside
+  document.addEventListener('click', function(event) {
+    const container = document.querySelector('.classification-selector-wrapper');
+    if (container && !container.contains(event.target)) {
+      const dropdown = document.getElementById('classification-dropdown');
+      if (dropdown) {
+        dropdown.style.display = 'none';
+      }
+    }
+  });
 }
 
