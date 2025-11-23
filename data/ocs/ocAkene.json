@@ -206,17 +206,17 @@
       "Mouth-related jutsu (due to earth-style training incident)"
     ],
     "demeanor": {
-      "charisma": 0,
-      "extraversion": 0,
-      "energy": 0,
-      "empathy": 0,
-      "impulsivity": 0,
-      "neuroticism": 0,
-      "intuition": 0,
-      "observation": 0,
-      "sensitivity": 0,
-      "generosity": 0,
-      "respectForAuthority": 0
+      "charisma": 3,
+      "extraversion": 2,
+      "energy": 3,
+      "empathy": 3,
+      "impulsivity": 1,
+      "neuroticism": 3,
+      "intuition": 4,
+      "observation": 5,
+      "sensitivity": 2,
+      "generosity": 2,
+      "respectForAuthority": 3
     }
   },
   "abilities": {
@@ -250,52 +250,40 @@
     "gear": [
       {
         "name": "Bone Chain Sickle (Kusarigama)",
-        "category": "Item",
         "icon": "https://i.pinimg.com/736x/12/53/d8/1253d86d15350b5238e1727bc26985a4.jpg"
       },
       {
-        "name": "Kunai",
-        "category": "Item"
+        "name": "Kunai"
       },
       {
-        "name": "Shuriken",
-        "category": "Item"
+        "name": "Shuriken"
       },
       {
-        "name": "Ninja Wire",
-        "category": "Item"
+        "name": "Ninja Wire"
       },
       {
-        "name": "Tool Pouch (waist)",
-        "category": "Item"
+        "name": "Tool Pouch (waist)"
       },
       {
-        "name": "Leg Pouch (right thigh)",
-        "category": "Item"
+        "name": "Leg Pouch (right thigh)"
       },
       {
-        "name": "Small Hoop Earrings (worn outside combat)",
-        "category": "Item"
+        "name": "Small Hoop Earrings (worn outside combat)"
       },
       {
-        "name": "Protective Wire Mesh Undergarment",
-        "category": "Item"
+        "name": "Protective Wire Mesh Undergarment"
       },
       {
-        "name": "Weighted Arm Gloves (Part II)",
-        "category": "Item"
+        "name": "Weighted Arm Gloves (Part II)"
       },
       {
-        "name": "Weighted Leg Warmers (Part II)",
-        "category": "Item"
+        "name": "Weighted Leg Warmers (Part II)"
       },
       {
-        "name": "Standard Shinobi Sandals / Boots",
-        "category": "Item"
+        "name": "Standard Shinobi Sandals / Boots"
       },
       {
-        "name": "Thigh-high protective socks (Part I)",
-        "category": "Item"
+        "name": "Thigh-high protective socks (Part I)"
       }
     ]
   },
