@@ -820,27 +820,52 @@ export function renderOCForm(oc = null, onSave) {
             <button type="button" class="stats-form-tab" onclick="switchStatsEraTab('Boruto')" data-era="Boruto">Boruto</button>
           </div>
           <div class="stats-form-content">
-            ${['Part I', 'Part II', 'Blank Period', 'Gaiden', 'Boruto'].map((era, index) => {
-              const eraStats = formOC.statsByEra?.[era] || formOC.stats || {};
-              const isActive = index === 0 ? 'active' : '';
-              return `
-                <div class="stats-form-panel ${isActive}" id="stats-form-panel-${era.replace(/\s+/g, '-')}">
-                  <div class="stats-container">
-                    <div class="stats-grid">
-                      ${renderStatInput(`intelligence-${era}`, eraStats.intelligence || formOC.stats?.intelligence || 3)}
-                      ${renderStatInput(`stamina-${era}`, eraStats.stamina || formOC.stats?.stamina || 3)}
-                      ${renderStatInput(`strength-${era}`, eraStats.strength || formOC.stats?.strength || 3)}
-                      ${renderStatInput(`speed-${era}`, eraStats.speed || formOC.stats?.speed || 3)}
-                      ${renderStatInput(`ninjutsu-${era}`, eraStats.ninjutsu || formOC.stats?.ninjutsu || 3)}
-                      ${renderStatInput(`genjutsu-${era}`, eraStats.genjutsu || formOC.stats?.genjutsu || 3)}
-                      ${renderStatInput(`taijutsu-${era}`, eraStats.taijutsu || formOC.stats?.taijutsu || 3)}
-                      ${renderStatInput(`handSeals-${era}`, eraStats.handSeals || formOC.stats?.handSeals || 3)}
-                      ${renderStatInput(`fuinjutsu-${era}`, eraStats.fuinjutsu || formOC.stats?.fuinjutsu || 0)}
+            ${(() => {
+              const eras = ['Part I', 'Part II', 'Blank Period', 'Gaiden', 'Boruto'];
+              const statNames = ['intelligence', 'stamina', 'strength', 'speed', 'ninjutsu', 'genjutsu', 'taijutsu', 'handSeals', 'fuinjutsu'];
+              
+              // Helper function to get stat value for an era, checking previous eras if not found
+              const getStatValue = (era, statName) => {
+                // First check if this era has the stat
+                const eraStats = formOC.statsByEra?.[era];
+                if (eraStats && eraStats[statName] !== undefined) {
+                  return eraStats[statName];
+                }
+                
+                // If not found, check previous eras in order
+                const currentIndex = eras.indexOf(era);
+                for (let i = currentIndex - 1; i >= 0; i--) {
+                  const prevEra = eras[i];
+                  const prevEraStats = formOC.statsByEra?.[prevEra];
+                  if (prevEraStats && prevEraStats[statName] !== undefined) {
+                    return prevEraStats[statName];
+                  }
+                }
+                
+                // Fall back to default stats
+                if (formOC.stats && formOC.stats[statName] !== undefined) {
+                  return formOC.stats[statName];
+                }
+                
+                // Final fallback to default values
+                return statName === 'fuinjutsu' ? 0 : 3;
+              };
+              
+              return eras.map((era, index) => {
+                const isActive = index === 0 ? 'active' : '';
+                return `
+                  <div class="stats-form-panel ${isActive}" id="stats-form-panel-${era.replace(/\s+/g, '-')}">
+                    <div class="stats-container">
+                      <div class="stats-grid">
+                        ${statNames.map(statName => 
+                          renderStatInput(`${statName}-${era}`, getStatValue(era, statName))
+                        ).join('')}
+                      </div>
                     </div>
                   </div>
-                </div>
-              `;
-            }).join('')}
+                `;
+              }).join('');
+            })()}
           </div>
         </div>
         
@@ -2210,6 +2235,37 @@ export function renderOCForm(oc = null, onSave) {
         panel.classList.remove('active');
       }
     });
+    
+    // Copy values from previous era if current era inputs are empty
+    const eras = ['Part I', 'Part II', 'Blank Period', 'Gaiden', 'Boruto'];
+    const statNames = ['intelligence', 'stamina', 'strength', 'speed', 'ninjutsu', 'genjutsu', 'taijutsu', 'handSeals', 'fuinjutsu'];
+    const currentIndex = eras.indexOf(era);
+    
+    // Check if current era has any values filled in
+    let hasValues = false;
+    statNames.forEach(statName => {
+      const input = document.getElementById(`${statName}-${era}`);
+      if (input && input.value && parseFloat(input.value) > 0) {
+        hasValues = true;
+      }
+    });
+    
+    // If no values and there's a previous era, copy from it
+    if (!hasValues && currentIndex > 0) {
+      const previousEra = eras[currentIndex - 1];
+      statNames.forEach(statName => {
+        const prevInput = document.getElementById(`${statName}-${previousEra}`);
+        const currentInput = document.getElementById(`${statName}-${era}`);
+        if (prevInput && currentInput && prevInput.value) {
+          const prevValue = parseFloat(prevInput.value);
+          if (prevValue > 0) {
+            currentInput.value = prevValue;
+            // Trigger input event to update any listeners
+            currentInput.dispatchEvent(new Event('input', { bubbles: true }));
+          }
+        }
+      });
+    }
   };
   
   return form;
@@ -2680,11 +2736,27 @@ if (typeof window !== 'undefined') {
   
   window.addStoryArc = function() {
     const container = document.getElementById('story-arcs-container');
+    if (!container) return;
+    
+    // Remove the "No story arcs" message if it exists
+    const emptyMessage = container.querySelector('.text-muted');
+    if (emptyMessage) {
+      emptyMessage.remove();
+    }
+    
+    // Get all existing items to calculate the correct index
     const items = container.querySelectorAll('.story-arc-editor-item');
     const index = items.length;
-    container.innerHTML += renderStoryArcEditor({}, index);
-    if (container.querySelector('.text-muted')) {
-      container.querySelector('.text-muted').remove();
+    
+    // Create a temporary div to hold the new HTML
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = renderStoryArcEditor({}, index);
+    
+    // Append the first child (the story arc editor item) to the container
+    // This preserves existing DOM elements and their values
+    const newItem = tempDiv.firstElementChild;
+    if (newItem) {
+      container.appendChild(newItem);
     }
   };
   

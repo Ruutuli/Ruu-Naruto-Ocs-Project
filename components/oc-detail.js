@@ -276,14 +276,14 @@ export function renderOCDetail(oc) {
         <div style="margin-top: 1rem;">
           <h4>Quotes <i class="japanese-header">名言</i></h4>
           <ul style="list-style-type: none; padding-left: 0;">
-            ${oc.quotes.map(quote => `<li style="margin-bottom: 0.5rem; font-style: italic;">"${quote}"</li>`).join('')}
+            ${oc.quotes.map(quote => `<li style="margin-bottom: 0.5rem; font-style: italic;">${quote}</li>`).join('')}
           </ul>
         </div>
         ` : ''}
         ${oc.trivia ? `
         <div style="margin-top: 1rem;">
           <h4>Trivia <i class="japanese-header">トリビア</i></h4>
-          <p>${oc.trivia}</p>
+          <p style="white-space: pre-line;">${oc.trivia}</p>
         </div>
         ` : ''}
       </div>
