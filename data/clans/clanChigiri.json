@@ -1,0 +1,132 @@
+{
+  "id": "clanChigiri",
+  "name": "Chigiri",
+  "kanji": "契り",
+  "meaning": "vow, bond, karmic tie, destined connection  ",
+  "tagline": "",
+  "summary": "The Chigiri Clan is an ancient divination lineage descended from the first human madousho and shaped by generations of fate-bound inheritance. Known for their destiny-reading arts, spiritual discipline, and strict internal structure, they serve as advisors, archivists, and analysts across multiple nations while maintaining neutrality through a central Head Branch in the Land of Iron. Their identity is defined by vows, inherited consequences, and the delicate red threads only they can see.\n",
+  "affiliation": "Independent / Dispersed",
+  "classification": "Shinobi Clan",
+  "status": "Active",
+  "village": "Land of Iron",
+  "symbol": "https://drive.google.com/file/d/1bkGalqbn5aylG9hFetu1rxKDpjVMYaqo/view?usp=sharing",
+  "overview": {
+    "origins": "The Chigiri Clan originates from Rei, the first human turned into a living madousho after triggering one of Kaguya’s forbidden seals. Her son, Taro, formed the beginnings of the bloodline, attempting to protect their descendants from the spiritual consequences of Rei’s transformation. Through Taro’s arranged union between his daughter Eikene and the Ōtsutsuki descendant Higure, the lineage fused human fate with celestial power, establishing a family defined by spiritual burden, destiny, and inherited knowledge.\n",
+    "knownFor": "The clan is best known for Divine Release and Tengenjutsu—abilities that allow them to read fate, analyze destiny threads, and interpret emotional and spiritual trajectories. Their members excel as archivists, diviners, analysts, and advisors, with unmatched insight into long-term risk, critical turning points, and interpersonal dynamics.\n",
+    "purpose": "The Chigiri serve as interpreters of destiny and custodians of knowledge. Their aim is to guide others toward stable, favorable outcomes while preserving historical continuity, spiritual clarity, and the safety of the madousho lineage. They prevent catastrophic fate spirals by advising leaders, stabilizing village decisions, and safeguarding ancient knowledge.\n",
+    "fitInUniverse": "Scattered across all major nations, the Chigiri fit into the Naruto world as a non-military clan whose influence comes from insight rather than force. Their divination abilities make them invaluable to intelligence divisions, diplomatic missions, and strategic planning. By maintaining a neutral Head Branch in the Land of Iron, they balance their presence across villages without becoming tools of any single nation.\n"
+  },
+  "kekkeiGenkai": {
+    "name": "Divine Release (Shinsei-Ton)  ",
+    "type": "Sensory Art",
+    "classification": "Kekkei Genkai",
+    "chakraNature": "Yin / Fire Release",
+    "description": "Divine Release grants the ability to perceive **red strings of fate**—threads representing the emotional forces, life-path trajectories, and future divergence points that shape a person’s destiny. The user cannot manipulate or alter fate; they can only *interpret* what already exists.  \n\nMore experienced diviners perceive deeper, denser, and more complex thread structures, while younger members see simplified fates with fewer branching possibilities. Divine Release reveals the **most favorable and most probable path** for an individual—the “path of least resistance” according to Chigiri logic.  \n\nA user **cannot read their own fate**, though another Divine Release user *can*. Individuals who are madousho vessels remain unreadable by anyone.\n",
+    "activation": "- Entering a state of emotional and mental stillness  \n- Focused attention or light physical contact (optional)  \n- Ritual mediums (ink, bones, palms) may assist but are not required  \n- Eyes do not transform, but may take on a faint reflective sheen",
+    "mechanics": [
+      "- Perceives red fate threads  ",
+      "- Identifies future divergence points  ",
+      "- Evaluates emotional influence on destiny  ",
+      "- Detects destabilized or dangerous paths  ",
+      "- Reveals the strongest and most likely outcome  ",
+      "- Depth increases with age, clarity, and training"
+    ],
+    "strengths": [
+      "- High-precision long-term prediction  ",
+      "- Powerful insight into relationships and emotional motives  ",
+      "- Early detection of risk or catastrophe  ",
+      "- Enhances strategic and diplomatic decision-making  "
+    ],
+    "weaknesses": [
+      "- Mental fatigue from extended readings  ",
+      "- Emotional shock from traumatic fates  ",
+      "- Vulnerability while focusing  ",
+      "- Easy misinterpretation by inexperienced users  ",
+      "- Spiritually unable to harm other Chigiri  ",
+      "- Provides **no combat ability**"
+    ],
+    "notableJutsu": [
+      "- **Fate-Sense Sight —** Basic perceptive state revealing fate threads.  ",
+      "- **Thread Convergence Reading —** Identifies upcoming branching points.  ",
+      "- **Emotional Current Insight —** Reads emotional forces influencing destiny.  ",
+      "- **Red Divergence Detection —** Detects instability or danger within future outcomes."
+    ]
+  },
+  "clanStructure": {
+    "clanHead": "The Chigiri Clan is led by the **Head of the Main Family**, residing in the Land of Iron.  \nTheir role is to uphold ancestral law, interpret high-level fate readings, regulate inter-branch disputes, and protect the madousho lineage from political exploitation. The head is expected to embody restraint, emotional clarity, and absolute loyalty to clan tradition. They hold final authority in all matters involving destiny, marriage approval, and the preservation of sacred texts.\n\n",
+    "councilElders": "The Chigiri maintain a structured **Elder Council** composed of highly trained diviners from various branches.  \nElders are selected based on:\n- exceptional accuracy in fate interpretation  \n- emotional discipline and stability  \n- long-term service to the clan  \n\nThe council oversees:\n- major fate rulings  \n- marriage and heir evaluations  \n- training of diviners  \n- maintenance and translation of madousho material  \n- rituals connecting branches to the Head Family  \n\nElders serve for life unless they retire due to emotional or spiritual fatigue.\n",
+    "branchSystem": "#### **Main Family (Head Branch) — Land of Iron**\n**Purpose:**  \n- protect the madousho bloodline  \n- maintain clan neutrality  \n- oversee all archives, records, and oaths  \n- train elite diviners  \n- enforce inter-branch laws  \n\n**Privileges:**  \n- exclusive access to the oldest madousho records  \n- sole authority to approve marriages and heir paths  \n- power to elevate or demote Elder status  \n\n---\n\n#### **Branch Families (Village Branches)**\nEach Hidden Village hosts its own Chigiri branch with localized specialization based on the village’s chakra culture.\n\n**Typical Functions:**  \n- intelligence support  \n- divination consulting  \n- sealing assistance  \n- archival maintenance  \n- diplomatic interpretation  \n\n**Limitations:**  \n- cannot override Head Branch rulings  \n- marriage options require compatibility review  \n- cannot alter destiny-related laws  \n- must report significant fate anomalies to the Head Branch  \n",
+    "crestsSeals": "",
+    "politicalTensions": "Conflicts arise when:\n- branches disagree on fate interpretations  \n- elders dispute translations of older madousho passages  \n- incompatible marriages are requested  \n- a branch becomes too aligned with its host village’s politics  \n\nExternal tensions exist with clans who view Chigiri neutrality as suspicious or who resent the Chigiri’s refusal to participate in inter-clan violence.\n",
+    "lawsRules": "The Chigiri follow strict ancestral law derived from fate-based doctrine:\n\n- **Marriage requires fate compatibility approval.**  \n- **No Chigiri may harm another**, spiritually or physically.  \n- **Destiny readings may not be weaponized** or used to manipulate political outcomes.  \n- **Leaving the clan requires ritual severance**, including cutting the hair.  \n- **Heirs must undergo emotional and spiritual evaluation** before succession.  \n- **Tampering with madousho texts is forbidden** and punishable by exile.  \n- **Diviners must maintain emotional equilibrium**; unstable members are barred from practice.  \n- **Fate involving outsiders must be treated neutrally**, without altering outcomes for personal gain.\n"
+  },
+  "cultureTraditions": {
+    "values": [],
+    "longHeldTraditions": "",
+    "clanSayings": []
+  },
+  "villagePlacement": {
+    "primaryVillage": "",
+    "dutiesAssigned": "",
+    "relationsWithClans": "",
+    "roleInConflicts": ""
+  },
+  "combatInfo": {
+    "signatureWeaponry": "",
+    "battleStrengths": [],
+    "battleWeaknesses": []
+  },
+  "villagesLands": {
+    "primaryLocation": "",
+    "branches": [],
+    "territory": "",
+    "reputation": ""
+  },
+  "appearancePhysicalTraits": "",
+  "abilities": {
+    "signatureJutsu": [],
+    "chakraNatures": {
+      "primary": "",
+      "secondary": "",
+      "rare": ""
+    },
+    "combatStyle": "",
+    "roleInVillage": "",
+    "strengths": [],
+    "weaknesses": []
+  },
+  "leaders": {
+    "currentLeader": "",
+    "pastLeaders": [],
+    "heirs": ""
+  },
+  "notableMembers": [],
+  "ocCreationAllowed": "Ask",
+  "clanHistory": {
+    "ancientEra": "",
+    "feudalEra": "",
+    "foundingOfVillages": "",
+    "modernEra": ""
+  },
+  "clanSymbols": {
+    "clanCrest": "",
+    "artifacts": [],
+    "secretKnowledge": ""
+  },
+  "optionalExtras": {
+    "bloodlineMutations": "",
+    "branchFamilySpecialties": "",
+    "clanWeaknessDisease": "",
+    "summoningContractHistory": "",
+    "restrictedTechniques": [],
+    "clanMotto": "",
+    "clanRankingSystem": "",
+    "clanArchitecture": ""
+  },
+  "trivia": "",
+  "references": "",
+  "members": [
+    "ocAkene"
+  ],
+  "moodBoardImages": []
+}

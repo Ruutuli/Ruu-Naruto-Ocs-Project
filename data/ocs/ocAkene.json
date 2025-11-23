@@ -207,15 +207,15 @@
     ],
     "demeanor": {
       "friendlyReserved": 2.5,
-      "politeBlunt": 5.5,
-      "cleverFoolish": 5.5,
-      "sensitiveTough": 5.5,
-      "braveTimid": 5.5,
+      "politeBlunt": 8.5,
+      "cleverFoolish": 2,
+      "sensitiveTough": 5,
+      "braveTimid": 2,
       "carefulReckless": 5.5,
-      "sincereDeceptive": 5.5,
-      "diligentLazy": 5.5,
-      "calmIrritable": 5.5,
-      "humorousSerious": 5.5
+      "sincereDeceptive": 3,
+      "diligentLazy": 1.5,
+      "calmIrritable": 3.5,
+      "humorousSerious": 6.5
     }
   },
   "abilities": {
@@ -338,7 +338,9 @@
   },
   "ninjaRegistrationNumber": "012726",
   "academyGraduationAge": "11",
-  "classification": [],
+  "classification": [
+    "Missing-nin"
+  ],
   "kekkeiGenkai": "",
   "chakraPhysicalProwess": {
     "chakraReserves": "Moderate; typical for a skilled Genin with steady stamina but not large reserves\n",
@@ -355,7 +357,7 @@
     "leadershipSkill": "Moderate; not a natural “team commander,” but excels when  \ndirecting information flow, forming plans, or advising others.  \nFunctions best as a tactician or analyst rather than a front-line leader.\n"
   },
   "themeSong": "",
-  "themeSongLink": "",
+  "themeSongLink": "https://youtu.be/LePcCSpmdE4?si=Cb8b_oKLUfOyJkP0",
   "voiceActors": {
     "japanese": "Ami Koshimizu",
     "english": "Emily Neves"
