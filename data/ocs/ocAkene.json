@@ -3,10 +3,14 @@
   "lastName": "Chigiri",
   "firstName": "Akene",
   "nameJapanese": "契り朱根（ちぎり あけね）",
-  "lastNameMeaning": "Pledge; vow; promise (also colloquially teased as meaning \"sexual relations\")",
-  "firstNameMeaning": "",
-  "nameMeaning": "Pledge; vow; promise (also colloquially teased as meaning \"sexual relations\")",
-  "aliases": [],
+  "lastNameMeaning": "Pledge; vow; promise (also colloquially teased as meaning ",
+  "firstNameMeaning": "Scarlet / red root",
+  "nameMeaning": "“Pledge of the scarlet root”",
+  "aliases": [
+    "Madousho",
+    "Vessel of the Madousho",
+    "Fate Reader"
+  ],
   "debut": {
     "manga": "",
     "anime": "",
@@ -15,9 +19,13 @@
     "game": ""
   },
   "appearsIn": [],
-  "dob": "",
-  "bloodType": "",
-  "gender": "",
+  "dob": "05-04",
+  "ageByEra": {
+    "Part II": "15-17",
+    "Boruto": "32"
+  },
+  "bloodType": "O",
+  "gender": "Female",
   "natureType": "",
   "village": [],
   "rank": [],
@@ -173,9 +181,9 @@
     }
   },
   "profileImage": "",
-  "zodiac": "",
-  "sexualOrientation": "",
-  "romanticOrientation": "",
+  "zodiac": "♉ Taurus",
+  "sexualOrientation": "Demisexual",
+  "romanticOrientation": "Demiromantic",
   "family": {
     "father": "",
     "mother": "",
