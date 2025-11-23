@@ -301,18 +301,31 @@ class Storage {
     // Check if there's already a save in progress for this file
     if (this._saveQueue.has(fileKey)) {
       console.log(`Save already in progress for ${fileKey}, waiting...`);
-      // Wait for the existing save to complete
+      // Wait for the existing save to complete with a timeout
       try {
-        await this._saveQueue.get(fileKey);
+        // Wait up to 10 seconds for the previous save
+        const timeoutPromise = new Promise((_, reject) => 
+          setTimeout(() => reject(new Error('Save timeout')), 10000)
+        );
+        await Promise.race([this._saveQueue.get(fileKey), timeoutPromise]);
+        
         // If the previous save succeeded, check if we still need to save
         const currentData = this._cache[type].get(id);
-        if (currentData && JSON.stringify(currentData) === JSON.stringify(data)) {
+        const currentContent = JSON.stringify(currentData, null, 2);
+        const newContent = JSON.stringify(data, null, 2);
+        
+        if (currentData && currentContent === newContent) {
           console.log(`Data unchanged for ${fileKey}, skipping save`);
           return true;
         }
+        
+        // Small delay to ensure previous save is fully committed
+        await new Promise(resolve => setTimeout(resolve, 100));
       } catch (e) {
-        // Previous save failed, continue with this one
-        console.log(`Previous save failed for ${fileKey}, retrying...`);
+        // Previous save failed or timed out, continue with this one
+        console.log(`Previous save failed/timed out for ${fileKey}, retrying...`);
+        // Clear the queue entry so we can try again
+        this._saveQueue.delete(fileKey);
       }
     }
 
@@ -330,7 +343,7 @@ class Storage {
   }
 
   // Perform the actual save operation
-  async _performSave(type, id, data, retryCount = 0, providedSHA = null) {
+  async _performSave(type, id, data, retryCount = 0) {
     if (!this._token) {
       this._token = await getGitHubToken();
     }
@@ -365,11 +378,9 @@ class Storage {
 
       const encodedContent = btoa(unescape(encodeURIComponent(content)));
       
-      // Use provided SHA if available (from conflict resolution), otherwise fetch fresh SHA
-      let sha = providedSHA;
-      if (!sha) {
-        sha = await this.getFileSHA(path);
-      }
+      // CRITICAL: Always fetch the absolute latest SHA immediately before the PUT request
+      // This prevents conflicts from concurrent saves
+      const sha = await this.getFileSHA(path);
       
       const body = {
         message: `Update ${type}: ${id}`,
@@ -403,15 +414,16 @@ class Storage {
         const error = await response.json();
         
         // Handle 409 Conflict - file was modified, try to merge or retry
-        if (response.status === 409 && retryCount < 3) {
-          console.log(`409 Conflict detected for ${path}, attempt ${retryCount + 1}/3`);
+        if (response.status === 409 && retryCount < 5) {
+          console.log(`409 Conflict detected for ${path}, attempt ${retryCount + 1}/5`);
           
-          // Exponential backoff: 500ms, 1000ms, 2000ms
-          const delay = Math.min(500 * Math.pow(2, retryCount), 2000);
-          await new Promise(resolve => setTimeout(resolve, delay));
+          // Exponential backoff with jitter: 300ms, 600ms, 1200ms, 2400ms, 3000ms
+          const baseDelay = 300;
+          const delay = Math.min(baseDelay * Math.pow(2, retryCount), 3000);
+          const jitter = Math.random() * 100; // Add 0-100ms jitter to prevent thundering herd
+          await new Promise(resolve => setTimeout(resolve, delay + jitter));
           
-          // Try to get the current file content and check if we should merge
-          let freshSHA = null;
+          // Fetch the current file content to check if we should merge
           try {
             const currentFileResponse = await fetch(
               `${this._githubBase}/contents/${path}?ref=${githubConfig.branch}`,
@@ -425,31 +437,34 @@ class Storage {
             
             if (currentFileResponse.ok) {
               const currentFile = await currentFileResponse.json();
-              // Extract the SHA from the current file response
-              freshSHA = currentFile.sha;
-              
               const currentContent = atob(currentFile.content.replace(/\s/g, ''));
-              const currentData = JSON.parse(currentContent);
               
-              // If the remote file is identical to what we're trying to save, consider it success
-              if (JSON.stringify(currentData, null, 2) === content) {
-                console.log(`Remote file already has our changes, considering save successful`);
-                this._cache[type].set(id, data);
-                return true;
+              try {
+                const currentData = JSON.parse(currentContent);
+                
+                // If the remote file is identical to what we're trying to save, consider it success
+                const currentContentFormatted = JSON.stringify(currentData, null, 2);
+                if (currentContentFormatted === content) {
+                  console.log(`Remote file already has our changes, considering save successful`);
+                  this._cache[type].set(id, data);
+                  return true;
+                }
+                
+                // If remote file differs, we'll prefer our version (user edits take priority)
+                console.log(`Remote file differs, retrying with user's version (attempt ${retryCount + 1}/5)`);
+              } catch (parseError) {
+                console.warn(`Could not parse remote file content, retrying...`);
               }
-              
-              // If remote file is newer (has more recent timestamp or different content),
-              // we'll use our version (the user's current edits take priority)
-              console.log(`Remote file differs, using local version (user edits take priority)`);
             }
           } catch (e) {
             console.warn('Could not fetch current file for comparison:', e);
           }
           
-          // Retry with fresh SHA from the current file response
-          return this._performSave(type, id, data, retryCount + 1, freshSHA);
+          // Retry - will fetch fresh SHA at the start of next attempt
+          return this._performSave(type, id, data, retryCount + 1);
         }
         
+        // If we've exhausted retries or it's a different error, throw
         throw new Error(error.message || 'Failed to save file');
       }
     } catch (e) {
@@ -464,7 +479,16 @@ class Storage {
       } else if (e.message.includes('404')) {
         errorMessage = 'Repository not found. Please check your GitHub config in data/github-config.js';
       } else if (e.message.includes('does not match') || e.message.includes('409')) {
-        errorMessage = 'File conflict detected. Please refresh and try again.';
+        if (retryCount >= 5) {
+          errorMessage = 'File conflict: Multiple saves detected. Please wait a moment and try again, or refresh the page.';
+        } else {
+          errorMessage = 'File conflict detected. Retrying...';
+        }
+      }
+      
+      // Only show error notification if we've exhausted retries
+      if (retryCount >= 5 || !e.message.includes('409')) {
+        this.showNotification(errorMessage, 'error');
       }
       
       // Update cache even on failure so UI reflects current state

@@ -266,7 +266,7 @@ export function renderClanDetail(clan) {
       ${hasValue('kekkeiGenkai.name') || hasValue('kekkeiGenkai.description') ? `
         <div class="collapsible-section">
           <div class="collapsible-header" onclick="toggleCollapse('kekkei-genkai-content')">
-            <i class="fas fa-eye" style="margin-right: 0.5rem;"></i> Kekkei Genkai / Hiden <i class="japanese-header">血継限界・秘伝</i>
+            <i class="fas fa-eye" style="margin-right: 0.5rem;"></i> Kekkei Genkai <i class="japanese-header">血継限界</i>
             <i class="fas fa-chevron-down bounce-arrow"></i>
           </div>
           <div id="kekkei-genkai-content" class="collapsible-content">
@@ -310,6 +310,77 @@ export function renderClanDetail(clan) {
               <strong style="color: var(--color-dark-2); font-size: 1.1rem;">Weaknesses:</strong>
               <ul style="color: var(--color-text-dark-2); margin-top: 0.5rem; padding-left: 1.5rem;">
                 ${getValue('kekkeiGenkai.weaknesses', []).map(weakness => `<li style="margin-bottom: 0.5rem; line-height: 1.6;">${renderMarkdown(weakness)}</li>`).join('')}
+              </ul>
+            </div>
+          ` : ''}
+          ${hasArray('kekkeiGenkai.notableJutsu') ? `
+            <div style="margin-bottom: 1rem;">
+              <strong style="color: var(--color-dark-2); font-size: 1.1rem;">Notable Bloodline Jutsu:</strong>
+              <ul style="color: var(--color-text-dark-2); margin-top: 0.5rem; padding-left: 1.5rem;">
+                ${getValue('kekkeiGenkai.notableJutsu', []).map(jutsu => `<li style="margin-bottom: 0.5rem; line-height: 1.6;">${renderMarkdown(jutsu)}</li>`).join('')}
+              </ul>
+            </div>
+          ` : ''}
+            </div>
+          </div>
+        </div>
+      ` : ''}
+      
+      ${hasValue('hiden.name') || hasValue('hiden.description') ? `
+        <div class="collapsible-section">
+          <div class="collapsible-header" onclick="toggleCollapse('hiden-content')">
+            <i class="fas fa-scroll" style="margin-right: 0.5rem;"></i> Hiden Techniques <i class="japanese-header">秘伝</i>
+            <i class="fas fa-chevron-down bounce-arrow"></i>
+          </div>
+          <div id="hiden-content" class="collapsible-content">
+            <div class="clan-info-section">
+          ${hasValue('hiden.name') ? `
+            <div style="margin-bottom: 1rem;">
+              <strong style="color: var(--color-dark-2); font-size: 1.1rem;">Name:</strong>
+              <div style="color: var(--color-text-dark-2); margin-top: 0.25rem; font-size: 1.1rem; font-weight: 600;">${getValue('hiden.name')}</div>
+            </div>
+          ` : ''}
+          ${hasValue('hiden.description') ? `
+            <div style="margin-bottom: 1rem;">
+              <strong style="color: var(--color-dark-2); font-size: 1.1rem;">Description:</strong>
+              <div style="color: var(--color-text-dark-2); margin-top: 0.25rem; line-height: 1.8;" class="markdown-content">${renderMarkdown(getValue('hiden.description'))}</div>
+            </div>
+          ` : ''}
+          ${hasValue('hiden.activation') ? `
+            <div style="margin-bottom: 1rem;">
+              <strong style="color: var(--color-dark-2); font-size: 1.1rem;">Activation:</strong>
+              <div style="color: var(--color-text-dark-2); margin-top: 0.25rem; line-height: 1.8;" class="markdown-content">${renderMarkdown(getValue('hiden.activation'))}</div>
+            </div>
+          ` : ''}
+          ${hasArray('hiden.mechanics') ? `
+            <div style="margin-bottom: 1rem;">
+              <strong style="color: var(--color-dark-2); font-size: 1.1rem;">Mechanics:</strong>
+              <ul style="color: var(--color-text-dark-2); margin-top: 0.5rem; padding-left: 1.5rem;">
+                ${getValue('hiden.mechanics', []).map(mechanic => `<li style="margin-bottom: 0.5rem; line-height: 1.6;">${renderMarkdown(mechanic)}</li>`).join('')}
+              </ul>
+            </div>
+          ` : ''}
+          ${hasArray('hiden.strengths') ? `
+            <div style="margin-bottom: 1rem;">
+              <strong style="color: var(--color-dark-2); font-size: 1.1rem;">Strengths:</strong>
+              <ul style="color: var(--color-text-dark-2); margin-top: 0.5rem; padding-left: 1.5rem;">
+                ${getValue('hiden.strengths', []).map(strength => `<li style="margin-bottom: 0.5rem; line-height: 1.6;">${renderMarkdown(strength)}</li>`).join('')}
+              </ul>
+            </div>
+          ` : ''}
+          ${hasArray('hiden.weaknesses') ? `
+            <div style="margin-bottom: 1rem;">
+              <strong style="color: var(--color-dark-2); font-size: 1.1rem;">Weaknesses:</strong>
+              <ul style="color: var(--color-text-dark-2); margin-top: 0.5rem; padding-left: 1.5rem;">
+                ${getValue('hiden.weaknesses', []).map(weakness => `<li style="margin-bottom: 0.5rem; line-height: 1.6;">${renderMarkdown(weakness)}</li>`).join('')}
+              </ul>
+            </div>
+          ` : ''}
+          ${hasArray('hiden.notableJutsu') ? `
+            <div style="margin-bottom: 1rem;">
+              <strong style="color: var(--color-dark-2); font-size: 1.1rem;">Notable Hiden Jutsu:</strong>
+              <ul style="color: var(--color-text-dark-2); margin-top: 0.5rem; padding-left: 1.5rem;">
+                ${getValue('hiden.notableJutsu', []).map(jutsu => `<li style="margin-bottom: 0.5rem; line-height: 1.6;">${renderMarkdown(jutsu)}</li>`).join('')}
               </ul>
             </div>
           ` : ''}
