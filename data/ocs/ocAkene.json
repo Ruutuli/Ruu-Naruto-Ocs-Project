@@ -250,7 +250,8 @@
     "gear": [
       {
         "name": "Bone Chain Sickle (Kusarigama)",
-        "category": "Item"
+        "category": "Item",
+        "icon": "https://i.pinimg.com/736x/c0/5e/fc/c05efc1ae0cb42ff083700707fed7ba6.jpg"
       },
       {
         "name": "Kunai",
