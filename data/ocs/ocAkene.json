@@ -3,12 +3,12 @@
   "lastName": "Chigiri",
   "firstName": "Akene",
   "nameJapanese": "契り朱根（ちぎり あけね）",
-  "lastNameMeaning": "“Vow; pledge; bond.”  ",
-  "firstNameMeaning": "",
-  "nameMeaning": "“Vow; pledge; bond.”  ",
+  "lastNameMeaning": "Pledge; vow; promise (also colloquially teased as meaning ",
+  "firstNameMeaning": "Scarlet / red root",
+  "nameMeaning": "“Pledge of the scarlet root”",
   "aliases": [
-    "Madōsho Vessel",
-    "Walking Scroll",
+    "Madousho",
+    "Vessel of the Madousho",
     "Fate Reader"
   ],
   "debut": {
@@ -19,9 +19,16 @@
     "game": ""
   },
   "appearsIn": [],
-  "dob": "",
-  "bloodType": "",
-  "gender": "",
+  "dob": "05-04",
+  "ageByEra": {
+    "Part I": "12-13",
+    "Part II": "15-17",
+    "Blank Period": "17-19",
+    "Gaiden": "20",
+    "Boruto": "32"
+  },
+  "bloodType": "O",
+  "gender": "Female",
   "natureType": "",
   "village": [],
   "rank": [],
@@ -177,9 +184,9 @@
     }
   },
   "profileImage": "",
-  "zodiac": "",
-  "sexualOrientation": "",
-  "romanticOrientation": "",
+  "zodiac": "♉ Taurus",
+  "sexualOrientation": "Demisexual",
+  "romanticOrientation": "Demiromantic",
   "family": {
     "father": "",
     "mother": "",
