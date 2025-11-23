@@ -25,7 +25,12 @@ export function renderLoreDetail(lore) {
       </div>
     </div>
     <div class="detail-content">
-      <h1 class="detail-title">${lore.title || 'Untitled Lore'}</h1>
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+        <h1 class="detail-title" style="margin: 0;">${lore.title || 'Untitled Lore'}</h1>
+        <button class="btn-naruto" onclick="window.editLore('${lore.id}')" style="padding: 0.5rem 1rem; font-size: 0.9rem;">
+          <i class="fas fa-edit"></i> Edit
+        </button>
+      </div>
       <div style="text-align: center; margin-bottom: 2rem;">
         <span class="lore-category-badge">
           <i class="fas ${categoryIcons[lore.category] || 'fa-book'}" style="margin-right: 0.5rem;"></i>

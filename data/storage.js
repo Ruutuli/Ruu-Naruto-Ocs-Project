@@ -395,7 +395,10 @@ class Storage {
       const sha = await this.getFileSHA(path);
       
       if (!sha) {
-        // File doesn't exist
+        // File doesn't exist on GitHub, but still delete from localStorage and cache
+        if (this._isLocalhost) {
+          this.deleteFromLocalStorage(type, id);
+        }
         this._cache[type].delete(id);
         return true;
       }
@@ -420,6 +423,12 @@ class Storage {
       if (response.ok) {
         // Remove from cache
         this._cache[type].delete(id);
+        
+        // Also delete from localStorage if on localhost
+        if (this._isLocalhost) {
+          this.deleteFromLocalStorage(type, id);
+        }
+        
         return true;
       } else {
         const error = await response.json();
@@ -427,6 +436,14 @@ class Storage {
       }
     } catch (e) {
       console.error(`Error deleting ${type}/${id}.json:`, e);
+      
+      // On localhost, still try to delete from localStorage even if GitHub deletion fails
+      if (this._isLocalhost) {
+        this.deleteFromLocalStorage(type, id);
+        // Remove from cache anyway
+        this._cache[type].delete(id);
+      }
+      
       return false;
     }
   }

@@ -439,21 +439,41 @@ function requireAdminAuthWithRedirect() {
   return true;
 }
 
+// ------------------- Prompt for Admin Password ------------------
+// Prompt for admin password before editing
+window.promptForAdminPassword = function(callback) {
+  const password = prompt('Enter admin password to edit:');
+  if (password === ADMIN_PASSWORD) {
+    adminAuthenticated = true;
+    window.adminAuthenticated = true;
+    if (callback) callback();
+    return true;
+  } else if (password !== null) {
+    alert('Incorrect password. Access denied.');
+    return false;
+  }
+  return false;
+};
+
 // ------------------- Edit Item Functions ------------------
-// Generic edit function
-function editItem(type, id) {
-  if (!requireAdminAuthWithRedirect()) return;
-  window.location.hash = `${type}/edit/${id}`;
+// Generic edit function with password prompt
+function editItemWithPassword(type, id) {
+  window.promptForAdminPassword(() => {
+    window.location.hash = `${type}/edit/${id}`;
+  });
 }
 
+// Edit OC
+window.editOC = (id) => editItemWithPassword('ocs', id);
+
 // Edit clan
-window.editClan = (id) => editItem('clans', id);
+window.editClan = (id) => editItemWithPassword('clans', id);
 
 // Edit story
-window.editStory = (id) => editItem('stories', id);
+window.editStory = (id) => editItemWithPassword('stories', id);
 
 // Edit lore
-window.editLore = (id) => editItem('lore', id);
+window.editLore = (id) => editItemWithPassword('lore', id);
 
 // ============================================================================
 // ------------------- Initialization -------------------

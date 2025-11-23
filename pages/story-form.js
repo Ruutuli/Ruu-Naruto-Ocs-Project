@@ -55,6 +55,15 @@ export function renderStoryForm(story = null, onSave) {
     </div>
     <div class="card-body">
       <form id="story-form" onsubmit="event.preventDefault(); window.saveStoryForm();">
+        <!-- Save Button at Top -->
+        <div class="mb-4" style="display: flex; justify-content: flex-start; gap: 0.5rem; padding-bottom: 1rem; border-bottom: 2px solid var(--color-border-2);">
+          <button type="submit" class="btn-naruto">
+            <i class="fas fa-save"></i> ${isEdit ? 'Update' : 'Create'} Story
+          </button>
+          <button type="button" class="btn-naruto btn-naruto-secondary" onclick="window.navigateTo('stories')">
+            <i class="fas fa-times"></i> Cancel
+          </button>
+        </div>
         <div class="form-group">
           <label class="form-label">Title</label>
           <input type="text" class="form-control" id="title" value="${formStory.title || ''}" required>

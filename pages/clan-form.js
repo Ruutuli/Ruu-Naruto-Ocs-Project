@@ -44,6 +44,15 @@ export function renderClanForm(clan = null, onSave) {
     </div>
     <div class="card-body">
       <form id="clan-form" onsubmit="event.preventDefault(); window.saveClanForm();">
+        <!-- Save Button at Top -->
+        <div class="mb-4" style="display: flex; justify-content: flex-start; gap: 0.5rem; padding-bottom: 1rem; border-bottom: 2px solid var(--color-border-2);">
+          <button type="submit" class="btn-naruto">
+            <i class="fas fa-save"></i> ${isEdit ? 'Update' : 'Create'} Clan
+          </button>
+          <button type="button" class="btn-naruto btn-naruto-secondary" onclick="window.navigateTo('clans')">
+            <i class="fas fa-times"></i> Cancel
+          </button>
+        </div>
         <h3 class="mb-3" style="border-bottom: 2px solid var(--color-accent-2); padding-bottom: 0.5rem;"><i class="fas fa-info-circle"></i> Basic Information</h3>
         
         <div class="form-group">

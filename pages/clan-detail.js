@@ -58,7 +58,12 @@ export function renderClanDetail(clan) {
       </div>
     </div>
     <div class="detail-content">
-      <h1 class="detail-title">${title}</h1>
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+        <h1 class="detail-title" style="margin: 0;">${title}</h1>
+        <button class="btn-naruto" onclick="window.editClan('${clan.id}')" style="padding: 0.5rem 1rem; font-size: 0.9rem;">
+          <i class="fas fa-edit"></i> Edit
+        </button>
+      </div>
       ${tagline ? `<div style="text-align: center; font-style: italic; color: var(--color-text-dark-2); margin-bottom: 1rem; padding: 0.5rem; background-color: rgba(227, 94, 63, 0.1); border-radius: 4px;">${tagline}</div>` : ''}
       
       <div class="clan-info-section" style="text-align: center;">

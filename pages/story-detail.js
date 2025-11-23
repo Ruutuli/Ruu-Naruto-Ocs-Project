@@ -47,7 +47,12 @@ export function renderStoryDetail(story) {
       </div>
     </div>
     <div class="detail-content">
-      <h1 class="detail-title">${story.title || 'Untitled Story'}</h1>
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+        <h1 class="detail-title" style="margin: 0;">${story.title || 'Untitled Story'}</h1>
+        <button class="btn-naruto" onclick="window.editStory('${story.id}')" style="padding: 0.5rem 1rem; font-size: 0.9rem;">
+          <i class="fas fa-edit"></i> Edit
+        </button>
+      </div>
       
       <div class="story-meta-section">
         <div class="story-meta-item">

@@ -14,6 +14,12 @@ export function renderOCDetail(oc) {
       </div>
     </div>
     <div class="detail-content">
+      <!-- Edit Button -->
+      <div style="display: flex; justify-content: flex-end; margin-bottom: 1rem;">
+        <button class="btn-naruto" onclick="window.editOC('${oc.id}')" style="padding: 0.5rem 1rem; font-size: 0.9rem;">
+          <i class="fas fa-edit"></i> Edit
+        </button>
+      </div>
       <div class="oc-sheet-character-info">
         <div class="oc-sheet-left">
         <div class="oc-name-card">

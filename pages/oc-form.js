@@ -90,6 +90,15 @@ export function renderOCForm(oc = null, onSave) {
     </div>
     <div class="card-body">
       <form id="oc-form" onsubmit="event.preventDefault(); window.saveOCForm();">
+        <!-- Save Button at Top -->
+        <div class="mb-4" style="display: flex; justify-content: flex-start; gap: 0.5rem; padding-bottom: 1rem; border-bottom: 2px solid var(--color-border-2);">
+          <button type="submit" class="btn-naruto">
+            <i class="fas fa-save"></i> ${isEdit ? 'Update' : 'Create'} OC
+          </button>
+          <button type="button" class="btn-naruto btn-naruto-secondary" onclick="window.navigateTo('ocs')">
+            <i class="fas fa-times"></i> Cancel
+          </button>
+        </div>
         <!-- Basic Info -->
         <h3 class="mb-3">Basic Information</h3>
         <div class="row">
