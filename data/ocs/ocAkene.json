@@ -215,7 +215,7 @@
       "sincereDeceptive": 5.5,
       "diligentLazy": 5.5,
       "calmIrritable": 5.5,
-      "humorousSerious": 5.5
+      "humorousSerious": 6.5
     }
   },
   "abilities": {
@@ -338,7 +338,9 @@
   },
   "ninjaRegistrationNumber": "012726",
   "academyGraduationAge": "11",
-  "classification": [],
+  "classification": [
+    "Missing-nin"
+  ],
   "kekkeiGenkai": "",
   "chakraPhysicalProwess": {
     "chakraReserves": "Moderate; typical for a skilled Genin with steady stamina but not large reserves\n",
@@ -354,8 +356,8 @@
     "combatStrategy": "Very high; quickly identifies patterns, motives, and hidden information.  \nCapable of connecting village secrets, clan histories, and political  \nthreads long before most adults.  \nNotably skilled in reading people, situations, and micro-behaviors.\n",
     "leadershipSkill": "Moderate; not a natural “team commander,” but excels when  \ndirecting information flow, forming plans, or advising others.  \nFunctions best as a tactician or analyst rather than a front-line leader.\n"
   },
-  "themeSong": "",
-  "themeSongLink": "",
+  "themeSong": "\"There’s No Ending\" by RUANN",
+  "themeSongLink": "https://youtu.be/LePcCSpmdE4?si=Cb8b_oKLUfOyJkP0",
   "voiceActors": {
     "japanese": "Ami Koshimizu",
     "english": "Emily Neves"
