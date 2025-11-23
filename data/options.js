@@ -1020,3 +1020,24 @@ export const villages = [
     return allTechniqueTypes.map(t => t.value);
   }
   
+  // Relationship Types with Heart Emojis
+  export const relationshipTypes = [
+    { value: 'Lovers', label: '❤️‍🔥 Lovers', heartEmoji: '❤️‍🔥' },
+    { value: 'Crush', label: '💕 Crush', heartEmoji: '💕' },
+    { value: 'Close Friend', label: '💚 Close Friend', heartEmoji: '💚' },
+    { value: 'Friend', label: '💚 Friend', heartEmoji: '💚' },
+    { value: 'Acquaintance', label: '🤍 Acquaintance', heartEmoji: '🤍' },
+    { value: 'Dislike', label: '💔 Dislike', heartEmoji: '💔' },
+    { value: 'Hate', label: '🖤 Hate', heartEmoji: '🖤' },
+    { value: 'Neutral', label: '🤍 Neutral', heartEmoji: '🤍' },
+    { value: 'Family', label: '💛 Family', heartEmoji: '💛' },
+    { value: 'Rival', label: '💙 Rival', heartEmoji: '💙' },
+    { value: 'Admire', label: '💜 Admire', heartEmoji: '💜' }
+  ];
+  
+  // Helper function to get heart emoji by relationship type
+  export function getRelationshipHeartEmoji(relationshipType) {
+    const found = relationshipTypes.find(r => r.value === relationshipType);
+    return found ? found.heartEmoji : '🤍';
+  }
+  

@@ -2,6 +2,7 @@
 
 import storage from '../data/storage.js';
 import { renderMarkdown } from '../utils/markdown.js';
+import { convertImageUrl } from '../utils/imageUtils.js';
 
 export function renderClanDetail(clan) {
   const container = document.createElement('div');
@@ -31,6 +32,12 @@ export function renderClanDetail(clan) {
   const hasArray = (path) => {
     const val = getValue(path, []);
     return Array.isArray(val) && val.length > 0;
+  };
+  
+  // Helper to get array values
+  const getArrayValue = (path, defaultValue = []) => {
+    const val = getValue(path, defaultValue);
+    return Array.isArray(val) ? val : (val ? [val] : defaultValue);
   };
   
   // Build title with Kanji and Meaning
@@ -68,14 +75,87 @@ export function renderClanDetail(clan) {
       
       <div class="clan-info-section" style="text-align: center;">
         ${clan.symbol ? 
-          `<img src="${clan.symbol}" alt="${clan.name} Symbol" style="width: 180px; height: 180px; border: 4px solid var(--color-dark-3); border-radius: 12px; box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2); margin-bottom: 1.5rem;">` 
+          `<img src="${convertImageUrl(clan.symbol)}" alt="${clan.name} Symbol" style="width: 180px; height: 180px; border: 4px solid var(--color-dark-3); border-radius: 12px; box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2); margin-bottom: 1.5rem;">` 
           : '<div style="width: 180px; height: 180px; background: linear-gradient(135deg, var(--color-bg-1) 0%, var(--color-bg-2) 100%); border: 4px solid var(--color-dark-3); border-radius: 12px; margin: 0 auto 1.5rem; display: flex; align-items: center; justify-content: center; box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);"><span style="color: var(--color-text-dark-2); font-weight: 600; text-transform: uppercase;">No Symbol</span></div>'
         }
-        <div class="clan-info-row" style="justify-content: center; border-bottom: 2px solid var(--color-accent-2); padding-bottom: 1rem; margin-bottom: 1rem;">
-          <div class="clan-info-label">Village:</div>
-          <div class="clan-info-value" style="font-size: 1.2rem; font-weight: 600;">${clan.village || 'Unknown'}</div>
-        </div>
       </div>
+      
+      <!-- Clan Data Quick Info Box -->
+      ${(() => {
+        const hasDebut = hasValue('debut.manga') || hasValue('debut.anime') || hasValue('debut.novel') || hasValue('debut.movie') || hasValue('debut.game');
+        const appearsIn = getArrayValue('appearsIn', []);
+        const knownMembersList = (clan.knownMembers || clan.members || []).map(id => {
+          const oc = storage.getOC(id);
+          return oc ? oc.firstName + ' ' + oc.lastName : null;
+        }).filter(Boolean);
+        const jutsuList = (() => {
+          const newFormatAbilities = clan.abilities && typeof clan.abilities === 'object' && !Array.isArray(clan.abilities);
+          if (newFormatAbilities && Array.isArray(clan.abilities.signatureJutsu)) {
+            return clan.abilities.signatureJutsu.map(j => j.split(' — ')[0]).slice(0, 5);
+          }
+          if (Array.isArray(clan.abilities)) {
+            return clan.abilities.slice(0, 5);
+          }
+          return [];
+        })();
+        
+        if (hasDebut || appearsIn.length > 0 || clan.village || knownMembersList.length > 0 || jutsuList.length > 0) {
+          return `
+            <div class="clan-info-section">
+              <div class="info-grid" style="margin-bottom: 2rem;">
+                <div class="info-row">
+                  <div class="info-label">Clan Data</div>
+                  <div class="info-content"></div>
+                </div>
+                ${hasDebut || appearsIn.length > 0 ? `
+                  <div class="info-row">
+                    <div class="info-label">Debut</div>
+                    <div class="info-content">
+                      ${hasValue('debut.manga') ? `<div><strong>Manga:</strong> ${getValue('debut.manga')}</div>` : ''}
+                      ${hasValue('debut.anime') ? `<div><strong>Anime:</strong> ${getValue('debut.anime')}</div>` : ''}
+                      ${hasValue('debut.novel') ? `<div><strong>Novel:</strong> ${getValue('debut.novel')}</div>` : ''}
+                      ${hasValue('debut.movie') ? `<div><strong>Movie:</strong> ${getValue('debut.movie')}</div>` : ''}
+                      ${hasValue('debut.game') ? `<div><strong>Game:</strong> ${getValue('debut.game')}</div>` : ''}
+                    </div>
+                  </div>
+                  ${appearsIn.length > 0 ? `
+                    <div class="info-row">
+                      <div class="info-label">Appears in</div>
+                      <div class="info-content">
+                        ${appearsIn.map(media => `<span style="display: inline-block; padding: 0.25rem 0.5rem; margin: 0.25rem; background-color: var(--color-accent-2); color: white; border-radius: 4px; font-size: 0.85rem;">${media}</span>`).join('')}
+                      </div>
+                    </div>
+                  ` : ''}
+                ` : ''}
+                ${clan.village ? `
+                  <div class="info-row">
+                    <div class="info-label">Affiliation</div>
+                    <div class="info-content">${clan.village}</div>
+                  </div>
+                ` : ''}
+                ${knownMembersList.length > 0 ? `
+                  <div class="info-row">
+                    <div class="info-label">Known Members</div>
+                    <div class="info-content">
+                      ${knownMembersList.map(member => `<div>• ${member}</div>`).join('')}
+                    </div>
+                  </div>
+                ` : ''}
+                ${jutsuList.length > 0 ? `
+                  <div class="info-row">
+                    <div class="info-label">Jutsu</div>
+                    <div class="info-content">
+                      ${jutsuList.map(jutsu => `<div>• ${jutsu}</div>`).join('')}
+                      ${jutsuList.length >= 5 ? '<div style="font-style: italic; opacity: 0.8;">... and more</div>' : ''}
+                    </div>
+                  </div>
+                ` : ''}
+              </div>
+            </div>
+          `;
+        }
+        return '';
+      })()}
       
       ${hasValue('summary') ? `
         <div class="clan-info-section">
@@ -84,8 +164,13 @@ export function renderClanDetail(clan) {
       ` : ''}
       
       ${hasValue('overview.origins') || hasValue('overview.knownFor') || hasValue('overview.purpose') || hasValue('overview.fitInUniverse') ? `
-        <div class="clan-info-section">
-          <h3><i class="fas fa-book-open" style="margin-right: 0.5rem;"></i> Overview <i class="japanese-header">概要</i></h3>
+        <div class="collapsible-section">
+          <div class="collapsible-header" onclick="toggleCollapse('overview-content')">
+            <i class="fas fa-book-open" style="margin-right: 0.5rem;"></i> Overview <i class="japanese-header">概要</i>
+            <i class="fas fa-chevron-down bounce-arrow"></i>
+          </div>
+          <div id="overview-content" class="collapsible-content">
+            <div class="clan-info-section">
           ${hasValue('overview.origins') ? `
             <div style="margin-bottom: 1rem;">
               <strong style="color: var(--color-dark-2); font-size: 1.1rem;">Origins:</strong>
@@ -110,12 +195,19 @@ export function renderClanDetail(clan) {
               <div style="color: var(--color-text-dark-2); margin-top: 0.25rem; line-height: 1.8;" class="markdown-content">${renderMarkdown(getValue('overview.fitInUniverse'))}</div>
             </div>
           ` : ''}
+            </div>
+          </div>
         </div>
       ` : ''}
       
       ${hasValue('kekkeiGenkai.name') || hasValue('kekkeiGenkai.description') ? `
-        <div class="clan-info-section">
-          <h3><i class="fas fa-eye" style="margin-right: 0.5rem;"></i> Kekkei Genkai / Hiden <i class="japanese-header">血継限界・秘伝</i></h3>
+        <div class="collapsible-section">
+          <div class="collapsible-header" onclick="toggleCollapse('kekkei-genkai-content')">
+            <i class="fas fa-eye" style="margin-right: 0.5rem;"></i> Kekkei Genkai / Hiden <i class="japanese-header">血継限界・秘伝</i>
+            <i class="fas fa-chevron-down bounce-arrow"></i>
+          </div>
+          <div id="kekkei-genkai-content" class="collapsible-content">
+            <div class="clan-info-section">
           ${hasValue('kekkeiGenkai.name') ? `
             <div style="margin-bottom: 1rem;">
               <strong style="color: var(--color-dark-2); font-size: 1.1rem;">Name:</strong>
@@ -158,45 +250,66 @@ export function renderClanDetail(clan) {
               </ul>
             </div>
           ` : ''}
+            </div>
+          </div>
         </div>
       ` : ''}
       
-      ${hasValue('villagesLands.primaryLocation') || hasArray('villagesLands.branches') || hasValue('villagesLands.territory') || hasValue('villagesLands.reputation') ? `
-        <div class="clan-info-section">
-          <h3><i class="fas fa-map" style="margin-right: 0.5rem;"></i> Village / Region Presence <i class="japanese-header">村・地域の存在</i></h3>
-          ${hasValue('villagesLands.primaryLocation') ? `
+      ${hasValue('geography.primaryLocation') || hasArray('geography.branches') || hasValue('geography.territory') || hasValue('geography.reputation') || hasValue('villagesLands.primaryLocation') || hasArray('villagesLands.branches') || hasValue('villagesLands.territory') || hasValue('villagesLands.reputation') ? `
+        <div class="collapsible-section">
+          <div class="collapsible-header" onclick="toggleCollapse('geography-content')">
+            <i class="fas fa-map" style="margin-right: 0.5rem;"></i> Geography / Village Presence <i class="japanese-header">地理・村の存在</i>
+            <i class="fas fa-chevron-down bounce-arrow"></i>
+          </div>
+          <div id="geography-content" class="collapsible-content">
+            <div class="clan-info-section">
+          ${hasValue('geography.primaryLocation') || hasValue('villagesLands.primaryLocation') ? `
             <div style="margin-bottom: 1rem;">
               <strong style="color: var(--color-dark-2); font-size: 1.1rem;">Primary Location:</strong>
-              <div style="color: var(--color-text-dark-2); margin-top: 0.25rem; line-height: 1.8;" class="markdown-content">${renderMarkdown(getValue('villagesLands.primaryLocation'))}</div>
+              <div style="color: var(--color-text-dark-2); margin-top: 0.25rem; line-height: 1.8;" class="markdown-content">${renderMarkdown(getValue('geography.primaryLocation') || getValue('villagesLands.primaryLocation'))}</div>
             </div>
           ` : ''}
-          ${hasArray('villagesLands.branches') ? `
+          ${hasArray('geography.branches') || hasArray('villagesLands.branches') ? `
             <div style="margin-bottom: 1rem;">
               <strong style="color: var(--color-dark-2); font-size: 1.1rem;">Branches in Other Villages:</strong>
               <ul style="color: var(--color-text-dark-2); margin-top: 0.5rem; padding-left: 1.5rem;">
-                ${getValue('villagesLands.branches', []).map(branch => `<li style="margin-bottom: 0.5rem; line-height: 1.6;">${renderMarkdown(branch)}</li>`).join('')}
+                ${(() => {
+                  const geoBranches = getArrayValue('geography.branches', []);
+                  const villagesBranches = getArrayValue('villagesLands.branches', []);
+                  const branches = geoBranches.length > 0 ? geoBranches : villagesBranches;
+                  return branches.map(branch => `<li style="margin-bottom: 0.5rem; line-height: 1.6;">${renderMarkdown(branch)}</li>`).join('');
+                })()}
               </ul>
             </div>
           ` : ''}
-          ${hasValue('villagesLands.territory') ? `
+          ${hasValue('geography.territory') || hasValue('villagesLands.territory') ? `
             <div style="margin-bottom: 1rem;">
               <strong style="color: var(--color-dark-2); font-size: 1.1rem;">Territory & Influence:</strong>
-              <div style="color: var(--color-text-dark-2); margin-top: 0.25rem; line-height: 1.8;" class="markdown-content">${renderMarkdown(getValue('villagesLands.territory'))}</div>
+              <div style="color: var(--color-text-dark-2); margin-top: 0.25rem; line-height: 1.8;" class="markdown-content">${renderMarkdown(getValue('geography.territory') || getValue('villagesLands.territory'))}</div>
             </div>
           ` : ''}
-          ${hasValue('villagesLands.reputation') ? `
+          ${hasValue('geography.reputation') || hasValue('villagesLands.reputation') ? `
             <div style="margin-bottom: 1rem;">
               <strong style="color: var(--color-dark-2); font-size: 1.1rem;">Reputation:</strong>
-              <div style="color: var(--color-text-dark-2); margin-top: 0.25rem; line-height: 1.8;" class="markdown-content">${renderMarkdown(getValue('villagesLands.reputation'))}</div>
+              <div style="color: var(--color-text-dark-2); margin-top: 0.25rem; line-height: 1.8;" class="markdown-content">${renderMarkdown(getValue('geography.reputation') || getValue('villagesLands.reputation'))}</div>
             </div>
           ` : ''}
+            </div>
+          </div>
         </div>
       ` : ''}
       
       ${hasValue('appearancePhysicalTraits') ? `
-        <div class="clan-info-section">
-          <h3><i class="fas fa-user" style="margin-right: 0.5rem;"></i> Appearance / Physical Traits <i class="japanese-header">外見・身体的特徴</i></h3>
-          <div style="line-height: 1.8; color: var(--color-text-dark-2); font-size: 1.05rem;" class="markdown-content">${renderMarkdown(getValue('appearancePhysicalTraits'))}</div>
+        <div class="collapsible-section">
+          <div class="collapsible-header" onclick="toggleCollapse('appearance-content')">
+            <i class="fas fa-user" style="margin-right: 0.5rem;"></i> Appearance / Physical Traits <i class="japanese-header">外見・身体的特徴</i>
+            <i class="fas fa-chevron-down bounce-arrow"></i>
+          </div>
+          <div id="appearance-content" class="collapsible-content">
+            <div class="clan-info-section">
+              <div style="line-height: 1.8; color: var(--color-text-dark-2); font-size: 1.05rem;" class="markdown-content">${renderMarkdown(getValue('appearancePhysicalTraits'))}</div>
+            </div>
+          </div>
         </div>
       ` : ''}
       
@@ -211,8 +324,13 @@ export function renderClanDetail(clan) {
         const oldFormatAbilities = Array.isArray(clan.abilities) && clan.abilities.length > 0;
         return hasSignatureJutsu || hasChakraNatures || hasCombatStyle || hasRoleInVillage || hasStrengths || hasWeaknesses || oldFormatAbilities;
       })() ? `
-        <div class="clan-info-section">
-          <h3><i class="fas fa-magic" style="margin-right: 0.5rem;"></i> Abilities <i class="japanese-header">能力</i></h3>
+        <div class="collapsible-section">
+          <div class="collapsible-header" onclick="toggleCollapse('abilities-content')">
+            <i class="fas fa-magic" style="margin-right: 0.5rem;"></i> Abilities <i class="japanese-header">能力</i>
+            <i class="fas fa-chevron-down bounce-arrow"></i>
+          </div>
+          <div id="abilities-content" class="collapsible-content">
+            <div class="clan-info-section">
           ${(() => {
             const newFormatAbilities = clan.abilities && typeof clan.abilities === 'object' && !Array.isArray(clan.abilities);
             const hasSignatureJutsu = newFormatAbilities && Array.isArray(clan.abilities.signatureJutsu) && clan.abilities.signatureJutsu.length > 0;
@@ -307,12 +425,19 @@ export function renderClanDetail(clan) {
             }
             return '';
           })()}
+            </div>
+          </div>
         </div>
       ` : ''}
       
       ${hasValue('leaders.currentLeader') || hasArray('leaders.pastLeaders') || hasValue('leaders.heirs') ? `
-        <div class="clan-info-section">
-          <h3><i class="fas fa-crown" style="margin-right: 0.5rem;"></i> Leaders <i class="japanese-header">リーダー</i></h3>
+        <div class="collapsible-section">
+          <div class="collapsible-header" onclick="toggleCollapse('leaders-content')">
+            <i class="fas fa-crown" style="margin-right: 0.5rem;"></i> Leaders <i class="japanese-header">リーダー</i>
+            <i class="fas fa-chevron-down bounce-arrow"></i>
+          </div>
+          <div id="leaders-content" class="collapsible-content">
+            <div class="clan-info-section">
           ${hasValue('leaders.currentLeader') ? `
             <div style="margin-bottom: 1rem;">
               <strong style="color: var(--color-dark-2); font-size: 1.1rem;">Current Leader:</strong>
@@ -333,64 +458,138 @@ export function renderClanDetail(clan) {
               <div style="color: var(--color-text-dark-2); margin-top: 0.25rem; line-height: 1.8;" class="markdown-content">${renderMarkdown(getValue('leaders.heirs'))}</div>
             </div>
           ` : ''}
+            </div>
+          </div>
         </div>
       ` : ''}
       
       ${hasArray('notableMembers') ? `
-        <div class="clan-info-section">
-          <h3><i class="fas fa-users" style="margin-right: 0.5rem;"></i> Notable Clan Members <i class="japanese-header">著名な一族のメンバー</i></h3>
-          <ul style="color: var(--color-text-dark-2); padding-left: 1.5rem;">
-            ${getValue('notableMembers', []).map(member => `<li style="margin-bottom: 0.5rem; line-height: 1.6;">${renderMarkdown(member)}</li>`).join('')}
-          </ul>
+        <div class="collapsible-section">
+          <div class="collapsible-header" onclick="toggleCollapse('notable-members-content')">
+            <i class="fas fa-users" style="margin-right: 0.5rem;"></i> Notable Clan Members <i class="japanese-header">著名な一族のメンバー</i>
+            <i class="fas fa-chevron-down bounce-arrow"></i>
+          </div>
+          <div id="notable-members-content" class="collapsible-content">
+            <div class="clan-info-section">
+              <ul style="color: var(--color-text-dark-2); padding-left: 1.5rem;">
+                ${getValue('notableMembers', []).map(member => `<li style="margin-bottom: 0.5rem; line-height: 1.6;">${renderMarkdown(member)}</li>`).join('')}
+              </ul>
+            </div>
+          </div>
         </div>
       ` : ''}
       
-      ${hasValue('history') ? `
-        <div class="clan-info-section">
-          <h3><i class="fas fa-scroll" style="margin-right: 0.5rem;"></i> History <i class="japanese-header">歴史</i></h3>
-          <div style="line-height: 1.8; color: var(--color-text-dark-2); font-size: 1.05rem; padding: 1rem; background-color: rgba(227, 94, 63, 0.05); border-radius: 6px; border-left: 4px solid var(--color-accent-2);" class="markdown-content">${renderMarkdown(clan.history)}</div>
+      ${hasValue('clanHistory.ancientEra') || hasValue('clanHistory.feudalEra') || hasValue('clanHistory.foundingOfVillages') || hasValue('clanHistory.modernEra') || hasValue('history') ? `
+        <div class="collapsible-section">
+          <div class="collapsible-header" onclick="toggleCollapse('clan-history-content')">
+            <i class="fas fa-scroll" style="margin-right: 0.5rem;"></i> Clan History <i class="japanese-header">一族の歴史</i>
+            <i class="fas fa-chevron-down bounce-arrow"></i>
+          </div>
+          <div id="clan-history-content" class="collapsible-content">
+            <div class="clan-info-section">
+              ${hasValue('clanHistory.ancientEra') ? `
+                <div style="margin-bottom: 1rem;">
+                  <strong style="color: var(--color-dark-2); font-size: 1.1rem;">Part I: Ancient Era</strong>
+                  <div style="color: var(--color-text-dark-2); margin-top: 0.25rem; line-height: 1.8;" class="markdown-content">${renderMarkdown(getValue('clanHistory.ancientEra'))}</div>
+                </div>
+              ` : ''}
+              ${hasValue('clanHistory.feudalEra') ? `
+                <div style="margin-bottom: 1rem;">
+                  <strong style="color: var(--color-dark-2); font-size: 1.1rem;">Part II: Feudal Era / Warring States Period</strong>
+                  <div style="color: var(--color-text-dark-2); margin-top: 0.25rem; line-height: 1.8;" class="markdown-content">${renderMarkdown(getValue('clanHistory.feudalEra'))}</div>
+                </div>
+              ` : ''}
+              ${hasValue('clanHistory.foundingOfVillages') ? `
+                <div style="margin-bottom: 1rem;">
+                  <strong style="color: var(--color-dark-2); font-size: 1.1rem;">Part III: Founding of the Hidden Villages</strong>
+                  <div style="color: var(--color-text-dark-2); margin-top: 0.25rem; line-height: 1.8;" class="markdown-content">${renderMarkdown(getValue('clanHistory.foundingOfVillages'))}</div>
+                </div>
+              ` : ''}
+              ${hasValue('clanHistory.modernEra') ? `
+                <div style="margin-bottom: 1rem;">
+                  <strong style="color: var(--color-dark-2); font-size: 1.1rem;">Part IV: Modern Era</strong>
+                  <div style="color: var(--color-text-dark-2); margin-top: 0.25rem; line-height: 1.8;" class="markdown-content">${renderMarkdown(getValue('clanHistory.modernEra'))}</div>
+                </div>
+              ` : ''}
+              ${hasValue('history') ? `
+                <div style="line-height: 1.8; color: var(--color-text-dark-2); font-size: 1.05rem; padding: 1rem; background-color: rgba(227, 94, 63, 0.05); border-radius: 6px; border-left: 4px solid var(--color-accent-2);" class="markdown-content">${renderMarkdown(clan.history)}</div>
+              ` : ''}
+            </div>
+          </div>
         </div>
       ` : ''}
       
       ${hasValue('ocCreationAllowed') ? `
-        <div class="clan-info-section">
-          <h3><i class="fas fa-user-plus" style="margin-right: 0.5rem;"></i> OC Creation Policy <i class="japanese-header">OC作成ポリシー</i></h3>
-          <div style="padding: 1rem; background-color: rgba(227, 94, 63, 0.05); border-radius: 6px; border-left: 4px solid var(--color-accent-2);">
-            <strong style="color: var(--color-dark-2);">Are Others Allowed to Make OCs from This Clan?</strong>
-            <div style="color: var(--color-text-dark-2); margin-top: 0.5rem; font-size: 1.1rem; font-weight: 600;">${getValue('ocCreationAllowed')}</div>
+        <div class="collapsible-section">
+          <div class="collapsible-header" onclick="toggleCollapse('oc-creation-policy-content')">
+            <i class="fas fa-user-plus" style="margin-right: 0.5rem;"></i> OC Creation Policy <i class="japanese-header">OC作成ポリシー</i>
+            <i class="fas fa-chevron-down bounce-arrow"></i>
+          </div>
+          <div id="oc-creation-policy-content" class="collapsible-content">
+            <div class="clan-info-section">
+              <div style="padding: 1rem; background-color: rgba(227, 94, 63, 0.05); border-radius: 6px; border-left: 4px solid var(--color-accent-2);">
+                <strong style="color: var(--color-dark-2);">Are Others Allowed to Make OCs from This Clan?</strong>
+                <div style="color: var(--color-text-dark-2); margin-top: 0.5rem; font-size: 1.1rem; font-weight: 600;">${getValue('ocCreationAllowed')}</div>
+              </div>
+            </div>
           </div>
         </div>
       ` : ''}
       
       ${hasValue('trivia') ? `
-        <div class="clan-info-section">
-          <h3><i class="fas fa-lightbulb" style="margin-right: 0.5rem;"></i> Trivia <i class="japanese-header">トリビア</i></h3>
-          <div style="line-height: 1.8; color: var(--color-text-dark-2); font-size: 1.05rem; padding: 1rem; background-color: rgba(227, 94, 63, 0.05); border-radius: 6px; border-left: 4px solid var(--color-accent-2);" class="markdown-content">${renderMarkdown(getValue('trivia'))}</div>
-        </div>
-      ` : ''}
-      
-      ${hasValue('references') ? `
-        <div class="clan-info-section">
-          <h3><i class="fas fa-book" style="margin-right: 0.5rem;"></i> References <i class="japanese-header">参考文献</i></h3>
-          <div style="line-height: 1.8; color: var(--color-text-dark-2); font-size: 1.05rem;" class="markdown-content">${renderMarkdown(getValue('references'))}</div>
-        </div>
-      ` : ''}
-      
-      ${hasArray('moodBoardImages') ? `
-        <div class="clan-info-section">
-          <h3><i class="fas fa-images" style="margin-right: 0.5rem;"></i> Aesthetic Mood Board <i class="japanese-header">美的ムードボード</i></h3>
-          <div class="mood-board-grid">
-            ${getValue('moodBoardImages', []).map((imgUrl, index) => `
-              <div class="mood-board-item" style="animation-delay: ${index * 0.1}s;">
-                <img src="${imgUrl}" alt="Mood board image ${index + 1}" loading="lazy" onerror="this.style.display='none';">
-              </div>
-            `).join('')}
+        <div class="collapsible-section">
+          <div class="collapsible-header" onclick="toggleCollapse('trivia-content')">
+            <i class="fas fa-lightbulb" style="margin-right: 0.5rem;"></i> Trivia <i class="japanese-header">トリビア</i>
+            <i class="fas fa-chevron-down bounce-arrow"></i>
+          </div>
+          <div id="trivia-content" class="collapsible-content">
+            <div class="clan-info-section">
+              <div style="line-height: 1.8; color: var(--color-text-dark-2); font-size: 1.05rem; padding: 1rem; background-color: rgba(227, 94, 63, 0.05); border-radius: 6px; border-left: 4px solid var(--color-accent-2);" class="markdown-content">${renderMarkdown(getValue('trivia'))}</div>
+            </div>
           </div>
         </div>
       ` : ''}
       
-      <div class="clan-info-section">
-        <h3><i class="fas fa-users" style="margin-right: 0.5rem;"></i> Clan Members <i class="japanese-header">一族のメンバー</i> (${members.length})</h3>
+      ${hasValue('references') ? `
+        <div class="collapsible-section">
+          <div class="collapsible-header" onclick="toggleCollapse('references-content')">
+            <i class="fas fa-book" style="margin-right: 0.5rem;"></i> References <i class="japanese-header">参考文献</i>
+            <i class="fas fa-chevron-down bounce-arrow"></i>
+          </div>
+          <div id="references-content" class="collapsible-content">
+            <div class="clan-info-section">
+              <div style="line-height: 1.8; color: var(--color-text-dark-2); font-size: 1.05rem;" class="markdown-content">${renderMarkdown(getValue('references'))}</div>
+            </div>
+          </div>
+        </div>
+      ` : ''}
+      
+      ${hasArray('moodBoardImages') ? `
+        <div class="collapsible-section">
+          <div class="collapsible-header" onclick="toggleCollapse('mood-board-content')">
+            <i class="fas fa-images" style="margin-right: 0.5rem;"></i> Aesthetic Mood Board <i class="japanese-header">美的ムードボード</i>
+            <i class="fas fa-chevron-down bounce-arrow"></i>
+          </div>
+          <div id="mood-board-content" class="collapsible-content">
+            <div class="clan-info-section">
+          <div class="mood-board-grid">
+            ${getValue('moodBoardImages', []).map((imgUrl, index) => `
+              <div class="mood-board-item" style="animation-delay: ${index * 0.1}s;">
+                <img src="${convertImageUrl(imgUrl)}" alt="Mood board image ${index + 1}" loading="lazy" onerror="this.style.display='none';">
+              </div>
+            `).join('')}
+            </div>
+          </div>
+        </div>
+      ` : ''}
+      
+      <div class="collapsible-section">
+        <div class="collapsible-header" onclick="toggleCollapse('clan-members-content')">
+          <i class="fas fa-users" style="margin-right: 0.5rem;"></i> Clan Members <i class="japanese-header">一族のメンバー</i> (${members.length})
+          <i class="fas fa-chevron-down bounce-arrow"></i>
+        </div>
+        <div id="clan-members-content" class="collapsible-content">
+          <div class="clan-info-section">
         ${members.length > 0 ? `
           <div class="clan-members-grid">
             ${members.map(oc => `
@@ -402,10 +601,36 @@ export function renderClanDetail(clan) {
             `).join('')}
           </div>
         ` : '<p style="text-align: center; color: var(--color-text-dark); font-style: italic; padding: 2rem;">No members yet.</p>'}
+          </div>
+        </div>
       </div>
       
     </div>
   `;
+  
+  // Add toggleCollapse function if it doesn't exist
+  if (!window.toggleCollapse) {
+    window.toggleCollapse = function(id) {
+      const content = document.getElementById(id);
+      if (content) {
+        const isActive = content.classList.contains('active');
+        content.classList.toggle('active');
+        
+        // Find the associated arrow and rotate it
+        const header = content.previousElementSibling;
+        if (header) {
+          const arrow = header.querySelector('.bounce-arrow');
+          if (arrow) {
+            if (isActive) {
+              arrow.style.transform = 'rotate(0deg)';
+            } else {
+              arrow.style.transform = 'rotate(180deg)';
+            }
+          }
+        }
+      }
+    };
+  }
   
   return container;
 }

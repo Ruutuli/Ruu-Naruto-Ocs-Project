@@ -299,10 +299,21 @@ export const defaultClan = {
   symbol: '',
   tagline: '',
   summary: '',
-  affiliation: '',
+  affiliation: '', // Kept for backward compatibility
   classification: '',
   status: '',
   village: '',
+  
+  // Debut Information
+  debut: {
+    manga: '',
+    anime: '',
+    novel: '',
+    movie: '',
+    game: ''
+  },
+  appearsIn: [], // Array: 'Anime', 'Manga', 'Novel', 'Game', 'Movie'
+  
   overview: {
     origins: '',
     knownFor: '',
@@ -345,7 +356,13 @@ export const defaultClan = {
     battleStrengths: [],
     battleWeaknesses: []
   },
-  villagesLands: {
+  villagesLands: { // Kept for backward compatibility
+    primaryLocation: '',
+    branches: [],
+    territory: '',
+    reputation: ''
+  },
+  geography: { // New field name for clarity
     primaryLocation: '',
     branches: [],
     territory: '',
@@ -369,7 +386,8 @@ export const defaultClan = {
     pastLeaders: [],
     heirs: ''
   },
-  notableMembers: [],
+  notableMembers: [], // NPCs, historical figures (strings)
+  knownMembers: [], // OC IDs (linked members) - NEW
   ocCreationAllowed: 'Ask',
   clanHistory: {
     ancientEra: '',
@@ -393,7 +411,7 @@ export const defaultClan = {
   },
   trivia: '',
   references: '',
-  members: [],
+  members: [], // OC IDs (for backward compatibility)
   moodBoardImages: []
 };
 

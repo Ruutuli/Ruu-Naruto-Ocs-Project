@@ -682,7 +682,7 @@ export function renderOCDetail(oc) {
       }
       
       if (finalClanName && symbolUrl) {
-        badgeContainer.innerHTML = `<img src="${symbolUrl}" alt="${finalClanName}">`;
+        badgeContainer.innerHTML = `<img src="${convertImageUrl(symbolUrl)}" alt="${finalClanName}">`;
         badgeContainer.setAttribute('title', `Clan: ${finalClanName}`);
       } else if (finalClanName) {
         // Clan name exists but no symbol - use kunai with clan name in title
@@ -2053,9 +2053,13 @@ function renderGearItem(gear) {
   if (typeof gear === 'string') {
     return `
       <div class="gear-item">
-        <div>
-          <div class="gear-icon">⚔</div>
-          <span class="gear-name">${gear}</span>
+        <div class="gear-item-content">
+          <div class="gear-icon-wrapper">
+            <div class="gear-icon">⚔</div>
+          </div>
+          <div class="gear-text-content">
+            <span class="gear-name">${gear}</span>
+          </div>
         </div>
       </div>
     `;
@@ -2067,21 +2071,26 @@ function renderGearItem(gear) {
     if (gear.icon.startsWith('fa-') || gear.icon.startsWith('fas ') || gear.icon.startsWith('far ') || gear.icon.startsWith('fab ')) {
       iconHtml = `<div class="gear-icon" style="font-size: 1.5rem; color: var(--color-accent-2);"><i class="${gear.icon}"></i></div>`;
     } else if (gear.icon.startsWith('http') || gear.icon.startsWith('data:')) {
-      iconHtml = `<div class="gear-icon" style="width: 60px; height: 60px; padding: 0; overflow: hidden; display: flex; align-items: center; justify-content: center;"><img src="${gear.icon}" alt="${gear.name || 'Gear'}" style="width: 100%; height: 100%; object-fit: contain;"></div>`;
+      iconHtml = `<div class="gear-icon gear-icon-image"><img src="${convertImageUrl(gear.icon)}" alt="${gear.name || 'Gear'}" style="width: 100%; height: 100%; object-fit: contain;"></div>`;
     }
   }
   
   return `
     <div class="gear-item">
-      <div>
-        ${iconHtml}
-        <span class="gear-name">${gear.name || 'Item Name'}</span>
+      <div class="gear-item-content">
+        <div class="gear-icon-wrapper">
+          ${iconHtml}
+        </div>
+        <div class="gear-text-content">
+          <span class="gear-name">${gear.name || 'Item Name'}</span>
+          ${gear.category ? `<span class="gear-category">${gear.category}</span>` : ''}
+          ${gear.info && gear.info.length > 0 ? `
+            <ul class="gear-info">
+              ${gear.info.map(info => `<li>${info}</li>`).join('')}
+            </ul>
+          ` : ''}
+        </div>
       </div>
-      ${gear.info && gear.info.length > 0 ? `
-        <ul class="gear-info">
-          ${gear.info.map(info => `<li>${info}</li>`).join('')}
-        </ul>
-      ` : ''}
     </div>
   `;
 }

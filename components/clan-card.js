@@ -1,6 +1,7 @@
 // Clan Card Component - Preview card for clan listing
 
 import { renderMarkdown } from '../utils/markdown.js';
+import { convertImageUrl } from '../utils/imageUtils.js';
 
 export function renderClanCard(clan, onClick) {
   const card = document.createElement('div');
@@ -50,7 +51,7 @@ export function renderClanCard(clan, onClick) {
     </div>
     <div class="card-body" style="padding: 1.5rem;">
       ${clan.symbol ? 
-        `<img src="${clan.symbol}" alt="${clan.name} Symbol" class="clan-symbol" style="width: 120px; height: 120px; margin: 0 auto 1.5rem; display: block; border: 3px solid var(--color-dark-3); border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);">` 
+        `<img src="${convertImageUrl(clan.symbol)}" alt="${clan.name} Symbol" class="clan-symbol" style="width: 120px; height: 120px; margin: 0 auto 1.5rem; display: block; border: 3px solid var(--color-dark-3); border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);">` 
         : `<div style="width: 120px; height: 120px; background: linear-gradient(135deg, var(--color-bg-1) 0%, var(--color-bg-2) 100%); border: 3px solid var(--color-dark-3); border-radius: 8px; margin: 0 auto 1.5rem; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);">
             <span style="color: var(--color-text-dark-2); font-weight: 600; text-transform: uppercase; font-size: 0.85rem;">No Symbol</span>
           </div>`

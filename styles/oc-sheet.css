@@ -968,10 +968,12 @@ i.era-label {
 .demeanor-trait-label {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 0.5rem;
   font-weight: 600;
   font-size: 0.95rem;
   color: var(--color-text-dark-2);
+  width: 100%;
 }
 
 .trait-left {
@@ -1382,9 +1384,27 @@ i.era-label {
 
 .gear-item {
   background-color: var(--color-bg-1);
-  padding: 0.5rem;
+  padding: 1rem;
   border: 1px solid var(--color-border-2);
+  border-radius: 6px;
   font-size: 0.85rem;
+  transition: all 0.3s ease;
+}
+
+.gear-item:hover {
+  border-color: var(--color-accent-2);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.gear-item-content {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.gear-icon-wrapper {
+  flex-shrink: 0;
 }
 
 .gear-icon {
@@ -1392,37 +1412,74 @@ i.era-label {
   height: 60px;
   min-width: 60px;
   background-color: var(--color-dark-3);
-  display: inline-flex;
+  display: flex;
   align-items: center;
   justify-content: center;
-  margin-right: 0.75rem;
-  vertical-align: middle;
   font-size: 0.9rem;
   border-radius: 4px;
+  border: 2px solid var(--color-dark-1);
+}
+
+.gear-icon.gear-icon-image {
+  width: 60px;
+  height: 60px;
+  padding: 0;
+  overflow: hidden;
+  background-color: var(--color-bg-transparent);
+  border: 2px solid var(--color-dark-1);
+}
+
+.gear-icon.gear-icon-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.gear-text-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 0;
 }
 
 .gear-name {
-  font-size: 0.95rem;
+  font-size: 1rem;
   font-weight: bold;
-  display: inline-block;
-  vertical-align: middle;
+  color: var(--color-text-dark);
+  line-height: 1.3;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 .gear-category {
-  font-size: 0.75rem;
-  color: var(--color-text-dark);
+  font-size: 0.8rem;
+  color: var(--color-text-dark-2);
+  font-style: italic;
   margin-top: 0.25rem;
 }
 
 .gear-info {
   list-style: none;
   padding: 0;
-  margin-top: 0.25rem;
-  font-size: 0.75rem;
+  margin-top: 0.5rem;
+  font-size: 0.8rem;
+  color: var(--color-text-dark);
 }
 
 .gear-info li {
-  padding: 0.15rem 0;
+  padding: 0.25rem 0;
+  padding-left: 1rem;
+  position: relative;
+  line-height: 1.4;
+}
+
+.gear-info li:before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  color: var(--color-accent-2);
+  font-weight: bold;
 }
 
 /* Footer */

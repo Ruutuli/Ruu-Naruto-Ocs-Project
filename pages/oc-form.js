@@ -28,7 +28,9 @@ import {
   ninjaClassifications,
   generateOptions,
   generateGroupedOptions,
-  generateDatalistOptions
+  generateDatalistOptions,
+  relationshipTypes,
+  getRelationshipHeartEmoji
 } from '../data/options.js';
 
 // ------------------- Constants -------------------
@@ -169,7 +171,7 @@ export function renderOCForm(oc = null, onSave) {
             <i class="fas fa-info-circle" style="margin-right: 0.5rem;"></i> Basic Information
             <i class="fas fa-chevron-down bounce-arrow"></i>
           </div>
-          <div id="basic-info-content" class="collapsible-content active">
+          <div id="basic-info-content" class="collapsible-content">
             <div class="row">
           <div class="col-12 col-md-6">
             <div class="form-group">
@@ -239,7 +241,7 @@ export function renderOCForm(oc = null, onSave) {
             <i class="fas fa-images" style="margin-right: 0.5rem;"></i> Images by Era <i class="japanese-header">時代別の画像</i>
             <i class="fas fa-chevron-down bounce-arrow"></i>
           </div>
-          <div id="images-era-content" class="collapsible-content active">
+          <div id="images-era-content" class="collapsible-content">
         <div class="mb-4">
           <p class="text-muted" style="margin-bottom: 1rem;">Add images for different eras. These will be displayed with tabs in the detail view.</p>
           <div class="image-era-tabs" style="display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap;">
@@ -285,7 +287,7 @@ export function renderOCForm(oc = null, onSave) {
             <i class="fas fa-book-open" style="margin-right: 0.5rem;"></i> Debut Information
             <i class="fas fa-chevron-down bounce-arrow"></i>
           </div>
-          <div id="debut-info-content" class="collapsible-content active">
+          <div id="debut-info-content" class="collapsible-content">
         <div class="row">
           <div class="col-12 col-md-6">
             <div class="form-group">
@@ -345,7 +347,7 @@ export function renderOCForm(oc = null, onSave) {
             <i class="fas fa-user" style="margin-right: 0.5rem;"></i> Personal Information <i class="japanese-header">個人情報</i>
             <i class="fas fa-chevron-down bounce-arrow"></i>
           </div>
-          <div id="personal-info-content" class="collapsible-content active">
+          <div id="personal-info-content" class="collapsible-content">
         <div class="row">
           <div class="col-12 col-md-4">
             <div class="form-group">
@@ -468,7 +470,7 @@ export function renderOCForm(oc = null, onSave) {
             <i class="fas fa-home" style="margin-right: 0.5rem;"></i> Family Information
             <i class="fas fa-chevron-down bounce-arrow"></i>
           </div>
-          <div id="family-info-content" class="collapsible-content active">
+          <div id="family-info-content" class="collapsible-content">
         <div class="row">
           <div class="col-12 col-md-6">
             <div class="form-group">
@@ -505,7 +507,7 @@ export function renderOCForm(oc = null, onSave) {
             <i class="fas fa-user" style="margin-right: 0.5rem;"></i> Physical Appearance <i class="japanese-header">外見</i>
             <i class="fas fa-chevron-down bounce-arrow"></i>
           </div>
-          <div id="physical-appearance-content" class="collapsible-content active">
+          <div id="physical-appearance-content" class="collapsible-content">
         <div class="row">
           <div class="col-12 col-md-4">
             <div class="form-group">
@@ -673,7 +675,7 @@ export function renderOCForm(oc = null, onSave) {
             <i class="fas fa-fire" style="margin-right: 0.5rem;"></i> Abilities & Powers <i class="japanese-header">能力と力</i>
             <i class="fas fa-chevron-down bounce-arrow"></i>
           </div>
-          <div id="abilities-powers-content" class="collapsible-content active">
+          <div id="abilities-powers-content" class="collapsible-content">
         <div class="row">
           <div class="col-12 col-md-6">
             <div class="form-group">
@@ -722,7 +724,7 @@ export function renderOCForm(oc = null, onSave) {
             <i class="fas fa-dumbbell" style="margin-right: 0.5rem;"></i> Chakra & Physical Prowess <i class="japanese-header">チャクラと体力</i>
             <i class="fas fa-chevron-down bounce-arrow"></i>
           </div>
-          <div id="chakra-physical-content" class="collapsible-content active">
+          <div id="chakra-physical-content" class="collapsible-content">
         <div class="row">
           <div class="col-12 col-md-6">
             <div class="form-group">
@@ -773,7 +775,7 @@ export function renderOCForm(oc = null, onSave) {
             <i class="fas fa-brain" style="margin-right: 0.5rem;"></i> Intelligence
             <i class="fas fa-chevron-down bounce-arrow"></i>
           </div>
-          <div id="intelligence-content" class="collapsible-content active">
+          <div id="intelligence-content" class="collapsible-content">
         <div class="row">
           <div class="col-12 col-md-6">
             <div class="form-group">
@@ -916,7 +918,7 @@ export function renderOCForm(oc = null, onSave) {
             <i class="fas fa-tasks" style="margin-right: 0.5rem;"></i> Mission Counts
             <i class="fas fa-chevron-down bounce-arrow"></i>
           </div>
-          <div id="mission-counts-content" class="collapsible-content active">
+          <div id="mission-counts-content" class="collapsible-content">
         <div class="row">
           <div class="col-6 col-sm-4 col-md-2">
             <div class="form-group">
@@ -958,7 +960,7 @@ export function renderOCForm(oc = null, onSave) {
             <i class="fas fa-chart-bar" style="margin-right: 0.5rem;"></i> Stats (0-5)
             <i class="fas fa-chevron-down bounce-arrow"></i>
           </div>
-          <div id="stats-content" class="collapsible-content active">
+          <div id="stats-content" class="collapsible-content">
             <div class="stats-form-container">
               <div class="stats-form-tabs">
                 ${ERAS.map((era, index) => `
@@ -1072,7 +1074,7 @@ export function renderOCForm(oc = null, onSave) {
             <i class="fas fa-chess" style="margin-right: 0.5rem;"></i> Battle Strategy
             <i class="fas fa-chevron-down bounce-arrow"></i>
           </div>
-          <div id="battle-strategy-content" class="collapsible-content active">
+          <div id="battle-strategy-content" class="collapsible-content">
         <div class="form-group">
           <label class="form-label">In a Team</label>
           <textarea class="form-control" id="strategyInTeam" rows="3">${formOC.battleStrategy?.inTeam || ''}</textarea>
@@ -1107,6 +1109,8 @@ export function renderOCForm(oc = null, onSave) {
         </div>
           </div>
         </div>
+          </div>
+        </div>
         
         <!-- Personality -->
         <div class="collapsible-section">
@@ -1114,7 +1118,7 @@ export function renderOCForm(oc = null, onSave) {
             <i class="fas fa-brain" style="margin-right: 0.5rem;"></i> Personality
             <i class="fas fa-chevron-down bounce-arrow"></i>
           </div>
-          <div id="personality-content" class="collapsible-content active">
+          <div id="personality-content" class="collapsible-content">
         <div class="form-group">
           <label class="form-label">Overview</label>
           <textarea class="form-control" id="personalityOverview" rows="4" placeholder="Overall personality description...">${formOC.personality?.overview || ''}</textarea>
@@ -1147,7 +1151,7 @@ export function renderOCForm(oc = null, onSave) {
             <i class="fas fa-smile" style="margin-right: 0.5rem;"></i> Demeanor <i class="japanese-header">態度</i>
             <i class="fas fa-chevron-down bounce-arrow"></i>
           </div>
-          <div id="demeanor-content" class="collapsible-content active">
+          <div id="demeanor-content" class="collapsible-content">
         <p style="color: var(--color-text-dark-2); font-size: 0.9rem; margin-bottom: 1rem;">
           Rate each trait from 1 to 10. 1 = very left trait, 10 = very right trait. These traits define where your character falls on each spectrum.
         </p>
@@ -1191,9 +1195,9 @@ export function renderOCForm(oc = null, onSave) {
                     <span style="color: var(--color-accent-2);">${trait.right}</span>
                   </div>
                   <div style="display: flex; flex-direction: column; gap: 0.5rem;">
-                    <div class="demeanor-slider-track-form" style="position: relative; height: 20px; background: linear-gradient(to right, rgba(34, 139, 34, 0.15) 0%, rgba(200, 200, 200, 0.3) 50%, rgba(227, 94, 63, 0.15) 100%); border: 2px solid var(--color-border-2); border-radius: 10px;">
-                      <div id="demeanor-${trait.key}-fill" style="position: absolute; left: 0; top: 0; height: 100%; width: ${percentage}%; background: linear-gradient(to right, #228B22 0%, rgba(227, 94, 63, 0.6) 100%); border-radius: 8px 0 0 8px; opacity: 0.5; transition: width 0.2s ease;"></div>
-                      <div id="demeanor-${trait.key}-marker" style="position: absolute; top: 50%; left: ${percentage}%; transform: translate(-50%, -50%); width: 20px; height: 20px; background: linear-gradient(135deg, var(--color-accent-2) 0%, var(--color-accent-1) 100%); border: 3px solid var(--color-text-light); border-radius: 50%; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5); z-index: 2; transition: left 0.2s ease;"></div>
+                    <div class="demeanor-slider-track-form" style="position: relative; height: 20px; background: linear-gradient(to right, rgba(34, 139, 34, 0.15) 0%, rgba(200, 200, 200, 0.3) 50%, rgba(227, 94, 63, 0.15) 100%); border: 2px solid var(--color-border-2); border-radius: 10px; cursor: pointer;">
+                      <div id="demeanor-${trait.key}-fill" style="position: absolute; left: 0; top: 0; height: 100%; width: ${percentage}%; background: linear-gradient(to right, #228B22 0%, rgba(227, 94, 63, 0.6) 100%); border-radius: 8px 0 0 8px; opacity: 0.5; transition: width 0.2s ease; pointer-events: none;"></div>
+                      <div id="demeanor-${trait.key}-marker" style="position: absolute; top: 50%; left: ${percentage}%; transform: translate(-50%, -50%); width: 20px; height: 20px; background: linear-gradient(135deg, var(--color-accent-2) 0%, var(--color-accent-1) 100%); border: 3px solid var(--color-text-light); border-radius: 50%; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5); z-index: 2; transition: left 0.2s ease; pointer-events: none;"></div>
                     </div>
                     <div style="display: flex; align-items: center; gap: 0.5rem;">
                       <input type="range" 
@@ -1223,7 +1227,7 @@ export function renderOCForm(oc = null, onSave) {
             <i class="fas fa-scroll" style="margin-right: 0.5rem;"></i> Record History <i class="japanese-header">記録履歴</i>
             <i class="fas fa-chevron-down bounce-arrow"></i>
           </div>
-          <div id="record-history-content" class="collapsible-content active">
+          <div id="record-history-content" class="collapsible-content">
         <div class="form-group">
           <label class="form-label">Childhood</label>
           <textarea class="form-control" id="recordHistoryChildhood" rows="5">${formOC.recordHistory?.childhood || ''}</textarea>
@@ -1260,7 +1264,7 @@ export function renderOCForm(oc = null, onSave) {
             <i class="fas fa-tshirt" style="margin-right: 0.5rem;"></i> Appearance & Gear <i class="japanese-header">外見と装備</i>
             <i class="fas fa-chevron-down bounce-arrow"></i>
           </div>
-          <div id="appearance-gear-content" class="collapsible-content active">
+          <div id="appearance-gear-content" class="collapsible-content">
         <div class="form-group">
           <label class="form-label">Color Palette <small style="font-weight: normal; color: var(--color-text-dark-2);">(one color per line, hex codes or color names)</small></label>
           <textarea class="form-control" id="appearanceColors" rows="3" placeholder="#FF5733&#10;#33FF57&#10;blue" oninput="updateColorPreview()">${(formOC.appearance?.colors || []).join('\n')}</textarea>
@@ -1308,7 +1312,7 @@ export function renderOCForm(oc = null, onSave) {
             <i class="fas fa-history" style="margin-right: 0.5rem;"></i> Appearance by Era
             <i class="fas fa-chevron-down bounce-arrow"></i>
           </div>
-          <div id="appearance-era-content" class="collapsible-content active">
+          <div id="appearance-era-content" class="collapsible-content">
         <div class="appearance-era-container">
           <div class="appearance-era-tabs" style="display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap;">
             ${ERAS.map((era, index) => `
@@ -1360,7 +1364,7 @@ export function renderOCForm(oc = null, onSave) {
             <i class="fas fa-scroll" style="margin-right: 0.5rem;"></i> Background & History <i class="japanese-header">背景と歴史</i>
             <i class="fas fa-chevron-down bounce-arrow"></i>
           </div>
-          <div id="background-history-content" class="collapsible-content active">
+          <div id="background-history-content" class="collapsible-content">
         <div id="relationships-editor" class="mb-4">
           <label class="form-label mb-2">Relationships</label>
           <div class="card-naruto" style="padding: 1rem; margin-bottom: 1rem;">
@@ -1384,7 +1388,7 @@ export function renderOCForm(oc = null, onSave) {
             <i class="fas fa-film" style="margin-right: 0.5rem;"></i> In Other Media <i class="japanese-header">その他のメディア</i>
             <i class="fas fa-chevron-down bounce-arrow"></i>
           </div>
-          <div id="other-media-content" class="collapsible-content active">
+          <div id="other-media-content" class="collapsible-content">
         <div class="row">
           <div class="col-12 col-md-6">
             <div class="form-group">
@@ -1425,7 +1429,7 @@ export function renderOCForm(oc = null, onSave) {
             <i class="fas fa-ellipsis-h" style="margin-right: 0.5rem;"></i> Miscellaneous <i class="japanese-header">その他</i>
             <i class="fas fa-chevron-down bounce-arrow"></i>
           </div>
-          <div id="miscellaneous-content" class="collapsible-content active">
+          <div id="miscellaneous-content" class="collapsible-content">
         <div class="form-group">
           <label class="form-label">Quotes (one per line)</label>
           <textarea class="form-control" id="quotes" rows="4">${(formOC.quotes || []).join('\n')}</textarea>
@@ -1459,7 +1463,7 @@ export function renderOCForm(oc = null, onSave) {
             <i class="fas fa-images" style="margin-right: 0.5rem;"></i> Gallery <i class="japanese-header">ギャラリー</i>
             <i class="fas fa-chevron-down bounce-arrow"></i>
           </div>
-          <div id="gallery-content" class="collapsible-content active">
+          <div id="gallery-content" class="collapsible-content">
         <div id="gallery-editor" class="mb-4">
           <label class="form-label mb-2">Gallery</label>
           <div class="card-naruto" style="padding: 1rem; margin-bottom: 1rem;">
@@ -2295,6 +2299,57 @@ export function renderOCForm(oc = null, onSave) {
     // Don't auto-copy values - each era defaults to 0 independently
   };
   
+  // Update demeanor display when slider changes
+  window.updateDemeanorDisplay = function(traitKey, value) {
+    const percentage = ((value - 1) / 9) * 100; // Convert 1-10 to 0-100%
+    
+    // Update fill width
+    const fillElement = document.getElementById(`demeanor-${traitKey}-fill`);
+    if (fillElement) {
+      fillElement.style.width = `${percentage}%`;
+    }
+    
+    // Update marker position
+    const markerElement = document.getElementById(`demeanor-${traitKey}-marker`);
+    if (markerElement) {
+      markerElement.style.left = `${percentage}%`;
+    }
+    
+    // Update value display
+    const valueElement = document.getElementById(`demeanor-${traitKey}-value`);
+    if (valueElement) {
+      valueElement.textContent = value;
+    }
+  };
+  
+  // Make slider track clickable
+  setTimeout(() => {
+    const sliderTracks = form.querySelectorAll('.demeanor-slider-track-form');
+    sliderTracks.forEach(track => {
+      // Make track clickable
+      track.style.cursor = 'pointer';
+      track.addEventListener('click', function(e) {
+        e.stopPropagation();
+        const rect = this.getBoundingClientRect();
+        const clickX = e.clientX - rect.left;
+        const percentage = Math.max(0, Math.min(100, (clickX / rect.width) * 100));
+        const value = 1 + (percentage / 100) * 9; // Convert to 1-10 range
+        const roundedValue = Math.round(value * 2) / 2; // Round to nearest 0.5
+        
+        // Find the associated input by looking for the input in the same container
+        const container = this.closest('.demeanor-trait-item');
+        if (container) {
+          const input = container.querySelector('input[type="range"]');
+          if (input) {
+            const traitKey = input.id.replace('demeanor-', '');
+            input.value = roundedValue;
+            window.updateDemeanorDisplay(traitKey, roundedValue);
+          }
+        }
+      });
+    });
+  }, 100);
+  
   // Initialize selectedClassifications from formOC
   if (typeof window.initializeClassificationFromOC === 'function') {
     window.initializeClassificationFromOC(formOC.classification);
@@ -2501,7 +2556,10 @@ function renderRelationshipEditor(rel = {}, index) {
         <div class="col-12 col-md-6">
           <div class="form-group">
             <label>Relationship Type</label>
-            <input type="text" class="form-control" name="relationship-type-${index}" value="${rel.relationshipType || rel.type || ''}" placeholder="e.g., Friend, Rival, Family">
+            <select class="form-control relationship-type-select" name="relationship-type-${index}" id="relationship-type-${index}" onchange="updateRelationshipHeart(${index})">
+              <option value="">-- Select Relationship Type --</option>
+              ${generateOptions(relationshipTypes, rel.relationshipType || rel.type || '')}
+            </select>
           </div>
         </div>
         <div class="col-12 col-md-6">
@@ -2513,7 +2571,7 @@ function renderRelationshipEditor(rel = {}, index) {
         <div class="col-12 col-md-6">
           <div class="form-group">
             <label>Heart Chart (Emoji)</label>
-            <input type="text" class="form-control" name="relationship-heartChart-${index}" value="${rel.heartChart || ''}" placeholder="e.g., 💚">
+            <input type="text" class="form-control relationship-heart-input" name="relationship-heartChart-${index}" id="relationship-heartChart-${index}" value="${rel.heartChart || getRelationshipHeartEmoji(rel.relationshipType || rel.type || '')}" placeholder="e.g., 💚">
           </div>
         </div>
         <div class="col-12">

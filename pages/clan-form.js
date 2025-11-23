@@ -38,6 +38,15 @@ export function renderClanForm(clan = null, onSave) {
   const form = document.createElement('div');
   form.className = 'card-naruto';
   
+  // Helper to get appearsIn array
+  const getAppearsIn = () => {
+    const appearsIn = getArrayValue('appearsIn', []);
+    return Array.isArray(appearsIn) ? appearsIn : [];
+  };
+  
+  const appearsInOptions = ['Anime', 'Manga', 'Novel', 'Game', 'Movie'];
+  const currentAppearsIn = getAppearsIn();
+  
   form.innerHTML = `
     <div class="card-header-naruto">
       <h2>${isEdit ? 'Edit' : 'Create'} Clan</h2>
@@ -53,101 +62,168 @@ export function renderClanForm(clan = null, onSave) {
             <i class="fas fa-times"></i> Cancel
           </button>
         </div>
-        <h3 class="mb-3" style="border-bottom: 2px solid var(--color-accent-2); padding-bottom: 0.5rem;"><i class="fas fa-info-circle"></i> Basic Information</h3>
         
-        <div class="form-group">
-          <label class="form-label">Clan Name</label>
-          <input type="text" class="form-control" id="name" value="${formClan.name || ''}" required>
-        </div>
-        
-        <div class="row">
-          <div class="col-md-6">
-            <div class="form-group">
-              <label class="form-label">Kanji (漢字) (Optional)</label>
-              <input type="text" class="form-control" id="kanji" value="${getValue('kanji')}" placeholder="e.g., 契り">
+        <!-- Basic Information (Always Expanded) -->
+        <div class="mb-4">
+          <h3 class="mb-3" style="border-bottom: 2px solid var(--color-accent-2); padding-bottom: 0.5rem;"><i class="fas fa-info-circle"></i> Basic Information <i class="japanese-header">基本情報</i></h3>
+          
+          <div class="form-group">
+            <label class="form-label">Clan Name</label>
+            <input type="text" class="form-control" id="name" value="${formClan.name || ''}" required>
+          </div>
+          
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label class="form-label">Kanji (漢字) (Optional)</label>
+                <input type="text" class="form-control" id="kanji" value="${getValue('kanji')}" placeholder="e.g., 契り">
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label class="form-label">Meaning (Optional)</label>
+                <input type="text" class="form-control" id="meaning" value="${getValue('meaning')}" placeholder="e.g., destiny, fate, karma">
+              </div>
             </div>
           </div>
-          <div class="col-md-6">
+          
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="form-label">Affiliation</label>
+                <input type="text" class="form-control" id="affiliation" value="${getValue('affiliation')}" placeholder="Village — or 'Independent/Dispersed'">
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="form-label">Classification</label>
+                <select class="form-control" id="classification">
+                  <option value="">Select Classification</option>
+                  ${generateOptions(clanClassifications, getValue('classification'))}
+                </select>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="form-label">Status</label>
+                <select class="form-control" id="status">
+                  <option value="">Select Status</option>
+                  ${generateOptions(clanStatus, getValue('status'))}
+                </select>
+              </div>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Tagline / Theme (Optional)</label>
+            <input type="text" class="form-control" id="tagline" value="${getValue('tagline')}" placeholder="e.g., duty, legacy, bloodline">
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Summary (2-3 sentences)</label>
+            <textarea class="form-control" id="summary" rows="3" placeholder="A 2-3 sentence overview capturing the clan's identity in the Naruto world.">${getValue('summary')}</textarea>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Clan Symbol (Image URL)</label>
+            <input type="text" class="form-control" id="symbol" value="${formClan.symbol || ''}" placeholder="Enter image URL">
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Village/Land</label>
+            <select class="form-control" id="village" required>
+              <option value="">Select Village/Land</option>
+              ${generateGroupedOptions(villagesLands, formClan.village || '')}
+            </select>
+          </div>
+          
+          <!-- Debut Information -->
+          <div class="form-group mt-4">
+            <label class="form-label" style="font-weight: 600; margin-bottom: 0.75rem;"><i class="fas fa-book-open" style="margin-right: 0.5rem;"></i> Debut Information</label>
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label class="form-label">Debut (Manga)</label>
+                  <input type="text" class="form-control" id="debutManga" value="${getValue('debut.manga')}" placeholder="e.g., Chapter 1">
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label class="form-label">Debut (Anime)</label>
+                  <input type="text" class="form-control" id="debutAnime" value="${getValue('debut.anime')}" placeholder="e.g., Episode 1">
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label class="form-label">Debut (Novel)</label>
+                  <input type="text" class="form-control" id="debutNovel" value="${getValue('debut.novel')}" placeholder="e.g., Novel Name">
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label class="form-label">Debut (Movie)</label>
+                  <input type="text" class="form-control" id="debutMovie" value="${getValue('debut.movie')}" placeholder="e.g., Movie Name">
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label class="form-label">Debut (Game)</label>
+                  <input type="text" class="form-control" id="debutGame" value="${getValue('debut.game')}" placeholder="e.g., Game Name">
+                </div>
+              </div>
+            </div>
             <div class="form-group">
-              <label class="form-label">Meaning (Optional)</label>
-              <input type="text" class="form-control" id="meaning" value="${getValue('meaning')}" placeholder="e.g., destiny, fate, karma">
+              <label class="form-label">Appears In</label>
+              <div style="display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 0.5rem;">
+                ${appearsInOptions.map(option => `
+                  <label style="display: flex; align-items: center; cursor: pointer; font-weight: normal;">
+                    <input type="checkbox" value="${option}" id="appearsIn-${option}" ${currentAppearsIn.includes(option) ? 'checked' : ''} style="margin-right: 0.5rem;">
+                    ${option}
+                  </label>
+                `).join('')}
+              </div>
             </div>
           </div>
         </div>
         
-        <div class="row">
-          <div class="col-md-4">
+        <!-- Overview (Collapsible) -->
+        <div class="collapsible-section">
+          <div class="collapsible-header" onclick="toggleFormCollapse('overview-content')">
+            <i class="fas fa-book-open" style="margin-right: 0.5rem;"></i> Overview <i class="japanese-header">概要</i>
+            <i class="fas fa-chevron-down bounce-arrow"></i>
+          </div>
+          <div id="overview-content" class="collapsible-content">
             <div class="form-group">
-              <label class="form-label">Affiliation</label>
-              <input type="text" class="form-control" id="affiliation" value="${getValue('affiliation')}" placeholder="Village — or 'Independent/Dispersed'">
+              <label class="form-label">Origins</label>
+              <textarea class="form-control" id="overview-origins" rows="3" placeholder="What are the clan's origins?">${getValue('overview.origins')}</textarea>
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label">What They Are Known For</label>
+              <textarea class="form-control" id="overview-knownFor" rows="3" placeholder="What are they known for?">${getValue('overview.knownFor')}</textarea>
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label">Their Purpose in the World</label>
+              <textarea class="form-control" id="overview-purpose" rows="3" placeholder="What is their purpose?">${getValue('overview.purpose')}</textarea>
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label">How They Fit Into the Universe</label>
+              <textarea class="form-control" id="overview-fitInUniverse" rows="3" placeholder="How do they fit into the Naruto universe (or your universe)?">${getValue('overview.fitInUniverse')}</textarea>
             </div>
           </div>
-          <div class="col-md-4">
-            <div class="form-group">
-              <label class="form-label">Classification</label>
-              <select class="form-control" id="classification">
-                <option value="">Select Classification</option>
-                ${generateOptions(clanClassifications, getValue('classification'))}
-              </select>
-            </div>
+        </div>
+        
+        <!-- Kekkei Genkai / Hiden (Collapsible) -->
+        <div class="collapsible-section">
+          <div class="collapsible-header" onclick="toggleFormCollapse('kekkei-genkai-content')">
+            <i class="fas fa-eye" style="margin-right: 0.5rem;"></i> Kekkei Genkai / Hiden Techniques <i class="japanese-header">血継限界・秘伝</i>
+            <i class="fas fa-chevron-down bounce-arrow"></i>
           </div>
-          <div class="col-md-4">
-            <div class="form-group">
-              <label class="form-label">Status</label>
-              <select class="form-control" id="status">
-                <option value="">Select Status</option>
-                ${generateOptions(clanStatus, getValue('status'))}
-              </select>
-            </div>
-          </div>
-        </div>
-        
-        <div class="form-group">
-          <label class="form-label">Tagline / Theme (Optional)</label>
-          <input type="text" class="form-control" id="tagline" value="${getValue('tagline')}" placeholder="e.g., duty, legacy, bloodline">
-        </div>
-        
-        <div class="form-group">
-          <label class="form-label">Summary (2-3 sentences)</label>
-          <textarea class="form-control" id="summary" rows="3" placeholder="A 2-3 sentence overview capturing the clan's identity in the Naruto world.">${getValue('summary')}</textarea>
-        </div>
-        
-        <div class="form-group">
-          <label class="form-label">Clan Symbol (Image URL)</label>
-          <input type="text" class="form-control" id="symbol" value="${formClan.symbol || ''}" placeholder="Enter image URL">
-        </div>
-        
-        <div class="form-group">
-          <label class="form-label">Village/Land</label>
-          <select class="form-control" id="village" required>
-            <option value="">Select Village/Land</option>
-            ${generateGroupedOptions(villagesLands, formClan.village || '')}
-          </select>
-        </div>
-        
-        <h3 class="mb-3 mt-4" style="border-bottom: 2px solid var(--color-accent-2); padding-bottom: 0.5rem;"><i class="fas fa-book-open"></i> Overview</h3>
-        
-        <div class="form-group">
-          <label class="form-label">Origins</label>
-          <textarea class="form-control" id="overview-origins" rows="3" placeholder="What are the clan's origins?">${getValue('overview.origins')}</textarea>
-        </div>
-        
-        <div class="form-group">
-          <label class="form-label">What They Are Known For</label>
-          <textarea class="form-control" id="overview-knownFor" rows="3" placeholder="What are they known for?">${getValue('overview.knownFor')}</textarea>
-        </div>
-        
-        <div class="form-group">
-          <label class="form-label">Their Purpose in the World</label>
-          <textarea class="form-control" id="overview-purpose" rows="3" placeholder="What is their purpose?">${getValue('overview.purpose')}</textarea>
-        </div>
-        
-        <div class="form-group">
-          <label class="form-label">How They Fit Into the Universe</label>
-          <textarea class="form-control" id="overview-fitInUniverse" rows="3" placeholder="How do they fit into the Naruto universe (or your universe)?">${getValue('overview.fitInUniverse')}</textarea>
-        </div>
-        
-        <h3 class="mb-3 mt-4" style="border-bottom: 2px solid var(--color-accent-2); padding-bottom: 0.5rem;"><i class="fas fa-eye"></i> Kekkei Genkai / Hiden Techniques</h3>
+          <div id="kekkei-genkai-content" class="collapsible-content">
         
         <div class="form-group">
           <label class="form-label">Name</label>
@@ -205,14 +281,21 @@ export function renderClanForm(clan = null, onSave) {
           <label class="form-label">Weaknesses / Costs (one per line)</label>
           <textarea class="form-control" id="kekkeiGenkai-weaknesses" rows="3" placeholder="List the weaknesses/costs, one per line (exhaustion, blindness, lifespan cost, chakra drain, curse seal behavior, etc.).">${getArrayValue('kekkeiGenkai.weaknesses').join('\n')}</textarea>
         </div>
-        
-        <div class="form-group">
-          <label class="form-label">Notable Bloodline Jutsu (one per line, format: Jutsu Name — Rank, Type, Description)</label>
-          <textarea class="form-control" id="kekkeiGenkai-notableJutsu" rows="4" placeholder="Jutsu Name — Rank, Type, Description&#10;Jutsu Name — Rank, Type, Description">${getArrayValue('kekkeiGenkai.notableJutsu').join('\n')}</textarea>
-          <small class="form-text text-muted">These are jutsu exclusive to the bloodline ability, not shared clan techniques.</small>
+            <div class="form-group">
+              <label class="form-label">Notable Bloodline Jutsu (one per line, format: Jutsu Name — Rank, Type, Description)</label>
+              <textarea class="form-control" id="kekkeiGenkai-notableJutsu" rows="4" placeholder="Jutsu Name — Rank, Type, Description&#10;Jutsu Name — Rank, Type, Description">${getArrayValue('kekkeiGenkai.notableJutsu').join('\n')}</textarea>
+              <small class="form-text text-muted">These are jutsu exclusive to the bloodline ability, not shared clan techniques.</small>
+            </div>
+          </div>
         </div>
         
-        <h3 class="mb-3 mt-4" style="border-bottom: 2px solid var(--color-accent-2); padding-bottom: 0.5rem;"><i class="fas fa-sitemap"></i> Clan Structure & Governance</h3>
+        <!-- Clan Structure & Governance (Collapsible) -->
+        <div class="collapsible-section">
+          <div class="collapsible-header" onclick="toggleFormCollapse('clan-structure-content')">
+            <i class="fas fa-sitemap" style="margin-right: 0.5rem;"></i> Clan Structure & Governance <i class="japanese-header">一族の構造と統治</i>
+            <i class="fas fa-chevron-down bounce-arrow"></i>
+          </div>
+          <div id="clan-structure-content" class="collapsible-content">
         
         <div class="form-group">
           <label class="form-label">Clan Head</label>
@@ -238,13 +321,20 @@ export function renderClanForm(clan = null, onSave) {
           <label class="form-label">Political Tensions</label>
           <textarea class="form-control" id="clanStructure-politicalTensions" rows="3" placeholder="Rivalries, inheritance issues.">${getValue('clanStructure.politicalTensions')}</textarea>
         </div>
-        
-        <div class="form-group">
-          <label class="form-label">Laws & Rules</label>
-          <textarea class="form-control" id="clanStructure-lawsRules" rows="6" placeholder="Common Naruto clan regulations: marriage rules, fate/destiny rules, secrecy oaths, expectations for heirs, combat restrictions, forbidden jutsu use, punishment structure, betrayal consequences.">${getValue('clanStructure.lawsRules')}</textarea>
+            <div class="form-group">
+              <label class="form-label">Laws & Rules</label>
+              <textarea class="form-control" id="clanStructure-lawsRules" rows="6" placeholder="Common Naruto clan regulations: marriage rules, fate/destiny rules, secrecy oaths, expectations for heirs, combat restrictions, forbidden jutsu use, punishment structure, betrayal consequences.">${getValue('clanStructure.lawsRules')}</textarea>
+            </div>
+          </div>
         </div>
         
-        <h3 class="mb-3 mt-4" style="border-bottom: 2px solid var(--color-accent-2); padding-bottom: 0.5rem;"><i class="fas fa-torii-gate"></i> Culture & Traditions</h3>
+        <!-- Culture & Traditions (Collapsible) -->
+        <div class="collapsible-section">
+          <div class="collapsible-header" onclick="toggleFormCollapse('culture-traditions-content')">
+            <i class="fas fa-torii-gate" style="margin-right: 0.5rem;"></i> Culture & Traditions <i class="japanese-header">文化と伝統</i>
+            <i class="fas fa-chevron-down bounce-arrow"></i>
+          </div>
+          <div id="culture-traditions-content" class="collapsible-content">
         
         <div class="form-group">
           <label class="form-label">Values (comma-separated)</label>
@@ -255,13 +345,20 @@ export function renderClanForm(clan = null, onSave) {
           <label class="form-label">Long-held Traditions</label>
           <textarea class="form-control" id="cultureTraditions-longHeldTraditions" rows="6" placeholder="Coming-of-age rites, funeral customs, seasonal rituals, bloodline awakening ceremonies, marriage practices, child rearing, education expectations, iconic festivals or rites.">${getValue('cultureTraditions.longHeldTraditions')}</textarea>
         </div>
-        
-        <div class="form-group">
-          <label class="form-label">Clan Sayings or Proverbs (one per line)</label>
-          <textarea class="form-control" id="cultureTraditions-clanSayings" rows="3" placeholder="Example: 'Shadow endures so the Fire may burn bright.'">${getArrayValue('cultureTraditions.clanSayings').join('\n')}</textarea>
+            <div class="form-group">
+              <label class="form-label">Clan Sayings or Proverbs (one per line)</label>
+              <textarea class="form-control" id="cultureTraditions-clanSayings" rows="3" placeholder="Example: 'Shadow endures so the Fire may burn bright.'">${getArrayValue('cultureTraditions.clanSayings').join('\n')}</textarea>
+            </div>
+          </div>
         </div>
         
-        <h3 class="mb-3 mt-4" style="border-bottom: 2px solid var(--color-accent-2); padding-bottom: 0.5rem;"><i class="fas fa-map-marked-alt"></i> Village & Politics</h3>
+        <!-- Village & Politics (Collapsible) -->
+        <div class="collapsible-section">
+          <div class="collapsible-header" onclick="toggleFormCollapse('village-politics-content')">
+            <i class="fas fa-map-marked-alt" style="margin-right: 0.5rem;"></i> Village & Politics <i class="japanese-header">村と政治</i>
+            <i class="fas fa-chevron-down bounce-arrow"></i>
+          </div>
+          <div id="village-politics-content" class="collapsible-content">
         
         <div class="form-group">
           <label class="form-label">Primary Village</label>
@@ -277,41 +374,68 @@ export function renderClanForm(clan = null, onSave) {
           <label class="form-label">Relations with Other Clans</label>
           <textarea class="form-control" id="villagePlacement-relationsWithClans" rows="4" placeholder="Allies, Rivals, Historic blood feuds, Marital alliances.">${getValue('villagePlacement.relationsWithClans')}</textarea>
         </div>
-        
-        <div class="form-group">
-          <label class="form-label">Role in Major Conflicts</label>
-          <textarea class="form-control" id="villagePlacement-roleInConflicts" rows="5" placeholder="List contributions to: First Shinobi World War, Second, Third, Fourth, Any inter-clan wars.">${getValue('villagePlacement.roleInConflicts')}</textarea>
+            <div class="form-group">
+              <label class="form-label">Role in Major Conflicts</label>
+              <textarea class="form-control" id="villagePlacement-roleInConflicts" rows="5" placeholder="List contributions to: First Shinobi World War, Second, Third, Fourth, Any inter-clan wars.">${getValue('villagePlacement.roleInConflicts')}</textarea>
+            </div>
+          </div>
         </div>
         
-        <div class="form-group">
-          <label class="form-label">Primary Location</label>
-          <textarea class="form-control" id="villagesLands-primaryLocation" rows="3" placeholder="Describe the clan's primary geographical location or homeland.">${getValue('villagesLands.primaryLocation')}</textarea>
+        <!-- Geography (Collapsible) -->
+        <div class="collapsible-section">
+          <div class="collapsible-header" onclick="toggleFormCollapse('geography-content')">
+            <i class="fas fa-map" style="margin-right: 0.5rem;"></i> Geography <i class="japanese-header">地理</i>
+            <i class="fas fa-chevron-down bounce-arrow"></i>
+          </div>
+          <div id="geography-content" class="collapsible-content">
+            <div class="form-group">
+              <label class="form-label">Primary Location</label>
+              <textarea class="form-control" id="geography-primaryLocation" rows="3" placeholder="Describe the clan's primary geographical location or homeland.">${getValue('geography.primaryLocation') || getValue('villagesLands.primaryLocation')}</textarea>
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label">Branches in Other Villages (one per line, format: Branch Name — specialization)</label>
+              <textarea class="form-control" id="geography-branches" rows="4" placeholder="Branch A — (specialization)&#10;Branch B — (specialization)&#10;Branch C — (specialization)">${(() => {
+                const geoBranches = getArrayValue('geography.branches');
+                const villagesBranches = getArrayValue('villagesLands.branches');
+                return geoBranches.length > 0 ? geoBranches.join('\n') : villagesBranches.join('\n');
+              })()}</textarea>
+              <small class="form-text text-muted">Geographical dispersion - branches located in other villages.</small>
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label">Territory & Influence</label>
+              <textarea class="form-control" id="geography-territory" rows="3" placeholder="Describe political influence, neutrality, alliances, or territorial history.">${getValue('geography.territory') || getValue('villagesLands.territory')}</textarea>
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label">Reputation</label>
+              <textarea class="form-control" id="geography-reputation" rows="3" placeholder="How other clans/villages perceive them.">${getValue('geography.reputation') || getValue('villagesLands.reputation')}</textarea>
+            </div>
+          </div>
         </div>
         
-        <div class="form-group">
-          <label class="form-label">Branches in Other Villages (one per line, format: Branch Name — specialization)</label>
-          <textarea class="form-control" id="villagesLands-branches" rows="4" placeholder="Branch A — (specialization)&#10;Branch B — (specialization)&#10;Branch C — (specialization)">${getArrayValue('villagesLands.branches').join('\n')}</textarea>
-          <small class="form-text text-muted">Geographical dispersion - branches located in other villages.</small>
+        <!-- Appearance / Physical Traits (Collapsible) -->
+        <div class="collapsible-section">
+          <div class="collapsible-header" onclick="toggleFormCollapse('appearance-content')">
+            <i class="fas fa-user" style="margin-right: 0.5rem;"></i> Appearance / Physical Traits <i class="japanese-header">外見・身体的特徴</i>
+            <i class="fas fa-chevron-down bounce-arrow"></i>
+          </div>
+          <div id="appearance-content" class="collapsible-content">
+            <div class="form-group">
+              <label class="form-label">Appearance / Physical Traits</label>
+              <textarea class="form-control" id="appearancePhysicalTraits" rows="8" placeholder="Insert shared traits: Hair colors, eye colors, skin tones, height/build, distinctive markings or features, clan symbols or patterns, official color palette, clothing style. Include hairstyle norms, accessories, or features that hint at lineage.">${getValue('appearancePhysicalTraits')}</textarea>
+            </div>
+          </div>
         </div>
         
-        <div class="form-group">
-          <label class="form-label">Territory & Influence</label>
-          <textarea class="form-control" id="villagesLands-territory" rows="3" placeholder="Describe political influence, neutrality, alliances, or territorial history.">${getValue('villagesLands.territory')}</textarea>
-        </div>
-        
-        <div class="form-group">
-          <label class="form-label">Reputation</label>
-          <textarea class="form-control" id="villagesLands-reputation" rows="3" placeholder="How other clans/villages perceive them.">${getValue('villagesLands.reputation')}</textarea>
-        </div>
-        
-        <h3 class="mb-3 mt-4" style="border-bottom: 2px solid var(--color-accent-2); padding-bottom: 0.5rem;"><i class="fas fa-user"></i> Appearance / Physical Traits</h3>
-        
-        <div class="form-group">
-          <label class="form-label">Appearance / Physical Traits</label>
-          <textarea class="form-control" id="appearancePhysicalTraits" rows="8" placeholder="Insert shared traits: Hair colors, eye colors, skin tones, height/build, distinctive markings or features, clan symbols or patterns, official color palette, clothing style. Include hairstyle norms, accessories, or features that hint at lineage.">${getValue('appearancePhysicalTraits')}</textarea>
-        </div>
-        
-        <h3 class="mb-3 mt-4" style="border-bottom: 2px solid var(--color-accent-2); padding-bottom: 0.5rem;"><i class="fas fa-magic"></i> Clan Jutsu & Abilities</h3>
+        <!-- Abilities (Collapsible) -->
+        <div class="collapsible-section">
+          <div class="collapsible-header" onclick="toggleFormCollapse('abilities-content')">
+            <i class="fas fa-magic" style="margin-right: 0.5rem;"></i> Clan Jutsu & Abilities <i class="japanese-header">一族の術と能力</i>
+            <i class="fas fa-chevron-down bounce-arrow"></i>
+          </div>
+          <div id="abilities-content" class="collapsible-content">
         
         <div class="form-group">
           <label class="form-label">Signature Jutsu (one per line, format: Jutsu Name — description)</label>
@@ -362,13 +486,20 @@ export function renderClanForm(clan = null, onSave) {
           <label class="form-label">Clan-wide Strengths (one per line)</label>
           <textarea class="form-control" id="abilities-strengths" rows="3" placeholder="Clan-wide advantages — physical or mental">${getArrayValue('abilities.strengths').join('\n')}</textarea>
         </div>
-        
-        <div class="form-group">
-          <label class="form-label">Clan-wide Weaknesses (one per line)</label>
-          <textarea class="form-control" id="abilities-weaknesses" rows="3" placeholder="Clan-wide drawbacks, genetic issues, chakra fragility, etc.">${getArrayValue('abilities.weaknesses').join('\n')}</textarea>
+            <div class="form-group">
+              <label class="form-label">Clan-wide Weaknesses (one per line)</label>
+              <textarea class="form-control" id="abilities-weaknesses" rows="3" placeholder="Clan-wide drawbacks, genetic issues, chakra fragility, etc.">${getArrayValue('abilities.weaknesses').join('\n')}</textarea>
+            </div>
+          </div>
         </div>
         
-        <h3 class="mb-3 mt-4" style="border-bottom: 2px solid var(--color-accent-2); padding-bottom: 0.5rem;"><i class="fas fa-sword"></i> Combat Information</h3>
+        <!-- Combat Information (Collapsible) -->
+        <div class="collapsible-section">
+          <div class="collapsible-header" onclick="toggleFormCollapse('combat-info-content')">
+            <i class="fas fa-sword" style="margin-right: 0.5rem;"></i> Combat Information <i class="japanese-header">戦闘情報</i>
+            <i class="fas fa-chevron-down bounce-arrow"></i>
+          </div>
+          <div id="combat-info-content" class="collapsible-content">
         
         <div class="form-group">
           <label class="form-label">Signature Weaponry</label>
@@ -379,13 +510,20 @@ export function renderClanForm(clan = null, onSave) {
           <label class="form-label">Battle Strengths (one per line)</label>
           <textarea class="form-control" id="combatInfo-battleStrengths" rows="3" placeholder="List combat-specific strengths, one per line.">${getArrayValue('combatInfo.battleStrengths').join('\n')}</textarea>
         </div>
-        
-        <div class="form-group">
-          <label class="form-label">Battle Weaknesses (one per line)</label>
-          <textarea class="form-control" id="combatInfo-battleWeaknesses" rows="3" placeholder="List combat-specific weaknesses, one per line.">${getArrayValue('combatInfo.battleWeaknesses').join('\n')}</textarea>
+            <div class="form-group">
+              <label class="form-label">Battle Weaknesses (one per line)</label>
+              <textarea class="form-control" id="combatInfo-battleWeaknesses" rows="3" placeholder="List combat-specific weaknesses, one per line.">${getArrayValue('combatInfo.battleWeaknesses').join('\n')}</textarea>
+            </div>
+          </div>
         </div>
         
-        <h3 class="mb-3 mt-4" style="border-bottom: 2px solid var(--color-accent-2); padding-bottom: 0.5rem;"><i class="fas fa-crown"></i> Leaders</h3>
+        <!-- Leaders (Collapsible) -->
+        <div class="collapsible-section">
+          <div class="collapsible-header" onclick="toggleFormCollapse('leaders-content')">
+            <i class="fas fa-crown" style="margin-right: 0.5rem;"></i> Leaders <i class="japanese-header">リーダー</i>
+            <i class="fas fa-chevron-down bounce-arrow"></i>
+          </div>
+          <div id="leaders-content" class="collapsible-content">
         
         <div class="form-group">
           <label class="form-label">Current Leader</label>
@@ -396,20 +534,35 @@ export function renderClanForm(clan = null, onSave) {
           <label class="form-label">Past Leaders (Notable) (one per line, format: Name — contributions)</label>
           <textarea class="form-control" id="leaders-pastLeaders" rows="5" placeholder="Name — contributions&#10;Name — era or achievements&#10;Name — scandals, wars, historical relevance">${getArrayValue('leaders.pastLeaders').join('\n')}</textarea>
         </div>
-        
-        <div class="form-group">
-          <label class="form-label">Heirs</label>
-          <textarea class="form-control" id="leaders-heirs" rows="3" placeholder="Legacy, expectations, chosen successors, bloodline purity rules, etc.">${getValue('leaders.heirs')}</textarea>
+            <div class="form-group">
+              <label class="form-label">Heirs</label>
+              <textarea class="form-control" id="leaders-heirs" rows="3" placeholder="Legacy, expectations, chosen successors, bloodline purity rules, etc.">${getValue('leaders.heirs')}</textarea>
+            </div>
+          </div>
         </div>
         
-        <h3 class="mb-3 mt-4" style="border-bottom: 2px solid var(--color-accent-2); padding-bottom: 0.5rem;"><i class="fas fa-users"></i> Notable Clan Members</h3>
-        
-        <div class="form-group">
-          <label class="form-label">Notable Clan Members (one per line)</label>
-          <textarea class="form-control" id="notableMembers" rows="4" placeholder="List important OCs/NPCs, one per line. Add small blurbs later if needed.">${getArrayValue('notableMembers').join('\n')}</textarea>
+        <!-- Notable Clan Members (Collapsible) -->
+        <div class="collapsible-section">
+          <div class="collapsible-header" onclick="toggleFormCollapse('notable-members-content')">
+            <i class="fas fa-users" style="margin-right: 0.5rem;"></i> Notable Clan Members <i class="japanese-header">著名な一族のメンバー</i>
+            <i class="fas fa-chevron-down bounce-arrow"></i>
+          </div>
+          <div id="notable-members-content" class="collapsible-content">
+            <div class="form-group">
+              <label class="form-label">Notable Clan Members (one per line)</label>
+              <textarea class="form-control" id="notableMembers" rows="4" placeholder="List important NPCs, historical figures, or descriptions, one per line. Add small blurbs later if needed.">${getArrayValue('notableMembers').join('\n')}</textarea>
+              <small class="form-text text-muted">For OC members, use the "Clan Members" section below.</small>
+            </div>
+          </div>
         </div>
         
-        <h3 class="mb-3 mt-4" style="border-bottom: 2px solid var(--color-accent-2); padding-bottom: 0.5rem;"><i class="fas fa-scroll"></i> Clan History</h3>
+        <!-- Clan History (Collapsible) -->
+        <div class="collapsible-section">
+          <div class="collapsible-header" onclick="toggleFormCollapse('clan-history-content')">
+            <i class="fas fa-scroll" style="margin-right: 0.5rem;"></i> Clan History <i class="japanese-header">一族の歴史</i>
+            <i class="fas fa-chevron-down bounce-arrow"></i>
+          </div>
+          <div id="clan-history-content" class="collapsible-content">
         
         <div class="form-group">
           <label class="form-label">Part I: Ancient Era</label>
@@ -425,14 +578,20 @@ export function renderClanForm(clan = null, onSave) {
           <label class="form-label">Part III: Founding of the Hidden Villages</label>
           <textarea class="form-control" id="clanHistory-foundingOfVillages" rows="5" placeholder="Why they chose their village (or why they refused). Political involvement: did they sign early treaties? did they oppose the Hokage system? did their abilities make them valuable? feared?">${getValue('clanHistory.foundingOfVillages')}</textarea>
         </div>
-        
-        <div class="form-group">
-          <label class="form-label">Part IV: Modern Era</label>
-          <textarea class="form-control" id="clanHistory-modernEra" rows="5" placeholder="The clan's current state: thriving, deteriorating, cursed, politically fractured, integrated, in hiding.">${getValue('clanHistory.modernEra')}</textarea>
+            <div class="form-group">
+              <label class="form-label">Part IV: Modern Era</label>
+              <textarea class="form-control" id="clanHistory-modernEra" rows="5" placeholder="The clan's current state: thriving, deteriorating, cursed, politically fractured, integrated, in hiding.">${getValue('clanHistory.modernEra')}</textarea>
+            </div>
+          </div>
         </div>
         
-        
-        <h3 class="mb-3 mt-4" style="border-bottom: 2px solid var(--color-accent-2); padding-bottom: 0.5rem;">🏺 Symbols, Artifacts & Secrets</h3>
+        <!-- Symbols, Artifacts & Secrets (Collapsible) -->
+        <div class="collapsible-section">
+          <div class="collapsible-header" onclick="toggleFormCollapse('symbols-artifacts-content')">
+            <i class="fas fa-scroll" style="margin-right: 0.5rem;"></i> Symbols, Artifacts & Secrets <i class="japanese-header">シンボル、遺物、秘密</i>
+            <i class="fas fa-chevron-down bounce-arrow"></i>
+          </div>
+          <div id="symbols-artifacts-content" class="collapsible-content">
         
         <div class="form-group">
           <label class="form-label">Clan Crest</label>
@@ -443,13 +602,20 @@ export function renderClanForm(clan = null, onSave) {
           <label class="form-label">Artifacts / Relics (one per line, format: Named object — origin & purpose)</label>
           <textarea class="form-control" id="clanSymbols-artifacts" rows="4" placeholder="Named object — origin & purpose&#10;Named object — who may wield it&#10;Named object — taboo surrounding it">${getArrayValue('clanSymbols.artifacts').join('\n')}</textarea>
         </div>
-        
-        <div class="form-group">
-          <label class="form-label">Secret Knowledge</label>
-          <textarea class="form-control" id="clanSymbols-secretKnowledge" rows="5" placeholder="Forbidden jutsu, Lost techniques, Locked scrolls, Curses or oaths, Ancient treaties, Catastrophic lineage secrets.">${getValue('clanSymbols.secretKnowledge')}</textarea>
+            <div class="form-group">
+              <label class="form-label">Secret Knowledge</label>
+              <textarea class="form-control" id="clanSymbols-secretKnowledge" rows="5" placeholder="Forbidden jutsu, Lost techniques, Locked scrolls, Curses or oaths, Ancient treaties, Catastrophic lineage secrets.">${getValue('clanSymbols.secretKnowledge')}</textarea>
+            </div>
+          </div>
         </div>
         
-        <h3 class="mb-3 mt-4" style="border-bottom: 2px solid var(--color-accent-2); padding-bottom: 0.5rem;"><i class="fas fa-puzzle-piece"></i> Optional Extra Sections</h3>
+        <!-- Optional Extras (Collapsible) -->
+        <div class="collapsible-section">
+          <div class="collapsible-header" onclick="toggleFormCollapse('optional-extras-content')">
+            <i class="fas fa-puzzle-piece" style="margin-right: 0.5rem;"></i> Optional Extra Sections <i class="japanese-header">オプション追加セクション</i>
+            <i class="fas fa-chevron-down bounce-arrow"></i>
+          </div>
+          <div id="optional-extras-content" class="collapsible-content">
         
         <div class="form-group">
           <label class="form-label">Bloodline Mutations</label>
@@ -486,49 +652,73 @@ export function renderClanForm(clan = null, onSave) {
           <label class="form-label">Clan Ranking System</label>
           <textarea class="form-control" id="optionalExtras-clanRankingSystem" rows="3" placeholder="Clan Ranking System (Genin → Elite Clan Shinobi)">${getValue('optionalExtras.clanRankingSystem')}</textarea>
         </div>
-        
-        <div class="form-group">
-          <label class="form-label">Clan Architecture</label>
-          <textarea class="form-control" id="optionalExtras-clanArchitecture" rows="3" placeholder="Compound layout, architectural style, etc.">${getValue('optionalExtras.clanArchitecture')}</textarea>
+            <div class="form-group">
+              <label class="form-label">Clan Architecture</label>
+              <textarea class="form-control" id="optionalExtras-clanArchitecture" rows="3" placeholder="Compound layout, architectural style, etc.">${getValue('optionalExtras.clanArchitecture')}</textarea>
+            </div>
+          </div>
         </div>
         
-        <h3 class="mb-3 mt-4" style="border-bottom: 2px solid var(--color-accent-2); padding-bottom: 0.5rem;">Additional Information</h3>
-        
-        <div class="form-group">
-          <label class="form-label">Are Others Allowed to Make OCs from This Clan?</label>
-          <select class="form-control" id="ocCreationAllowed">
-            ${generateOptions(ocCreationAllowed, formClan.ocCreationAllowed || 'Ask')}
-          </select>
+        <!-- Additional Information (Collapsible) -->
+        <div class="collapsible-section">
+          <div class="collapsible-header" onclick="toggleFormCollapse('additional-info-content')">
+            <i class="fas fa-info-circle" style="margin-right: 0.5rem;"></i> Additional Information <i class="japanese-header">追加情報</i>
+            <i class="fas fa-chevron-down bounce-arrow"></i>
+          </div>
+          <div id="additional-info-content" class="collapsible-content">
+            <div class="form-group">
+              <label class="form-label">Are Others Allowed to Make OCs from This Clan?</label>
+              <select class="form-control" id="ocCreationAllowed">
+                ${generateOptions(ocCreationAllowed, formClan.ocCreationAllowed || 'Ask')}
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label">Trivia</label>
+              <textarea class="form-control" id="trivia" rows="4" placeholder="Include fun facts about the clan.">${getValue('trivia')}</textarea>
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label">References</label>
+              <textarea class="form-control" id="references" rows="3" placeholder="List any sources of inspiration or references to Naruto canon or other media.">${getValue('references')}</textarea>
+            </div>
+          </div>
         </div>
         
-        <div class="form-group">
-          <label class="form-label">Trivia</label>
-          <textarea class="form-control" id="trivia" rows="4" placeholder="Include fun facts about the clan.">${getValue('trivia')}</textarea>
+        <!-- Clan Members (Collapsible) -->
+        <div class="collapsible-section">
+          <div class="collapsible-header" onclick="toggleFormCollapse('clan-members-content')">
+            <i class="fas fa-users" style="margin-right: 0.5rem;"></i> Clan Members (OC IDs) <i class="japanese-header">一族のメンバー</i>
+            <i class="fas fa-chevron-down bounce-arrow"></i>
+          </div>
+          <div id="clan-members-content" class="collapsible-content">
+            <div class="form-group">
+              <label class="form-label">Clan Members (OC IDs)</label>
+              <select class="form-control" id="members" multiple size="8">
+                ${ocs.map(oc => `
+                  <option value="${oc.id}" ${(formClan.members || []).includes(oc.id) || (formClan.knownMembers || []).includes(oc.id) ? 'selected' : ''}>
+                    ${oc.firstName} ${oc.lastName} - ${oc.rank}
+                  </option>
+                `).join('')}
+              </select>
+              <small>Hold Ctrl/Cmd to select multiple members</small>
+            </div>
+          </div>
         </div>
         
-        <div class="form-group">
-          <label class="form-label">References</label>
-          <textarea class="form-control" id="references" rows="3" placeholder="List any sources of inspiration or references to Naruto canon or other media.">${getValue('references')}</textarea>
-        </div>
-        
-        <div class="form-group">
-          <label class="form-label">Clan Members (OC IDs)</label>
-          <select class="form-control" id="members" multiple size="8">
-            ${ocs.map(oc => `
-              <option value="${oc.id}" ${(formClan.members || []).includes(oc.id) ? 'selected' : ''}>
-                ${oc.firstName} ${oc.lastName} - ${oc.rank}
-              </option>
-            `).join('')}
-          </select>
-          <small>Hold Ctrl/Cmd to select multiple members</small>
-        </div>
-        
-        <h3 class="mb-3 mt-4" style="border-bottom: 2px solid var(--color-accent-2); padding-bottom: 0.5rem;"><i class="fas fa-images"></i> Aesthetic Mood Board</h3>
-        
-        <div class="form-group">
-          <label class="form-label">Mood Board Images (one URL per line)</label>
-          <textarea class="form-control" id="moodBoardImages" rows="6" placeholder="Enter image URLs, one per line. These will be displayed in an aesthetic mood board layout on the clan detail page.&#10;Example:&#10;https://example.com/image1.jpg&#10;https://example.com/image2.jpg">${getArrayValue('moodBoardImages').join('\n')}</textarea>
-          <small class="form-text text-muted">Add image URLs to create a visual mood board for the clan's aesthetic. Images will be displayed in a Pinterest-style grid layout.</small>
+        <!-- Aesthetic Mood Board (Collapsible) -->
+        <div class="collapsible-section">
+          <div class="collapsible-header" onclick="toggleFormCollapse('mood-board-content')">
+            <i class="fas fa-images" style="margin-right: 0.5rem;"></i> Aesthetic Mood Board <i class="japanese-header">美的ムードボード</i>
+            <i class="fas fa-chevron-down bounce-arrow"></i>
+          </div>
+          <div id="mood-board-content" class="collapsible-content">
+            <div class="form-group">
+              <label class="form-label">Mood Board Images (one URL per line)</label>
+              <textarea class="form-control" id="moodBoardImages" rows="6" placeholder="Enter image URLs, one per line. These will be displayed in an aesthetic mood board layout on the clan detail page.&#10;Example:&#10;https://example.com/image1.jpg&#10;https://example.com/image2.jpg">${getArrayValue('moodBoardImages').join('\n')}</textarea>
+              <small class="form-text text-muted">Add image URLs to create a visual mood board for the clan's aesthetic. Images will be displayed in a Pinterest-style grid layout.</small>
+            </div>
+          </div>
         </div>
         
         <div class="mt-4">
@@ -538,6 +728,30 @@ export function renderClanForm(clan = null, onSave) {
       </form>
     </div>
   `;
+  
+  // Add toggleFormCollapse function if it doesn't exist
+  if (!window.toggleFormCollapse) {
+    window.toggleFormCollapse = function(contentId) {
+      const content = document.getElementById(contentId);
+      if (content) {
+        const isActive = content.classList.contains('active');
+        content.classList.toggle('active');
+        
+        // Find the associated arrow and rotate it
+        const header = content.previousElementSibling;
+        if (header) {
+          const arrow = header.querySelector('.bounce-arrow');
+          if (arrow) {
+            if (isActive) {
+              arrow.style.transform = 'rotate(0deg)';
+            } else {
+              arrow.style.transform = 'rotate(180deg)';
+            }
+          }
+        }
+      }
+    };
+  }
   
   window.saveClanForm = () => {
     // Helper function to safely get element value
@@ -598,6 +812,19 @@ export function renderClanForm(clan = null, onSave) {
     const moodBoardImagesText = getElementValue('moodBoardImages');
     const moodBoardImages = moodBoardImagesText ? moodBoardImagesText.split('\n').filter(img => img.trim()) : [];
     
+    // Get appearsIn checkboxes
+    const appearsIn = [];
+    appearsInOptions.forEach(option => {
+      const checkbox = document.getElementById(`appearsIn-${option}`);
+      if (checkbox && checkbox.checked) {
+        appearsIn.push(option);
+      }
+    });
+    
+    // Get geography branches
+    const geographyBranchesText = getElementValue('geography-branches');
+    const geographyBranches = geographyBranchesText ? geographyBranchesText.split('\n').filter(b => b.trim()) : [];
+    
     const clanData = {
       id: formClan.id,
       name: getElementValue('name'),
@@ -610,6 +837,14 @@ export function renderClanForm(clan = null, onSave) {
       status: getElementValue('status'),
       village: getElementValue('village'),
       symbol: getElementValue('symbol'),
+      debut: {
+        manga: getElementValue('debutManga'),
+        anime: getElementValue('debutAnime'),
+        novel: getElementValue('debutNovel'),
+        movie: getElementValue('debutMovie'),
+        game: getElementValue('debutGame')
+      },
+      appearsIn: appearsIn,
       overview: {
         origins: getElementValue('overview-origins'),
         knownFor: getElementValue('overview-knownFor'),
@@ -653,10 +888,16 @@ export function renderClanForm(clan = null, onSave) {
         battleWeaknesses: battleWeaknesses
       },
       villagesLands: {
-        primaryLocation: getElementValue('villagesLands-primaryLocation'),
+        primaryLocation: getElementValue('villagesLands-primaryLocation') || getElementValue('geography-primaryLocation'),
         branches: branches,
-        territory: getElementValue('villagesLands-territory'),
-        reputation: getElementValue('villagesLands-reputation')
+        territory: getElementValue('villagesLands-territory') || getElementValue('geography-territory'),
+        reputation: getElementValue('villagesLands-reputation') || getElementValue('geography-reputation')
+      },
+      geography: {
+        primaryLocation: getElementValue('geography-primaryLocation') || getElementValue('villagesLands-primaryLocation'),
+        branches: geographyBranches.length > 0 ? geographyBranches : branches,
+        territory: getElementValue('geography-territory') || getElementValue('villagesLands-territory'),
+        reputation: getElementValue('geography-reputation') || getElementValue('villagesLands-reputation')
       },
       appearancePhysicalTraits: getElementValue('appearancePhysicalTraits'),
       abilities: {
@@ -677,6 +918,10 @@ export function renderClanForm(clan = null, onSave) {
         heirs: getElementValue('leaders-heirs')
       },
       notableMembers: notableMembers,
+      knownMembers: (() => {
+        const membersElement = document.getElementById('members');
+        return membersElement ? Array.from(membersElement.selectedOptions).map(opt => opt.value) : [];
+      })(),
       ocCreationAllowed: getElementValue('ocCreationAllowed'),
       clanHistory: {
         ancientEra: getElementValue('clanHistory-ancientEra'),

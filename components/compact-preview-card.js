@@ -1,5 +1,7 @@
 // Compact Preview Card Component - Small preview cards for homepage Recent Additions
 
+import { convertImageUrl } from '../utils/imageUtils.js';
+
 export function renderCompactOCCard(oc, onClick) {
   const card = document.createElement('div');
   card.className = 'compact-preview-card compact-oc-card';
@@ -15,7 +17,7 @@ export function renderCompactOCCard(oc, onClick) {
   card.innerHTML = `
     <div class="compact-card-image">
       ${oc.profileImage ? 
-        `<img src="${oc.profileImage}" alt="${oc.firstName} ${oc.lastName}">` 
+        `<img src="${convertImageUrl(oc.profileImage)}" alt="${oc.firstName} ${oc.lastName}">` 
         : `<div class="compact-card-placeholder">
             <i class="fas fa-user-ninja"></i>
           </div>`
@@ -45,7 +47,7 @@ export function renderCompactClanCard(clan, onClick) {
   card.innerHTML = `
     <div class="compact-card-image">
       ${clan.symbol ? 
-        `<img src="${clan.symbol}" alt="${clan.name} Symbol">` 
+        `<img src="${convertImageUrl(clan.symbol)}" alt="${clan.name} Symbol">` 
         : `<div class="compact-card-placeholder">
             <i class="fas fa-shield-alt"></i>
           </div>`
