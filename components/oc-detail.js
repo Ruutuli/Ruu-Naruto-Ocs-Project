@@ -47,10 +47,7 @@ export function renderOCDetail(oc) {
           ` : ''}
         </div>
         
-        ${oc.profileImage ? 
-          `<img src="${oc.profileImage}" alt="${oc.firstName} ${oc.lastName}" class="oc-profile-image">` 
-          : `<img src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png" alt="Profile" class="oc-profile-image">`
-        }
+        ${renderProfileImageWithEras(oc)}
         
         <div class="oc-badges" id="oc-badges-container">
           ${renderAllBadges(oc)}
@@ -161,7 +158,18 @@ export function renderOCDetail(oc) {
         <div class="color-palette-container">
           <div class="color-palette-label">Color Palette</div>
           <div class="color-palette">
-            ${oc.appearance.colors.map(color => `<div class="color-swatch" style="background-color: ${color};" title="${color}"></div>`).join('')}
+            ${oc.appearance.colors.map(color => {
+              // Normalize color for display - ensure it's a valid CSS color
+              const normalizedColor = color ? color.trim() : '';
+              if (!normalizedColor) return '';
+              
+              // If it's a hex code without #, add it
+              const displayColor = /^[0-9A-Fa-f]{3,8}$/.test(normalizedColor) && !normalizedColor.startsWith('#') 
+                ? `#${normalizedColor}` 
+                : normalizedColor;
+              
+              return `<div class="color-swatch" style="background-color: ${displayColor};" title="${displayColor}"></div>`;
+            }).filter(html => html).join('')}
           </div>
         </div>
       ` : ''}
@@ -1673,7 +1681,6 @@ function renderGearItem(gear) {
           <div class="gear-icon">⚔</div>
           <span class="gear-name">${gear}</span>
         </div>
-        <div class="gear-category">Item</div>
       </div>
     `;
   }
@@ -1682,9 +1689,9 @@ function renderGearItem(gear) {
   let iconHtml = '<div class="gear-icon">⚔</div>';
   if (gear.icon) {
     if (gear.icon.startsWith('fa-') || gear.icon.startsWith('fas ') || gear.icon.startsWith('far ') || gear.icon.startsWith('fab ')) {
-      iconHtml = `<div class="gear-icon" style="font-size: 1.2rem; color: var(--color-accent-2);"><i class="${gear.icon}"></i></div>`;
+      iconHtml = `<div class="gear-icon" style="font-size: 1.5rem; color: var(--color-accent-2);"><i class="${gear.icon}"></i></div>`;
     } else if (gear.icon.startsWith('http') || gear.icon.startsWith('data:')) {
-      iconHtml = `<div class="gear-icon" style="width: 30px; height: 30px; padding: 0; overflow: hidden;"><img src="${gear.icon}" alt="${gear.name || 'Gear'}" style="width: 100%; height: 100%; object-fit: contain;"></div>`;
+      iconHtml = `<div class="gear-icon" style="width: 60px; height: 60px; padding: 0; overflow: hidden; display: flex; align-items: center; justify-content: center;"><img src="${gear.icon}" alt="${gear.name || 'Gear'}" style="width: 100%; height: 100%; object-fit: contain;"></div>`;
     }
   }
   
@@ -1694,11 +1701,6 @@ function renderGearItem(gear) {
         ${iconHtml}
         <span class="gear-name">${gear.name || 'Item Name'}</span>
       </div>
-      ${gear.category || gear.material || gear.use ? `
-        <div class="gear-category">
-          ${gear.category || 'Item'}${gear.material ? ` <small><em>${gear.material}</em></small>` : ''}${gear.use ? `. ${gear.use}` : ''}
-        </div>
-      ` : ''}
       ${gear.info && gear.info.length > 0 ? `
         <ul class="gear-info">
           ${gear.info.map(info => `<li>${info}</li>`).join('')}

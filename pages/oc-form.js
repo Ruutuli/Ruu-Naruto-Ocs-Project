@@ -154,6 +154,47 @@ export function renderOCForm(oc = null, onSave) {
         <div class="form-group">
           <label class="form-label">Profile Image URL</label>
           <input type="text" class="form-control" id="profileImage" value="${formOC.profileImage || ''}" placeholder="Enter image URL">
+          <small class="form-text text-muted">Default image (used if no era-specific images are set)</small>
+        </div>
+        
+        <!-- Images by Era -->
+        <h3 class="mb-3 mt-4">Images by Era <i class="japanese-header">時代別の画像</i></h3>
+        <div class="mb-4">
+          <p class="text-muted" style="margin-bottom: 1rem;">Add images for different eras. These will be displayed with tabs in the detail view.</p>
+          <div class="image-era-tabs" style="display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap;">
+            ${['Part I', 'Part II', 'Blank Period', 'Gaiden', 'Boruto'].map((era, index) => `
+              <button type="button" class="btn-naruto btn-naruto-secondary image-era-tab ${index === 0 ? 'active' : ''}" 
+                      onclick="switchImageEraTab('${era}')" 
+                      data-era="${era}"
+                      style="font-size: 0.85rem; padding: 0.5rem 1rem;">
+                ${era}
+              </button>
+            `).join('')}
+          </div>
+          <div class="image-era-content">
+            ${['Part I', 'Part II', 'Blank Period', 'Gaiden', 'Boruto'].map((era, index) => {
+              const eraImage = formOC.imagesByEra?.[era] || '';
+              const isActive = index === 0 ? 'active' : '';
+              return `
+                <div class="image-era-panel ${isActive}" id="image-era-panel-${era.replace(/\s+/g, '-')}" 
+                     style="${index !== 0 ? 'display: none;' : ''}">
+                  <div class="form-group">
+                    <label class="form-label">Image URL for ${era}</label>
+                    <input type="text" class="form-control" id="imageEra-${era}" 
+                           value="${eraImage}" 
+                           placeholder="Enter image URL for ${era}">
+                    ${eraImage ? `
+                      <div style="margin-top: 0.5rem;">
+                        <img src="${eraImage}" alt="${era} image" 
+                             style="max-width: 200px; max-height: 200px; border: 1px solid var(--color-border-2); border-radius: 4px; object-fit: contain;"
+                             onerror="this.style.display='none'">
+                      </div>
+                    ` : ''}
+                  </div>
+                </div>
+              `;
+            }).join('')}
+          </div>
         </div>
         
         <!-- Debut Information -->
@@ -969,6 +1010,70 @@ export function renderOCForm(oc = null, onSave) {
           <textarea class="form-control" id="dislikes" rows="4">${(formOC.personality?.dislikes || []).join('\n')}</textarea>
         </div>
         
+        <!-- Demeanor / Personality Traits -->
+        <h3 class="mb-3 mt-4">Demeanor <i class="japanese-header">態度</i></h3>
+        <p style="color: var(--color-text-dark-2); font-size: 0.9rem; margin-bottom: 1rem;">
+          Rate each trait from 1 (lowest) to 5 (highest). These traits help define the character's personality and behavior.
+        </p>
+        <div class="demeanor-traits-container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem;">
+          ${(() => {
+            const demeanor = formOC.personality?.demeanor || {
+              charisma: 3,
+              extraversion: 3,
+              energy: 3,
+              empathy: 3,
+              impulsivity: 3,
+              neuroticism: 3,
+              intuition: 3,
+              observation: 3,
+              sensitivity: 3,
+              generosity: 3,
+              respectForAuthority: 3
+            };
+            
+            const traits = [
+              { key: 'charisma', label: 'Charisma', description: 'Ability to attract, inspire, and influence others' },
+              { key: 'extraversion', label: 'Extraversion', description: 'Outgoing, social, and expressive nature' },
+              { key: 'energy', label: 'Energy', description: 'Vitality, enthusiasm, and activity level' },
+              { key: 'empathy', label: 'Empathy', description: 'Understanding and sharing feelings of others' },
+              { key: 'impulsivity', label: 'Impulsivity', description: 'Tendency to act on sudden urges without thinking' },
+              { key: 'neuroticism', label: 'Neuroticism', description: 'Emotional instability and anxiety proneness' },
+              { key: 'intuition', label: 'Intuition', description: 'Ability to understand things instinctively' },
+              { key: 'observation', label: 'Observation', description: 'Attention to detail and awareness of surroundings' },
+              { key: 'sensitivity', label: 'Sensitivity', description: 'Responsiveness to emotions and subtle cues' },
+              { key: 'generosity', label: 'Generosity', description: 'Willingness to give and share with others' },
+              { key: 'respectForAuthority', label: 'Respect for Authority', description: 'Deference to rules, hierarchy, and leadership' }
+            ];
+            
+            return traits.map(trait => {
+              const value = demeanor[trait.key] || 3;
+              return `
+                <div class="demeanor-trait-item" style="background-color: var(--color-bg-1); border: 1px solid var(--color-border-2); border-radius: 4px; padding: 1rem;">
+                  <label class="form-label" style="margin-bottom: 0.5rem; font-weight: 600;">
+                    ${trait.label}
+                    <small style="display: block; font-weight: normal; color: var(--color-text-dark-2); font-size: 0.75rem; margin-top: 0.25rem;">
+                      ${trait.description}
+                    </small>
+                  </label>
+                  <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <input type="range" 
+                           class="form-control" 
+                           id="demeanor-${trait.key}" 
+                           min="1" 
+                           max="5" 
+                           value="${value}"
+                           style="flex: 1;"
+                           oninput="updateDemeanorDisplay('${trait.key}', this.value)">
+                    <span id="demeanor-${trait.key}-value" style="min-width: 30px; text-align: center; font-weight: 600; color: var(--color-accent-2);">
+                      ${value}
+                    </span>
+                  </div>
+                </div>
+              `;
+            }).join('');
+          })()}
+        </div>
+        
         <!-- Record History -->
         <h3 class="mb-3 mt-4">Record History <i class="japanese-header">記録履歴</i></h3>
         <div class="form-group">
@@ -1022,7 +1127,21 @@ export function renderOCForm(oc = null, onSave) {
         </div>
         <div class="form-group">
           <label class="form-label">Color Palette <small style="font-weight: normal; color: var(--color-text-dark-2);">(one color per line, hex codes or color names)</small></label>
-          <textarea class="form-control" id="appearanceColors" rows="3" placeholder="#FF5733&#10;#33FF57&#10;blue">${(formOC.appearance?.colors || []).join('\n')}</textarea>
+          <textarea class="form-control" id="appearanceColors" rows="3" placeholder="#FF5733&#10;#33FF57&#10;blue" oninput="updateColorPreview()">${(formOC.appearance?.colors || []).join('\n')}</textarea>
+          <div id="colorPreview" style="margin-top: 0.5rem; min-height: 40px; display: flex; gap: 0.25rem; flex-wrap: wrap; padding: 0.5rem; background-color: var(--color-bg-1); border: 1px solid var(--color-border-2); border-radius: 4px;">
+            ${(() => {
+              const colors = formOC.appearance?.colors || [];
+              if (colors.length === 0) {
+                return '<small style="color: var(--color-text-dark-2);">Color preview will appear here...</small>';
+              }
+              return colors.map(color => {
+                // Normalize color for display
+                const normalizedColor = color.trim();
+                const displayColor = normalizedColor.startsWith('#') ? normalizedColor : (normalizedColor.match(/^#?[0-9A-Fa-f]{3,8}$/) ? `#${normalizedColor.replace('#', '')}` : normalizedColor);
+                return `<div class="color-swatch" style="width: 40px; height: 40px; background-color: ${displayColor}; border: 1px solid var(--color-border-2); border-radius: 4px; flex-shrink: 0;" title="${displayColor}"></div>`;
+              }).join('');
+            })()}
+          </div>
         </div>
         <div id="gear-editor" class="mt-3 mb-3">
           <label class="form-label mb-2">Gear Items</label>
@@ -1407,11 +1526,23 @@ export function renderOCForm(oc = null, onSave) {
         neutralTraits: document.getElementById('neutralTraits')?.value.split('\n').filter(t => t.trim()) || [],
         likes: document.getElementById('likes').value.split('\n').filter(l => l.trim()),
         dislikes: document.getElementById('dislikes').value.split('\n').filter(d => d.trim()),
-        demeanor: formOC.personality?.demeanor || {
-          charisma: 3, extraversion: 3, energy: 3, empathy: 3,
-          impulsivity: 3, neuroticism: 3, intuition: 3, observation: 3,
-          sensitivity: 3, generosity: 3, respectForAuthority: 3
-        }
+        demeanor: (() => {
+          const traits = [
+            'charisma', 'extraversion', 'energy', 'empathy', 'impulsivity',
+            'neuroticism', 'intuition', 'observation', 'sensitivity',
+            'generosity', 'respectForAuthority'
+          ];
+          const demeanor = {};
+          traits.forEach(trait => {
+            const input = document.getElementById(`demeanor-${trait}`);
+            if (input) {
+              demeanor[trait] = parseInt(input.value) || 3;
+            } else {
+              demeanor[trait] = formOC.personality?.demeanor?.[trait] || 3;
+            }
+          });
+          return demeanor;
+        })()
       },
       abilities: (() => {
         const container = document.getElementById('abilities-container');
@@ -1519,7 +1650,40 @@ export function renderOCForm(oc = null, onSave) {
         image: document.getElementById('appearanceImage').value,
         colors: (() => {
           const colorsText = document.getElementById('appearanceColors').value;
-          return colorsText.split('\n').map(c => c.trim()).filter(c => c);
+          // Helper function to validate and normalize color
+          const normalizeColor = (color) => {
+            if (!color) return null;
+            const trimmed = color.trim();
+            if (!trimmed) return null;
+            
+            // If it's a hex code (with or without #)
+            if (/^#?[0-9A-Fa-f]{3,8}$/.test(trimmed)) {
+              return trimmed.startsWith('#') ? trimmed : `#${trimmed}`;
+            }
+            
+            // If it's a valid CSS color name or rgb/rgba/hsl/hsla, return as-is
+            // Create a temporary element to test if the color is valid
+            const testEl = document.createElement('div');
+            testEl.style.color = trimmed;
+            if (testEl.style.color) {
+              return trimmed;
+            }
+            
+            // If validation fails, try to fix common issues
+            // Remove extra spaces
+            const fixed = trimmed.replace(/\s+/g, '');
+            testEl.style.color = fixed;
+            if (testEl.style.color) {
+              return fixed;
+            }
+            
+            return null;
+          };
+          
+          return colorsText
+            .split('\n')
+            .map(c => normalizeColor(c))
+            .filter(c => c !== null);
         })(),
         gear: (() => {
           const container = document.getElementById('gear-container');
@@ -1529,17 +1693,11 @@ export function renderOCForm(oc = null, onSave) {
           container.querySelectorAll('.gear-editor-item').forEach(item => {
             const index = item.dataset.index;
             const nameInput = container.querySelector(`[name="gear-name-${index}"]`);
-            const categoryInput = container.querySelector(`[name="gear-category-${index}"]`);
             const iconInput = container.querySelector(`[name="gear-icon-${index}"]`);
-            const materialInput = container.querySelector(`[name="gear-material-${index}"]`);
-            const useInput = container.querySelector(`[name="gear-use-${index}"]`);
             const infoInput = container.querySelector(`[name="gear-info-${index}"]`);
             
             const name = nameInput?.value || '';
-            const category = categoryInput?.value || 'Item';
             const icon = iconInput?.value || '';
-            const material = materialInput?.value || '';
-            const use = useInput?.value || '';
             const infoText = infoInput?.value || '';
             const info = infoText.split('\n').filter(i => i.trim());
             
@@ -1547,10 +1705,7 @@ export function renderOCForm(oc = null, onSave) {
             if (name.trim()) {
               const gearItem = {
                 name: name.trim(),
-                category: category.trim() || 'Item',
                 ...(icon ? { icon: icon.trim() } : {}),
-                ...(material ? { material: material.trim() } : {}),
-                ...(use ? { use: use.trim() } : {}),
                 ...(info.length > 0 ? { info: info } : {})
               };
               gear.push(gearItem);
@@ -1580,6 +1735,17 @@ export function renderOCForm(oc = null, onSave) {
           }
         });
         return Object.keys(appearanceByEra).length > 0 ? appearanceByEra : undefined;
+      })(),
+      imagesByEra: (() => {
+        const eras = ['Part I', 'Part II', 'Blank Period', 'Gaiden', 'Boruto'];
+        const imagesByEra = {};
+        eras.forEach(era => {
+          const imageEl = document.getElementById(`imageEra-${era}`);
+          if (imageEl && imageEl.value && imageEl.value.trim()) {
+            imagesByEra[era] = imageEl.value.trim();
+          }
+        });
+        return Object.keys(imagesByEra).length > 0 ? imagesByEra : undefined;
       })(),
       profileImage: document.getElementById('profileImage').value,
       zodiac: document.getElementById('zodiac').value,
@@ -1939,6 +2105,48 @@ export function renderOCForm(oc = null, onSave) {
     };
   }
   
+  window.updateDemeanorDisplay = function(trait, value) {
+    const display = document.getElementById(`demeanor-${trait}-value`);
+    if (display) {
+      display.textContent = value;
+    }
+  };
+  
+  window.updateColorPreview = function() {
+    const colorsText = document.getElementById('appearanceColors').value;
+    const preview = document.getElementById('colorPreview');
+    if (!preview) return;
+    
+    // Helper function to normalize color
+    const normalizeColor = (color) => {
+      if (!color) return null;
+      const trimmed = color.trim();
+      if (!trimmed) return null;
+      
+      // If it's a hex code (with or without #)
+      if (/^#?[0-9A-Fa-f]{3,8}$/.test(trimmed)) {
+        return trimmed.startsWith('#') ? trimmed : `#${trimmed}`;
+      }
+      
+      // Return as-is for color names (browser will validate)
+      return trimmed;
+    };
+    
+    const colors = colorsText
+      .split('\n')
+      .map(c => normalizeColor(c))
+      .filter(c => c !== null);
+    
+    if (colors.length === 0) {
+      preview.innerHTML = '<small style="color: var(--color-text-dark-2);">Color preview will appear here...</small>';
+      return;
+    }
+    
+    preview.innerHTML = colors.map(color => {
+      return `<div class="color-swatch" style="width: 40px; height: 40px; background-color: ${color}; border: 1px solid var(--color-border-2); border-radius: 4px; flex-shrink: 0;" title="${color}"></div>`;
+    }).join('');
+  };
+  
   window.updateAppearancePreview = function(value) {
     const preview = document.getElementById('appearanceImagePreview');
     if (!value) {
@@ -2101,9 +2309,6 @@ function renderAbilityEditor(type, ability = {}, index) {
 function renderGearEditor(gear = {}, index) {
   const gearIcon = gear.icon || '';
   const gearName = gear.name || '';
-  const gearCategory = gear.category || 'Item';
-  const gearMaterial = gear.material || '';
-  const gearUse = gear.use || '';
   const gearInfo = Array.isArray(gear.info) ? gear.info.join('\n') : (gear.information || []);
   
   return `
@@ -2113,16 +2318,10 @@ function renderGearEditor(gear = {}, index) {
         <button type="button" class="btn-naruto btn-naruto-secondary" onclick="removeGearItem(${index})" style="padding: 0.25rem 0.5rem; font-size: 0.85rem;">Remove</button>
       </div>
       <div class="row">
-        <div class="col-12 col-md-6">
+        <div class="col-12">
           <div class="form-group">
             <label>Name</label>
             <input type="text" class="form-control" name="gear-name-${index}" value="${gearName}" placeholder="e.g., Bone Chain Sickle (Kusarigama)">
-          </div>
-        </div>
-        <div class="col-12 col-md-6">
-          <div class="form-group">
-            <label>Category</label>
-            <input type="text" class="form-control" name="gear-category-${index}" value="${gearCategory}" placeholder="e.g., Item, Weapon, Tool">
           </div>
         </div>
         <div class="col-12">
@@ -2153,18 +2352,6 @@ function renderGearEditor(gear = {}, index) {
                   `<img src="${gearIcon}" alt="Preview" style="max-width: 100px; max-height: 100px; border: 1px solid var(--color-border-2); border-radius: 4px;">`
               ) : ''}
             </div>
-          </div>
-        </div>
-        <div class="col-12 col-md-6">
-          <div class="form-group">
-            <label>Material</label>
-            <input type="text" class="form-control" name="gear-material-${index}" value="${gearMaterial}" placeholder="e.g., Bone, Metal, Wood">
-          </div>
-        </div>
-        <div class="col-12 col-md-6">
-          <div class="form-group">
-            <label>Use</label>
-            <input type="text" class="form-control" name="gear-use-${index}" value="${gearUse}" placeholder="e.g., Combat, Utility">
           </div>
         </div>
         <div class="col-12">
@@ -2304,7 +2491,7 @@ if (typeof window !== 'undefined') {
     const items = container.querySelectorAll('.gear-editor-item');
     const index = items.length;
     
-    const newGear = { name: '', category: 'Item', icon: '', material: '', use: '', info: [] };
+    const newGear = { name: '', icon: '', info: [] };
     container.innerHTML += renderGearEditor(newGear, index);
     if (container.querySelector('.text-muted')) {
       container.querySelector('.text-muted').remove();
@@ -2507,6 +2694,27 @@ if (typeof window !== 'undefined') {
     const eraId = era.replace(/\s+/g, '-');
     panels.forEach(panel => {
       if (panel.id === `appearance-era-panel-${eraId}`) {
+        panel.style.display = '';
+      } else {
+        panel.style.display = 'none';
+      }
+    });
+  };
+  
+  window.switchImageEraTab = function(era) {
+    const tabs = document.querySelectorAll('.image-era-tab');
+    tabs.forEach(tab => {
+      if (tab.dataset.era === era) {
+        tab.classList.add('active');
+      } else {
+        tab.classList.remove('active');
+      }
+    });
+    
+    const panels = document.querySelectorAll('.image-era-panel');
+    const eraId = era.replace(/\s+/g, '-');
+    panels.forEach(panel => {
+      if (panel.id === `image-era-panel-${eraId}`) {
         panel.style.display = '';
       } else {
         panel.style.display = 'none';
