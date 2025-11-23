@@ -41,26 +41,26 @@
   "clanId": null,
   "clanName": null,
   "stats": {
-    "intelligence": 3,
-    "stamina": 2,
-    "strength": 2,
-    "speed": 2,
-    "ninjutsu": 2,
-    "genjutsu": 2,
-    "taijutsu": 2,
-    "handSeals": 4,
+    "intelligence": 2.5,
+    "stamina": 3,
+    "strength": 3,
+    "speed": 3,
+    "ninjutsu": 3,
+    "genjutsu": 3,
+    "taijutsu": 3,
+    "handSeals": 3,
     "fuinjutsu": 2
   },
   "statsByEra": {
     "Part I": {
-      "intelligence": 3,
-      "stamina": 2,
-      "strength": 2,
-      "speed": 2,
-      "ninjutsu": 2,
-      "genjutsu": 2,
-      "taijutsu": 2,
-      "handSeals": 4,
+      "intelligence": 2.5,
+      "stamina": 3,
+      "strength": 3,
+      "speed": 3,
+      "ninjutsu": 3,
+      "genjutsu": 3,
+      "taijutsu": 3,
+      "handSeals": 3,
       "fuinjutsu": 2
     },
     "Part II": {
@@ -248,18 +248,54 @@
       "#FF8FB4   (pink eyes)"
     ],
     "gear": [
-      "Bone Chain Sickle (Kusarigama)",
-      "Kunai",
-      "Shuriken",
-      "Ninja Wire",
-      "Tool Pouch (waist)",
-      "Leg Pouch (right thigh)",
-      "Small Hoop Earrings (worn outside combat)",
-      "Protective Wire Mesh Undergarment",
-      "Weighted Arm Gloves (Part II)",
-      "Weighted Leg Warmers (Part II)",
-      "Standard Shinobi Sandals / Boots",
-      "Thigh-high protective socks (Part I)"
+      {
+        "name": "Bone Chain Sickle (Kusarigama)",
+        "category": "Item"
+      },
+      {
+        "name": "Kunai",
+        "category": "Item"
+      },
+      {
+        "name": "Shuriken",
+        "category": "Item"
+      },
+      {
+        "name": "Ninja Wire",
+        "category": "Item"
+      },
+      {
+        "name": "Tool Pouch (waist)",
+        "category": "Item"
+      },
+      {
+        "name": "Leg Pouch (right thigh)",
+        "category": "Item"
+      },
+      {
+        "name": "Small Hoop Earrings (worn outside combat)",
+        "category": "Item"
+      },
+      {
+        "name": "Protective Wire Mesh Undergarment",
+        "category": "Item"
+      },
+      {
+        "name": "Weighted Arm Gloves (Part II)",
+        "category": "Item"
+      },
+      {
+        "name": "Weighted Leg Warmers (Part II)",
+        "category": "Item"
+      },
+      {
+        "name": "Standard Shinobi Sandals / Boots",
+        "category": "Item"
+      },
+      {
+        "name": "Thigh-high protective socks (Part I)",
+        "category": "Item"
+      }
     ]
   },
   "appearanceByEra": {
